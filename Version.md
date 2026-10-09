@@ -111,3 +111,8 @@ All notable changes to the `instafel` repository are documented in this file in 
     - Added automated duplicate mod check against `junksidetm/instafel` releases; skips execution if `v${VERSION}` was already modded and published.
     - Added `gh release download` step streaming clean standalone APKs directly into Instafel patcher pipeline.
 - **Status**: 100% (Completed)
+## [2026-10-09 16:39:00 IST] - Documentation Overhaul & Ecosystem Transparency
+- **Action**: Completely overhauled project `README.md` to comprehensively document the typography hierarchy engine, custom emoji integration, Alpha-Insta upstream ingest pipeline, multi-platform mirrors, and deliverable specifications.
+- **Components Modified**:
+  - `README.md`: Documented Apple SF Pro hierarchy, Google Sans Flex variable axis formulas, iOS 26.4 / Google 3D emoji suites, Mermaid architecture diagram, deliverable variant breakdown, and GitLab / Codeberg mirror synchronization.
+- **Status**: 100% (Completed)
