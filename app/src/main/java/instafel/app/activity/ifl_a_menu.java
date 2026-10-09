@@ -69,6 +69,7 @@ public class ifl_a_menu extends AppCompatActivity {
         findViewById(R.id.ifl_tile_menu_crashlogs).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_crash_reports.class));
         findViewById(R.id.ifl_tile_menu_library).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_library_menu.class));
         findViewById(R.id.ifl_tile_menu_misc).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_misc.class));
+        findViewById(R.id.ifl_tile_menu_typography).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_typography.class));
         findViewById(R.id.ifl_tile_menu_devopt).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_devmode.class));
         findViewById(R.id.ifl_tile_menu_ota).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_ota.class));
 

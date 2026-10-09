@@ -38,4 +38,10 @@ public class PreferenceKeys {
     public static String ifl_mapping_file_hash = "31";
     public static String ifl_debug_api_url = "32";
     public static String ifl_lang_rw = "34";
+    public static String ifl_custom_font_family = "40";
+    public static String ifl_custom_emoji_pack = "41";
+    public static String ifl_custom_font_path = "42";
+    public static String ifl_custom_emoji_path = "43";
+    public static String ifl_enable_custom_fonts = "44";
+    public static String ifl_enable_custom_emojis = "45";
 }

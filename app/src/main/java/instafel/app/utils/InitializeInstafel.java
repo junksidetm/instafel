@@ -31,6 +31,36 @@ public class InitializeInstafel {
         Locale iflLocale = LocalizationUtils.getIflLocale(ctx);
         InstafelEnv.IFL_LANG = iflLocale;
         Log.v("IFL", "InstafelEnv.IFL_LANG is set to " + LocalizationUtils.convertToLangCode(iflLocale));
+
+        instafel.app.managers.FontManager.init(application);
+        instafel.app.managers.EmojiManager.init(application);
+
+        application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, android.os.Bundle savedInstanceState) {
+                instafel.app.managers.FontManager.applyToActivity(activity);
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {}
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                instafel.app.managers.FontManager.applyToActivity(activity);
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {}
+
+            @Override
+            public void onActivityStopped(Activity activity) {}
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, android.os.Bundle outState) {}
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {}
+        });
     }
 
     public static void triggerCheckUpdates(Activity activity) {

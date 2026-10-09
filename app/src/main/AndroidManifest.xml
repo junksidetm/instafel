@@ -35,6 +35,7 @@
         <activity android:name="instafel.app.activity.ifl_a_ota" android:exported="false" />
         <activity android:name="instafel.app.activity.ifl_a_language" android:exported="false" />
         <activity android:name="instafel.app.activity.ifl_a_misc" android:exported="false" />
+        <activity android:name="instafel.app.activity.ifl_a_typography" android:exported="false" />
         <activity android:name="instafel.app.activity.about.ifl_a_about" android:exported="false" />
         <activity android:name="instafel.app.activity.about.ifl_a_build_info" android:exported="false" />
         <activity android:name="instafel.app.activity.about.ifl_a_patches_info" android:exported="false" />

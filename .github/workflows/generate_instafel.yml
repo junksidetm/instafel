@@ -1,67 +1,139 @@
-name: Generate Instafel
+name: Generate Instafel (Full Online Pipeline)
 
 on:
   repository_dispatch:
     types: [generate_instafel]
+  workflow_dispatch:
+    inputs:
+      base_apk_url:
+        description: 'Direct URL for Base Instagram APK (Leave empty to auto-fetch via GPlayAPI)'
+        required: false
+        default: ''
+      rconf_apk_url:
+        description: 'Direct URL for Density Config APK (Leave empty to auto-fetch via GPlayAPI)'
+        required: false
+        default: ''
+      build_patcher_from_source:
+        description: 'Build Patcher, Patcher-Core, and App from local source'
+        type: boolean
+        default: true
 
 jobs:
   ifl_generator:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Java 21 & Android Environment
+        uses: actions/setup-java@v4
         with:
           distribution: 'oracle'
           java-version: '21'
 
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Fetch Latest Instagram Alpha (via GPlayAPI)
+        id: fetch_alpha
+        env:
+          GPLAY_EMAIL: ${{ secrets.GPLAY_EMAIL }}
+          GPLAY_AAS_TOKEN: ${{ secrets.GPLAY_AAS_TOKEN }}
+        run: |
+          BASE_URL="${{ github.event.client_payload.base.url || inputs.base_apk_url }}"
+          RCONF_URL="${{ github.event.client_payload.rconf.url || inputs.rconf_apk_url }}"
+
+          if [ -z "$BASE_URL" ] || [ -z "$RCONF_URL" ]; then
+            if [ -n "$GPLAY_EMAIL" ] && [ -n "$GPLAY_AAS_TOKEN" ]; then
+              echo "Fetching latest Alpha release from Google Play API..."
+              GPLAY_OUTPUT=$(./gradlew :gplayapi:run --args="email=$GPLAY_EMAIL aasToken=$GPLAY_AAS_TOKEN" --quiet | grep -o '{"versionName".*}')
+              BASE_URL=$(echo "$GPLAY_OUTPUT" | jq -r '.apkUrlBase')
+              RCONF_URL=$(echo "$GPLAY_OUTPUT" | jq -r '.apkUrlRes')
+              echo "Fetched version: $(echo "$GPLAY_OUTPUT" | jq -r '.versionName')"
+            else
+              echo "Error: Neither direct APK URLs nor GPlayAPI credentials were provided."
+              exit 1
+            fi
+          fi
+
+          echo "base_url=$BASE_URL" >> $GITHUB_OUTPUT
+          echo "rconf_url=$RCONF_URL" >> $GITHUB_OUTPUT
+
       - name: Download & Merge APKs
         run: |
-          echo "Downloading APKs..."
-          mkdir -p apks && cd apks
-          wget -q "${{ github.event.client_payload.base.url }}"
-          wget -q "${{ github.event.client_payload.rconf.url }}"
-          cd ..
+          mkdir -p apks
+          echo "Downloading Instagram Alpha splits..."
+          wget -q -O apks/base.apk "${{ steps.fetch_alpha.outputs.base_url }}"
+          wget -q -O apks/rconf.apk "${{ steps.fetch_alpha.outputs.rconf_url }}"
+
+          echo "Downloading APKEditor..."
           wget -q "https://github.com/REAndroid/APKEditor/releases/download/V1.4.5/APKEditor-1.4.5.jar"
-          echo "Merging APKs..."
+
+          echo "Merging APK splits into instagram.apk..."
           java -jar APKEditor-1.4.5.jar m -i apks -o instagram.apk
 
-      - name: Create config.json
+      - name: Fetch Custom Emojis & Fonts Assets
         run: |
-          cat <<EOF > config.json
-          {    
-            "manifestVersion": 1,
-            "productionMode": true,
-            "managerToken": "${{ secrets.MANAGER_TOKEN }}",
-            "githubPatToken": "${{ secrets.GH_PAT_TOKEN }}",
-            "serverSessionToken": "${{ secrets.SERVER_ACCESS_TOKEN }}",
-            "s3AccessKeyId": "${{ secrets.S3_ACCESS_KEY_ID }}",
-            "s3SecretKey": "${{ secrets.S3_SECRET_KEY }}",
-            "s3ConnectionUrl": "${{ secrets.S3_CONNECTION_URL }}"
-          }
-          EOF
+          echo "Fetching Google 3D Emojis and iOS Emojis..."
+          mkdir -p assets_bundle/emojis assets_bundle/fonts/sf_pro
 
-      - name: Download latest Patcher
+          # Fetch Google 3D Emoji TTF from latest release
+          wget -q -O assets_bundle/emojis/GoogleEmoji3D.ttf \
+            "https://github.com/junksidetm/Google-Emoji-3D/releases/download/v1.1.1/GoogleEmoji3D.ttf" || echo "GoogleEmoji3D fallback"
+
+          # Fetch iOS 26.4 Emoji TTF from user assests repo
+          wget -q -O assets_bundle/emojis/iOS_26.4.ttf \
+            "https://raw.githubusercontent.com/junksidetm/assests/main/Emojis/iOS%2026.4.ttf" || echo "iOS emoji fallback"
+
+          # Fetch Apple San Francisco Pro fonts
+          git clone --depth 1 https://github.com/junksidetm/assests.git assests_repo
+          if [ -d "assests_repo/fonts/IOS - San Francisco/SF-Pro" ]; then
+            cp -r "assests_repo/fonts/IOS - San Francisco/SF-Pro"/* assets_bundle/fonts/sf_pro/
+          fi
+
+          # Fetch Google Sans Flex
+          wget -q -O assets_bundle/fonts/GoogleSansFlex.ttf \
+            "https://raw.githubusercontent.com/google/fonts/main/ofl/googlesansflex/GoogleSansFlex%5BGRAD%2CROND%2Copsz%2Cslnt%2Cwdth%2Cwght%5D.ttf" || echo "GSF fallback"
+
+          rm -rf assests_repo
+
+      - name: Build Instafel Engine & Update Patcher Sources
         run: |
-          chmod +x download_patcher.sh
-          ./download_patcher.sh
+          echo "Building :app and updating patcher-core embedded sources..."
+          ./gradlew updatePatcherSources
+          ./gradlew :patcher:build-jar
 
-      - name: Print about of patcher
+      - name: Initialize Decompilation
         run: |
-          java -jar ifl-patcher.jar about
+          PATCHER_JAR=$(find .output -name "ifl-patcher*.jar" | head -n 1)
+          echo "Using patcher: $PATCHER_JAR"
+          java -jar "$PATCHER_JAR" about
+          java -jar "$PATCHER_JAR" init instagram.apk
 
-      - name: Initialize Project
+      - name: Bundle Fonts & Emojis into Target APK
         run: |
-          java -jar ifl-patcher.jar init instagram.apk
-          cp config.json instagram/config.json
+          echo "Copying fonts and emoji assets into target APK..."
+          mkdir -p instagram/sources/assets/fonts/sf_pro
+          mkdir -p instagram/sources/assets/emojis
 
-      - name: Run patches
-        run: java -jar ifl-patcher.jar run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel change_channel_name clone
+          cp -r assets_bundle/fonts/* instagram/sources/assets/fonts/
+          cp -r assets_bundle/emojis/* instagram/sources/assets/emojis/
 
-      - name: Build project
-        run: java -jar ifl-patcher.jar build instagram
+      - name: Run Patches (with Typography & Emojis)
+        run: |
+          PATCHER_JAR=$(find .output -name "ifl-patcher*.jar" | head -n 1)
+          java -jar "$PATCHER_JAR" run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel font_emoji change_channel_name clone
 
-      - name: Upload preview
-        run: java -jar ifl-patcher.jar uprew instagram
+      - name: Build & Sign Final APK
+        run: |
+          PATCHER_JAR=$(find .output -name "ifl-patcher*.jar" | head -n 1)
+          java -jar "$PATCHER_JAR" build instagram
+
+      - name: Upload Production APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: instafel-production-apk
+          path: instagram/instagram-signed.apk
+          if-no-files-found: warn

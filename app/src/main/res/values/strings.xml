@@ -274,4 +274,25 @@
 
     <!-- CRASH TOAST -->
     <string name="ifl_crash_toast" translatable="false">Instafel crashed, visit Crash Reports for more details.</string>
+
+    <!-- TYPOGRAPHY & EMOJIS -->
+    <string name="ifl_typography_title">Typography &amp; Emojis</string>
+    <string name="ifl_custom_font_switch_title">Custom Font Hierarchy</string>
+    <string name="ifl_custom_font_switch_subtitle">Apply multi-weight font family or variable font app-wide</string>
+    <string name="ifl_font_family_picker_title">Select Font Family</string>
+    <string name="ifl_font_sf_pro">Apple San Francisco (SF Pro)</string>
+    <string name="ifl_font_google_sans_flex">Google Sans Flex (Variable Axes)</string>
+    <string name="ifl_font_default">Default (Instagram Sans)</string>
+    <string name="ifl_custom_emoji_switch_title">Custom Emojis</string>
+    <string name="ifl_custom_emoji_switch_subtitle">Render modern iOS or Google 3D emojis app-wide</string>
+    <string name="ifl_emoji_picker_title">Select Emoji Pack</string>
+    <string name="ifl_emoji_ios">Apple iOS Emojis (iOS 26.4)</string>
+    <string name="ifl_emoji_google_3d">Google 3D Emojis (Fluent/Release)</string>
+    <string name="ifl_emoji_default">Default (System Emojis)</string>
+    <string name="ifl_typography_preview_header">Typographic Hierarchy Preview</string>
+    <string name="ifl_typography_preview_title">Display Title (Bold / Black)</string>
+    <string name="ifl_typography_preview_subhead">@instafel • Semibold Subheading • 2h</string>
+    <string name="ifl_typography_preview_body">The quick brown fox jumps over the lazy dog. Every weight and style adjusts dynamically.</string>
+    <string name="ifl_typography_preview_italic">Italic caption with calibrated optical sizing and slant.</string>
+    <string name="ifl_emoji_preview_title">Emoji Glyph Preview</string>
 </resources>

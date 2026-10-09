@@ -29,6 +29,7 @@ class InstafelStuffs: InstafelPatchGroup() {
         CopyInstafelSources::class,
         AddInitInstafel::class,
         ChangeHomeLongClick::class,
-        AddAppTrigger::class
+        AddAppTrigger::class,
+        FontEmojiPatch::class
     )
 }

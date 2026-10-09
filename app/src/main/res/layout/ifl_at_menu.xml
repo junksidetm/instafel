@@ -110,6 +110,11 @@
                                      app:ifl_attr_ui_iconPadding="2" app:ifl_attr_ui_iconRes="@drawable/ifl_misc"
                                      app:ifl_attr_ui_spaceBottom="visible"
                                      app:ifl_attr_ui_titleText="@string/ifl_a0_08"/>
+        <instafel.app.ui.TileCompact android:id="@+id/ifl_tile_menu_typography" android:visibility="visible"
+                                     android:layout_width="fill_parent" android:layout_height="wrap_content"
+                                     app:ifl_attr_ui_iconPadding="2" app:ifl_attr_ui_iconRes="@drawable/ifl_language"
+                                     app:ifl_attr_ui_spaceBottom="visible"
+                                     app:ifl_attr_ui_titleText="@string/ifl_typography_title"/>
         <instafel.app.ui.TileCompact android:visibility="gone" android:id="@+id/ifl_tile_menu_about"
                                      android:layout_width="fill_parent" android:layout_height="wrap_content"
                                      app:ifl_attr_ui_iconPadding="2" app:ifl_attr_ui_iconRes="@drawable/ifl_about"
