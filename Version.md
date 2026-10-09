@@ -37,3 +37,13 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `base_apk_url`: Accepts either a single monolithic APK direct URL or base split URL.
   - `rconf_apk_url`: Optional density split URL.
 - **Status**: 100% (Completed)
+## [2026-10-09 15:05:00 IST] - 100% Autonomous Scheduled Alpha Retrieval & Release Pipeline
+- **Action**: Converted the cloud CI/CD pipeline into a fully automated, hands-off release system that continuously tracks Instagram Alpha releases and deploys signed production APKs to GitHub Releases.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`:
+    - Scheduled Cron Trigger: `cron: '0 */6 * * *'` (executes automatically every 6 hours without human intervention).
+    - Multi-Source Alpha Crawler: Integrated `eduardo3677-ai/apkdown-cli@v1` targeting `com.instagram.android`, `arch: 'arm64-v8a'`, `channel: 'alpha'` with TLS fingerprinting to bypass anti-bot and Cloudflare rate limits across APKMirror, APKPure, APKCombo, and Aptoide.
+    - Automated Bundle Split Merger: Transparently extracts APKM/XAPK bundles and merges density/architecture splits into a unified `instagram.apk` using `APKEditor`.
+    - Duplicate Release Gate: Queries GitHub Releases via `gh release view` for the resolved version tag; skips redundant builds if the version was already compiled and released.
+    - Production Deliverables: Compiles and signs the patched APK with typography (SF Pro & Google Sans Flex) and custom emoji (iOS 26.4 & Google 3D) suites, uploading the final artifact and creating an official GitHub Release with changelog.
+- **Status**: 100% (Completed)

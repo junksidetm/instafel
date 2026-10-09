@@ -1,22 +1,24 @@
 name: Generate Instafel (Full Online Pipeline)
 
 on:
+  schedule:
+    # Run automatically every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
   repository_dispatch:
     types: [generate_instafel]
   workflow_dispatch:
     inputs:
       base_apk_url:
-        description: 'Direct URL for Base Instagram APK (Leave empty to auto-fetch via GPlayAPI)'
+        description: 'Direct URL for Base Instagram APK (Leave empty to auto-fetch latest Alpha)'
         required: false
         default: ''
-      rconf_apk_url:
-        description: 'Direct URL for Density Config APK (Leave empty to auto-fetch via GPlayAPI)'
-        required: false
-        default: ''
-      build_patcher_from_source:
-        description: 'Build Patcher, Patcher-Core, and App from local source'
+      force_build:
+        description: 'Force build even if this Alpha version was already released'
         type: boolean
-        default: true
+        default: false
+
+permissions:
+  contents: write
 
 jobs:
   ifl_generator:
@@ -36,54 +38,85 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      - name: Fetch or Configure Target Instagram APK
-        id: fetch_alpha
-        env:
-          GPLAY_EMAIL: ${{ secrets.GPLAY_EMAIL }}
-          GPLAY_AAS_TOKEN: ${{ secrets.GPLAY_AAS_TOKEN }}
-        run: |
-          BASE_URL="${{ github.event.client_payload.base.url || inputs.base_apk_url }}"
-          RCONF_URL="${{ github.event.client_payload.rconf.url || inputs.rconf_apk_url }}"
+      - name: Auto-Discover & Download Latest Instagram Alpha
+        id: apkdown
+        if: ${{ !inputs.base_apk_url }}
+        uses: eduardo3677-ai/apkdown-cli@v1
+        continue-on-error: true
+        with:
+          id: 'com.instagram.android'
+          arch: 'arm64-v8a'
+          channel: 'alpha'
+          provider: 'all'
+          output-dir: './downloads'
 
-          if [ -n "$BASE_URL" ] && [ -z "$RCONF_URL" ]; then
-            echo "Single direct APK URL provided. Downloading directly as instagram.apk..."
-            wget -q -O instagram.apk "$BASE_URL"
-            echo "has_merged_apk=true" >> $GITHUB_OUTPUT
-            exit 0
+      - name: Fallback Direct URL Download (If manual URL provided)
+        id: manual_dl
+        if: ${{ inputs.base_apk_url }}
+        run: |
+          mkdir -p downloads
+          echo "Downloading from manual base_apk_url: ${{ inputs.base_apk_url }}"
+          wget -q -O downloads/instagram_manual.apk "${{ inputs.base_apk_url }}"
+          echo "file-path=downloads/instagram_manual.apk" >> $GITHUB_OUTPUT
+
+      - name: Prepare Base Instagram APK & Resolve Version
+        id: prepare_apk
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DOWNLOADED_FILE="${{ steps.manual_dl.outputs.file-path || steps.apkdown.outputs.file-path }}"
+          if [ -z "$DOWNLOADED_FILE" ] || [ ! -f "$DOWNLOADED_FILE" ]; then
+            DOWNLOADED_FILE=$(find downloads -type f \( -name "*.apk" -o -name "*.apkm" -o -name "*.xapk" -o -name "*.zip" \) 2>/dev/null | head -n 1)
           fi
 
-          if [ -z "$BASE_URL" ] || [ -z "$RCONF_URL" ]; then
-            if [ -n "$GPLAY_EMAIL" ] && [ -n "$GPLAY_AAS_TOKEN" ]; then
-              echo "Fetching latest Alpha release from Google Play API..."
-              GPLAY_OUTPUT=$(./gradlew :gplayapi:run --args="email=$GPLAY_EMAIL aasToken=$GPLAY_AAS_TOKEN" --quiet | grep -o '{"versionName".*}')
-              BASE_URL=$(echo "$GPLAY_OUTPUT" | jq -r '.apkUrlBase')
-              RCONF_URL=$(echo "$GPLAY_OUTPUT" | jq -r '.apkUrlRes')
-              echo "Fetched version: $(echo "$GPLAY_OUTPUT" | jq -r '.versionName')"
-            else
-              echo "Error: Please provide a direct Instagram APK URL or configure GPLAY_EMAIL & GPLAY_AAS_TOKEN in GitHub secrets."
-              exit 1
+          if [ -z "$DOWNLOADED_FILE" ] || [ ! -f "$DOWNLOADED_FILE" ]; then
+            echo "::error::Failed to obtain Instagram Alpha APK. No package file found in downloads directory."
+            exit 1
+          fi
+
+          echo "Detected downloaded package: $DOWNLOADED_FILE"
+
+          # Download APKEditor for split extraction / merging if needed
+          wget -q -O APKEditor.jar "https://github.com/REAndroid/APKEditor/releases/download/V1.4.5/APKEditor-1.4.5.jar"
+
+          # Check if the file is an APKM / XAPK / ZIP bundle
+          if [[ "$DOWNLOADED_FILE" == *.apkm ]] || [[ "$DOWNLOADED_FILE" == *.xapk ]] || [[ "$DOWNLOADED_FILE" == *.zip ]]; then
+            echo "Package is an App Bundle (.apkm/.xapk/.zip). Extracting splits..."
+            mkdir -p apks
+            unzip -q -o "$DOWNLOADED_FILE" -d apks/
+            echo "Merging split APKs using APKEditor..."
+            java -jar APKEditor.jar m -i apks -o instagram.apk
+          else
+            echo "Package is a standalone APK. Copying to instagram.apk..."
+            cp "$DOWNLOADED_FILE" instagram.apk
+          fi
+
+          # Extract version from step output or fallback to aapt / APKEditor
+          VERSION="${{ steps.apkdown.outputs.version }}"
+          if [ -z "$VERSION" ]; then
+            AAPT=$(find "$ANDROID_HOME/build-tools" -name aapt 2>/dev/null | head -n 1)
+            if [ -n "$AAPT" ]; then
+              VERSION=$($AAPT dump badging instagram.apk 2>/dev/null | grep "versionName" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p")
             fi
           fi
+          if [ -z "$VERSION" ]; then
+            VERSION="alpha-$(date +'%Y%m%d%H%M')"
+          fi
+          echo "Resolved Instagram Alpha Version: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-          echo "base_url=$BASE_URL" >> $GITHUB_OUTPUT
-          echo "rconf_url=$RCONF_URL" >> $GITHUB_OUTPUT
-          echo "has_merged_apk=false" >> $GITHUB_OUTPUT
-
-      - name: Download & Merge Split APKs
-        if: steps.fetch_alpha.outputs.has_merged_apk != 'true'
-        run: |
-          mkdir -p apks
-          echo "Downloading Instagram Alpha splits..."
-          wget -q -O apks/base.apk "${{ steps.fetch_alpha.outputs.base_url }}"
-          wget -q -O apks/rconf.apk "${{ steps.fetch_alpha.outputs.rconf_url }}"
-
-          echo "Downloading APKEditor..."
-          wget -q "https://github.com/REAndroid/APKEditor/releases/download/V1.4.5/APKEditor-1.4.5.jar"
-
-          echo "Merging APK splits into instagram.apk..."
-          java -jar APKEditor-1.4.5.jar m -i apks -o instagram.apk
+          # Version Check: Skip build if already released and force_build is false
+          if [ "${{ inputs.force_build }}" != "true" ]; then
+            if gh release view "v${VERSION}" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+              echo "Release v${VERSION} already exists on GitHub Releases! Skipping build to conserve resources."
+              echo "skip_build=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+          fi
+          echo "skip_build=false" >> $GITHUB_OUTPUT
 
       - name: Fetch Custom Emojis & Fonts Assets
+        if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
           echo "Fetching Google 3D Emojis and iOS Emojis..."
           mkdir -p assets_bundle/emojis assets_bundle/fonts/sf_pro
@@ -109,12 +142,14 @@ jobs:
           rm -rf assests_repo
 
       - name: Build Instafel Engine & Update Patcher Sources
+        if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
           echo "Building :app and updating patcher-core embedded sources..."
           ./gradlew updatePatcherSources
           ./gradlew :patcher:build-jar
 
       - name: Initialize Decompilation
+        if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
           PATCHER_JAR=$(find .output -name "ifl-patcher*.jar" | head -n 1)
           echo "Using patcher: $PATCHER_JAR"
@@ -122,6 +157,7 @@ jobs:
           java -jar "$PATCHER_JAR" init instagram.apk
 
       - name: Bundle Fonts & Emojis into Target APK
+        if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
           echo "Copying fonts and emoji assets into target APK..."
           mkdir -p instagram/sources/assets/fonts/sf_pro
@@ -131,18 +167,51 @@ jobs:
           cp -r assets_bundle/emojis/* instagram/sources/assets/emojis/
 
       - name: Run Patches (with Typography & Emojis)
+        if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
           PATCHER_JAR=$(find .output -name "ifl-patcher*.jar" | head -n 1)
           java -jar "$PATCHER_JAR" run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel font_emoji change_channel_name clone
 
       - name: Build & Sign Final APK
+        if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
           PATCHER_JAR=$(find .output -name "ifl-patcher*.jar" | head -n 1)
           java -jar "$PATCHER_JAR" build instagram
 
+      - name: Package & Prepare Output Deliverables
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        run: |
+          VERSION="${{ steps.prepare_apk.outputs.version }}"
+          OUTPUT_APK="instafel-v${VERSION}-arm64-v8a.apk"
+          cp instagram/instagram-signed.apk "$OUTPUT_APK"
+          echo "output_apk=$OUTPUT_APK" >> $GITHUB_ENV
+
       - name: Upload Production APK Artifact
+        if: steps.prepare_apk.outputs.skip_build != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: instafel-production-apk
-          path: instagram/instagram-signed.apk
+          path: ${{ env.output_apk }}
           if-no-files-found: warn
+
+      - name: Publish GitHub Release
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.prepare_apk.outputs.version }}"
+          TAG_NAME="v${VERSION}"
+          RELEASE_TITLE="Instafel v${VERSION} (Alpha arm64-v8a)"
+
+          gh release create "$TAG_NAME" "${{ env.output_apk }}" \
+            --title "$RELEASE_TITLE" \
+            --notes "### Instafel Alpha Release v${VERSION}
+          - **Architecture:** \`arm64-v8a\`
+          - **Automated Pipeline:** 100% Autonomous CI/CD Release
+          - **Custom Typography Engine:**
+            - Apple San Francisco Pro (\`SF Pro\`) multi-weight hierarchy
+            - Google Sans Flex (\`opsz=ON\`, \`wdth=97.5\`, \`ROND=73\`, context weights 300–800)
+          - **Custom Emoji Engine:**
+            - Apple iOS Emojis (iOS 26.4 glyph suite)
+            - Google 3D Emojis (\`GoogleEmoji3D.ttf\` vector/color emojis)
+          - **Patches Applied:** Developer Options, Remove Ads, AMOLED Theme, Snooze Bypass, Clone, Channel Name."
