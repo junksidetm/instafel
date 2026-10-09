@@ -8,12 +8,16 @@ on:
     types: [generate_instafel]
   workflow_dispatch:
     inputs:
+      target_version:
+        description: 'Specific Instagram Alpha version (leave empty for latest from junksidetm/Alpha-Insta)'
+        required: false
+        default: ''
       base_apk_url:
-        description: 'Direct URL for Base Instagram APK (Leave empty to auto-crawl latest Alpha from APKMirror)'
+        description: 'Direct URL override for Base Instagram APK (optional)'
         required: false
         default: ''
       force_build:
-        description: 'Force build even if this Alpha version was already released'
+        description: 'Force build even if this Alpha version was already released by Instafel'
         type: boolean
         default: false
 
@@ -43,93 +47,66 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      - name: Auto-Discover & Download Latest Instagram Alpha
-        id: alpha_crawler
-        if: ${{ !inputs.base_apk_url }}
-        run: |
-          mkdir -p downloads
-          DOWNLOAD_DIR="downloads" node scripts/download-instagram-alpha.mjs
-
-      - name: Fallback Direct URL Download (If manual URL provided)
-        id: manual_dl
-        if: ${{ inputs.base_apk_url }}
-        run: |
-          mkdir -p downloads
-          echo "Downloading from manual base_apk_url: ${{ inputs.base_apk_url }}"
-          wget -q -O downloads/instagram_manual.apk "${{ inputs.base_apk_url }}"
-          echo "file_path=downloads/instagram_manual.apk" >> $GITHUB_OUTPUT
-
-      - name: Prepare Base Instagram APK & Check Existing Release
+      - name: Resolve Target Instagram Alpha & Gate Check
         id: prepare_apk
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          DOWNLOADED_FILE="${{ steps.manual_dl.outputs.file_path || steps.alpha_crawler.outputs.file_path }}"
-          if [ -z "$DOWNLOADED_FILE" ] || [ ! -f "$DOWNLOADED_FILE" ]; then
-            DOWNLOADED_FILE=$(find downloads -type f \( -name "*.apk" -o -name "*.apkm" -o -name "*.xapk" -o -name "*.zip" \) 2>/dev/null | head -n 1)
-          fi
-
-          if [ -z "$DOWNLOADED_FILE" ] || [ ! -f "$DOWNLOADED_FILE" ]; then
-            echo "::error::Failed to download Instagram package. No package file found in downloads directory."
-            exit 1
-          fi
-
-          echo "Found package file: $DOWNLOADED_FILE"
-
-          # Download APKEditor for split extraction / merging
-          wget -q -O APKEditor.jar "https://github.com/REAndroid/APKEditor/releases/download/V1.4.5/APKEditor-1.4.5.jar"
-
-          if [[ "$DOWNLOADED_FILE" == *.apkm ]] || [[ "$DOWNLOADED_FILE" == *.xapk ]] || [[ "$DOWNLOADED_FILE" == *.zip ]]; then
-            mkdir -p /tmp/inspect_zip
-            if command -v 7z >/dev/null 2>&1; then
-              echo "Extracting bundle with 7z..."
-              7z x -y "$DOWNLOADED_FILE" -o/tmp/inspect_zip
-            else
-              echo "Extracting bundle with unzip / python..."
-              unzip -q -o "$DOWNLOADED_FILE" -d /tmp/inspect_zip || python3 -m zipfile -e "$DOWNLOADED_FILE" /tmp/inspect_zip
-            fi
-            APK_COUNT=$(find /tmp/inspect_zip -name "*.apk" | wc -l)
-            if [ "$APK_COUNT" -gt 1 ]; then
-              echo "Package is a multi-APK split bundle ($APK_COUNT APKs found). Merging splits with APKEditor..."
-              mkdir -p apks
-              cp /tmp/inspect_zip/*.apk apks/
-              java -jar APKEditor.jar m -i apks -o instagram.apk
-            elif [ "$APK_COUNT" -eq 1 ]; then
-              echo "Single APK found inside archive. Extracting..."
-              cp $(find /tmp/inspect_zip -name "*.apk" | head -n 1) instagram.apk
-            else
-              echo "Archive extraction fallback."
-              cp "$DOWNLOADED_FILE" instagram.apk
-            fi
-            rm -rf /tmp/inspect_zip
+          TARGET_VER="${{ inputs.target_version }}"
+          if [ -n "$TARGET_VER" ]; then
+            TAG="v${TARGET_VER}"
+            VERSION="${TARGET_VER}"
           else
-            echo "Package is a standalone APK. Copying to instagram.apk..."
-            cp "$DOWNLOADED_FILE" instagram.apk
-          fi
-
-          # Extract version from steps output or fallback to aapt
-          VERSION="${{ steps.alpha_crawler.outputs.version }}"
-          if [ -z "$VERSION" ]; then
-            AAPT=$(find "$ANDROID_HOME/build-tools" -name aapt 2>/dev/null | head -n 1)
-            if [ -n "$AAPT" ] && [ -f "instagram.apk" ]; then
-              VERSION=$($AAPT dump badging instagram.apk 2>/dev/null | grep "versionName" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p")
+            echo "Querying junksidetm/Alpha-Insta for latest released Instagram Alpha APK..."
+            TAG=$(gh release view --repo junksidetm/Alpha-Insta --json tagName --jq '.tagName' 2>/dev/null || echo "")
+            if [ -z "$TAG" ]; then
+              echo "::error::No releases found in junksidetm/Alpha-Insta yet."
+              exit 1
             fi
+            VERSION="${TAG#v}"
           fi
-          if [ -z "$VERSION" ]; then
-            VERSION="alpha-$(date +'%Y%m%d%H%M')"
-          fi
-          echo "Resolved Instagram Version: $VERSION"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-          # Version Check: Skip build if already released and force_build is false
+          echo "Resolved Target Instagram Alpha Version: v${VERSION} (Tag: ${TAG})"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+          # Duplicate Mod Check: skip if Instafel has already modded and published this version
           if [ "${{ inputs.force_build }}" != "true" ]; then
             if gh release view "v${VERSION}" --repo "${{ github.repository }}" >/dev/null 2>&1; then
-              echo "Release v${VERSION} already exists on GitHub Releases! Skipping build to conserve resources."
+              echo "Release v${VERSION} has already been modded and published by Instafel!"
+              echo "No new Instagram Alpha release was published by Alpha-Insta today. Skipping build to avoid redundant modding."
               echo "skip_build=true" >> $GITHUB_OUTPUT
               exit 0
             fi
           fi
+
+          echo "New Alpha build detected or force_build enabled. Proceeding with Instafel modding..."
           echo "skip_build=false" >> $GITHUB_OUTPUT
+
+      - name: Fetch Clean Standalone Base APK from junksidetm/Alpha-Insta
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ inputs.base_apk_url }}" ]; then
+            echo "Downloading APK from manual override URL: ${{ inputs.base_apk_url }}"
+            wget -q -O instagram.apk "${{ inputs.base_apk_url }}"
+          else
+            TAG="${{ steps.prepare_apk.outputs.tag }}"
+            echo "Downloading pre-bundled standalone APK from junksidetm/Alpha-Insta release ${TAG}..."
+            mkdir -p /tmp/alpha_dl
+            gh release download "$TAG" --repo junksidetm/Alpha-Insta --pattern "*.apk" --dir /tmp/alpha_dl
+            APK_FILE=$(find /tmp/alpha_dl -name "*.apk" | head -n 1)
+            if [ -z "$APK_FILE" ] || [ ! -f "$APK_FILE" ]; then
+              echo "::error::Could not find APK file in junksidetm/Alpha-Insta release ${TAG}."
+              exit 1
+            fi
+            cp "$APK_FILE" instagram.apk
+            rm -rf /tmp/alpha_dl
+          fi
+
+          echo "Base Instagram APK ready for Instafel modding:"
+          ls -lh instagram.apk
 
       - name: Fetch Custom Emojis & Fonts Assets
         if: steps.prepare_apk.outputs.skip_build != 'true'

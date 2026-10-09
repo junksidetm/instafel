@@ -103,3 +103,11 @@ All notable changes to the `instafel` repository are documented in this file in 
 - **Components Modified**:
   - `.github/workflows/generate_instafel.yml`: Added branch logic checking if tag exists via `gh release view` before deciding between `create` and `upload`.
 - **Status**: 100% (Completed)
+## [2026-10-09 16:30:00 IST] - Architecture Delegation: Upstream Ingestion via Alpha-Insta
+- **Action**: Decoupled Instagram Alpha ingestion and bundle merging into dedicated repository `junksidetm/Alpha-Insta`. Instafel now consumes verified, standalone Alpha APK releases directly from `Alpha-Insta`, adding automated duplicate mod gating.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`:
+    - Replaced local APKMirror crawler and bundle merger with upstream release query from `junksidetm/Alpha-Insta`.
+    - Added automated duplicate mod check against `junksidetm/instafel` releases; skips execution if `v${VERSION}` was already modded and published.
+    - Added `gh release download` step streaming clean standalone APKs directly into Instafel patcher pipeline.
+- **Status**: 100% (Completed)
