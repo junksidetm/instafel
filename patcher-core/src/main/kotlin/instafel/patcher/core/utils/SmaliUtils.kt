@@ -19,7 +19,7 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class SmaliUtils(private val projectDir: String) {
+class SmaliUtils(val projectDir: String) {
     val smaliFolders = getSmaliFolderArray()
 
     fun extractAllMethodsAsLineArrays(fContent: List<String>): List<List<String>> {

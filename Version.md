@@ -73,3 +73,9 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `app/src/main/res/values/attrs.xml`: Added explicit `<attr name="ifl_attr_tile_background" format="color" />` declaration as fallback alias.
   - `app/src/main/res/values/styles.xml`: Mapped `ifl_attr_tile_background` in `ifl_theme_light` and `ifl_theme_dark` styles for bulletproof backward and theme compatibility.
 - **Status**: 100% (Completed)
+## [2026-10-09 15:53:00 IST] - Patcher Core Kotlin Compilation Visibility Alignment
+- **Action**: Resolved Kotlin compilation failure (`:patcher-core:compileKotlin`) caused by private visibility constraint on `projectDir` within `SmaliUtils`.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FontEmojiPatch.kt`: Imported and referenced global `Env.PROJECT_DIR` for asset directory resolution.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/SmaliUtils.kt`: Relaxed `projectDir` property visibility from private to public `val projectDir: String` for idiomatic instance access.
+- **Status**: 100% (Completed)

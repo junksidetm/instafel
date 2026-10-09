@@ -8,6 +8,7 @@
 
 package instafel.patcher.core.patches
 
+import instafel.patcher.core.utils.Env
 import instafel.patcher.core.utils.Log
 import instafel.patcher.core.utils.patch.InstafelPatch
 import instafel.patcher.core.utils.patch.InstafelTask
@@ -41,7 +42,7 @@ class FontEmojiPatch : InstafelPatch() {
         @PInfos.TaskInfo("Ensure fonts and emojis directories structure in APK assets")
         object : InstafelTask() {
             override fun execute() {
-                val assetsDir = File(smaliUtils.projectDir, "sources/assets")
+                val assetsDir = File(Env.PROJECT_DIR, "sources/assets")
                 if (!assetsDir.exists()) {
                     assetsDir.mkdirs()
                 }
