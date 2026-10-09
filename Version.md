@@ -79,3 +79,15 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FontEmojiPatch.kt`: Imported and referenced global `Env.PROJECT_DIR` for asset directory resolution.
   - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/SmaliUtils.kt`: Relaxed `projectDir` property visibility from private to public `val projectDir: String` for idiomatic instance access.
 - **Status**: 100% (Completed)
+## [2026-10-09 16:08:00 IST] - Generation ID Safe Fallback, Synchronous CLI Thread Execution & Dual Variant Packaging
+- **Action**: Fixed uninitialized `GENERATION_ID` exception during non-production builds, converted asynchronous CLI command thread spawns to synchronous joined execution, and restructured output artifact packaging to distribute both unclone and clone APK deliverables.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/BuildProject.kt`: Pre-initialized `IFL_VERSION` and `GENERATION_ID` with timestamp-based epoch fallbacks before checking production mode flags, preventing reflection crashes in `generateBuildInfo`.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/BuildCmd.kt`: Synchronously joined background worker thread (`thread.join()`) to ensure complete APK signing and manifest generation before CLI exit.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/RunPatch.kt`: Synchronously joined patch worker thread.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/InitProject.kt`: Synchronously joined project init worker thread.
+  - `.github/workflows/generate_instafel.yml`:
+    - Updated `Package & Prepare Output Deliverables` to resolve APKs from `instagram/build/` dynamically.
+    - Exported both Default (`instafel-v${VERSION}-arm64-v8a.apk`), Unclone, and Clone (`instafel-v${VERSION}-arm64-v8a-clone.apk`) signed variants into `release_apks/`.
+    - Added `--clobber` support to `gh release create` for resilient GitHub Releases publication.
+- **Status**: 100% (Completed)

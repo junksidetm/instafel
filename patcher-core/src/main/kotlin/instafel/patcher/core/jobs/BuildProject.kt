@@ -217,6 +217,13 @@ object BuildProject: CLIJob {
             Log.info("Old build directory got deleted.")
         }
 
+        IFL_VERSION = if (Env.Project.iflVersion != 0) Env.Project.iflVersion else 1
+        GENERATION_ID = if (Env.Project.generationId.isNotEmpty() && Env.Project.generationId != "E") {
+            Env.Project.generationId
+        } else {
+            "gen_${Instant.now().epochSecond}"
+        }
+
         if (isProductionMode) {
             IFL_VERSION = Env.Project.iflVersion
             GENERATION_ID = Env.Project.generationId

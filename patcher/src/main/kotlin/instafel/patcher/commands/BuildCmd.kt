@@ -32,7 +32,7 @@ class BuildCmd: Command {
                 return
             }
 
-            Thread {
+            val thread = Thread {
                 CoreHandler.invokeKotlinObjectWithParams(
                     "jobs.BuildProject",
                     "runJob",
@@ -43,7 +43,9 @@ class BuildCmd: Command {
                         Utils.PROP_CLI_VERSION
                     )
                 )
-            }.start()
+            }
+            thread.start()
+            thread.join()
         } catch (e: Exception) {
             e.printStackTrace()
             Log.severe("Error while running command")
