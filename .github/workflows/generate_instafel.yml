@@ -36,7 +36,7 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      - name: Fetch Latest Instagram Alpha (via GPlayAPI)
+      - name: Fetch or Configure Target Instagram APK
         id: fetch_alpha
         env:
           GPLAY_EMAIL: ${{ secrets.GPLAY_EMAIL }}
@@ -44,6 +44,13 @@ jobs:
         run: |
           BASE_URL="${{ github.event.client_payload.base.url || inputs.base_apk_url }}"
           RCONF_URL="${{ github.event.client_payload.rconf.url || inputs.rconf_apk_url }}"
+
+          if [ -n "$BASE_URL" ] && [ -z "$RCONF_URL" ]; then
+            echo "Single direct APK URL provided. Downloading directly as instagram.apk..."
+            wget -q -O instagram.apk "$BASE_URL"
+            echo "has_merged_apk=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
 
           if [ -z "$BASE_URL" ] || [ -z "$RCONF_URL" ]; then
             if [ -n "$GPLAY_EMAIL" ] && [ -n "$GPLAY_AAS_TOKEN" ]; then
@@ -53,15 +60,17 @@ jobs:
               RCONF_URL=$(echo "$GPLAY_OUTPUT" | jq -r '.apkUrlRes')
               echo "Fetched version: $(echo "$GPLAY_OUTPUT" | jq -r '.versionName')"
             else
-              echo "Error: Neither direct APK URLs nor GPlayAPI credentials were provided."
+              echo "Error: Please provide a direct Instagram APK URL or configure GPLAY_EMAIL & GPLAY_AAS_TOKEN in GitHub secrets."
               exit 1
             fi
           fi
 
           echo "base_url=$BASE_URL" >> $GITHUB_OUTPUT
           echo "rconf_url=$RCONF_URL" >> $GITHUB_OUTPUT
+          echo "has_merged_apk=false" >> $GITHUB_OUTPUT
 
-      - name: Download & Merge APKs
+      - name: Download & Merge Split APKs
+        if: steps.fetch_alpha.outputs.has_merged_apk != 'true'
         run: |
           mkdir -p apks
           echo "Downloading Instagram Alpha splits..."

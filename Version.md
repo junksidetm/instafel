@@ -31,3 +31,9 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/InstafelStuffs.kt`: Registered `FontEmojiPatch` into the core Instafel patch group.
   - `.github/workflows/generate_instafel.yml`: Automated online workflow fetching Google Play Alpha splits, downloading emoji/font assets, building sources, executing patches, signing, and releasing.
 - **Status**: 100% (Completed)
+## [2026-10-09 13:45:00 IST] - Zero-Credential Direct APK URL Support in Cloud Pipeline
+- **Action**: Enhanced the CI/CD GitHub Actions workflow (`generate_instafel.yml`) to support direct single APK URLs (such as from APKMirror, GitHub Releases, or community mirrors) without requiring split merging or Google Play AAS token credentials.
+- **Workflow Inputs**:
+  - `base_apk_url`: Accepts either a single monolithic APK direct URL or base split URL.
+  - `rconf_apk_url`: Optional density split URL.
+- **Status**: 100% (Completed)
