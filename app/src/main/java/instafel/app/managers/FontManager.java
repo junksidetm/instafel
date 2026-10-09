@@ -10,18 +10,24 @@ package instafel.app.managers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import instafel.app.managers.PreferenceManager;
 import instafel.app.utils.types.PreferenceKeys;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -34,6 +40,7 @@ public class FontManager {
     public static final String FONT_TYPE_CUSTOM = "custom";
 
     private static final Map<String, Typeface> typefaceCache = new HashMap<>();
+    private static Map<String, Typeface> originalSystemFontMap = null;
     private static Context appContext;
     private static PreferenceManager preferenceManager;
 
@@ -41,6 +48,12 @@ public class FontManager {
         if (context == null) return;
         appContext = context.getApplicationContext();
         preferenceManager = new PreferenceManager(appContext);
+        ensureAssetsExtracted(appContext);
+        applySystemFontOverride(appContext);
+    }
+
+    public static void clearCache() {
+        typefaceCache.clear();
     }
 
     public static boolean isCustomFontEnabled() {
@@ -67,6 +80,53 @@ public class FontManager {
     }
 
     /**
+     * Unpacks bundled font assets from APK assets into internal storage in the background.
+     */
+    public static void ensureAssetsExtracted(Context context) {
+        if (context == null) return;
+        new Thread(() -> {
+            try {
+                File fontsDir = getFontsDirectory(context);
+                File sfDir = new File(fontsDir, "sf_pro");
+                if (!sfDir.exists()) {
+                    sfDir.mkdirs();
+                }
+
+                // Copy GoogleSansFlex.ttf if missing
+                File gsfTarget = new File(fontsDir, "GoogleSansFlex.ttf");
+                if (!gsfTarget.exists() || gsfTarget.length() == 0) {
+                    copyAssetToFile(context, "fonts/GoogleSansFlex.ttf", gsfTarget);
+                }
+
+                // Copy SF Pro fonts if missing
+                AssetManager am = context.getAssets();
+                try {
+                    String[] sfAssets = am.list("fonts/sf_pro");
+                    if (sfAssets != null) {
+                        for (String sfName : sfAssets) {
+                            File target = new File(sfDir, sfName);
+                            if (!target.exists() || target.length() == 0) {
+                                copyAssetToFile(context, "fonts/sf_pro/" + sfName, target);
+                            }
+                        }
+                    }
+                } catch (Throwable ignored) {}
+            } catch (Throwable ignored) {}
+        }).start();
+    }
+
+    private static void copyAssetToFile(Context context, String assetPath, File dest) {
+        try (InputStream in = context.getAssets().open(assetPath);
+             OutputStream out = new FileOutputStream(dest)) {
+            byte[] buf = new byte[8192];
+            int len;
+            while ((len = in.read(buf)) != -1) {
+                out.write(buf, 0, len);
+            }
+        } catch (Throwable ignored) {}
+    }
+
+    /**
      * Resolves a Typeface according to the selected font family, element weight, optical size, and style.
      */
     public static Typeface resolveTypeface(Context context, Typeface original, float textSizePx, boolean isBold, boolean isItalic) {
@@ -81,11 +141,14 @@ public class FontManager {
 
         try {
             if (FONT_TYPE_GOOGLE_SANS_FLEX.equals(family)) {
-                return getGoogleSansFlexTypeface(context, textSizePx, isBold, isItalic);
+                Typeface tf = getGoogleSansFlexTypeface(context, textSizePx, isBold, isItalic);
+                return tf != null ? tf : original;
             } else if (FONT_TYPE_SF_PRO.equals(family)) {
-                return getSfProTypeface(context, textSizePx, isBold, isItalic);
+                Typeface tf = getSfProTypeface(context, textSizePx, isBold, isItalic);
+                return tf != null ? tf : original;
             } else if (FONT_TYPE_CUSTOM.equals(family)) {
-                return getCustomTypeface(context, isBold, isItalic);
+                Typeface tf = getCustomTypeface(context, isBold, isItalic);
+                return tf != null ? tf : original;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,26 +162,20 @@ public class FontManager {
      * - Optical Size ('opsz'): ON (dynamically matched to text size)
      * - Width ('wdth'): 97.5
      * - Roundness ('ROND'): 73
-     * - Weight ('wght'): 300 to 800 based on context (heading vs body)
+     * - Weight ('wght'): 300 to 800 based on context
      * - Slant ('slnt'): -10 for italic, 0 for regular
      * - Grade ('GRAD'): 0
      */
     private static Typeface getGoogleSansFlexTypeface(Context context, float textSizePx, boolean isBold, boolean isItalic) {
-        File fontFile = new File(getFontsDirectory(context), "GoogleSansFlex.ttf");
-        if (!fontFile.exists()) {
-            return null;
-        }
-
-        // Determine weight based on bold status and size
-        int weight = 400; // Regular
+        int weight = 400;
         if (isBold && textSizePx >= 48) {
-            weight = 800; // Headline / Title
+            weight = 800;
         } else if (isBold) {
-            weight = 700; // Bold Heading
+            weight = 700;
         } else if (textSizePx >= 40) {
-            weight = 600; // Subheading / Username
+            weight = 600;
         } else if (textSizePx <= 28) {
-            weight = 350; // Caption / Fine print
+            weight = 350;
         }
 
         int slant = isItalic ? -10 : 0;
@@ -129,24 +186,58 @@ public class FontManager {
             return typefaceCache.get(cacheKey);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        // Try Android O+ Typeface.Builder with AssetManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && context != null) {
             String variationSettings = String.format(Locale.US,
                     "'wght' %d, 'wdth' 97.5, 'opsz' %d, 'ROND' 73, 'GRAD' 0, 'slnt' %d",
                     weight, opsz, slant);
             try {
-                Typeface typeface = new Typeface.Builder(fontFile)
+                Typeface typeface = new Typeface.Builder(context.getAssets(), "fonts/GoogleSansFlex.ttf")
                         .setFontVariationSettings(variationSettings)
                         .build();
                 if (typeface != null) {
                     typefaceCache.put(cacheKey, typeface);
                     return typeface;
                 }
-            } catch (Exception ignored) {}
+            } catch (Throwable ignored) {}
+
+            // Try Typeface.Builder with File from filesDir
+            File fontFile = new File(getFontsDirectory(context), "GoogleSansFlex.ttf");
+            if (fontFile.exists()) {
+                try {
+                    Typeface typeface = new Typeface.Builder(fontFile)
+                            .setFontVariationSettings(variationSettings)
+                            .build();
+                    if (typeface != null) {
+                        typefaceCache.put(cacheKey, typeface);
+                        return typeface;
+                    }
+                } catch (Throwable ignored) {}
+            }
         }
 
-        Typeface fallback = Typeface.createFromFile(fontFile);
-        typefaceCache.put(cacheKey, fallback);
-        return fallback;
+        // Fallback from asset directly
+        if (context != null) {
+            try {
+                Typeface tf = Typeface.createFromAsset(context.getAssets(), "fonts/GoogleSansFlex.ttf");
+                if (tf != null) {
+                    typefaceCache.put(cacheKey, tf);
+                    return tf;
+                }
+            } catch (Throwable ignored) {}
+        }
+
+        // Fallback from file
+        File fontFile = new File(getFontsDirectory(context), "GoogleSansFlex.ttf");
+        if (fontFile.exists()) {
+            try {
+                Typeface fallback = Typeface.createFromFile(fontFile);
+                typefaceCache.put(cacheKey, fallback);
+                return fallback;
+            } catch (Throwable ignored) {}
+        }
+
+        return null;
     }
 
     /**
@@ -154,7 +245,7 @@ public class FontManager {
      * and weights (Regular, Medium, Semibold, Bold, Heavy, Black).
      */
     private static Typeface getSfProTypeface(Context context, float textSizePx, boolean isBold, boolean isItalic) {
-        boolean isDisplay = textSizePx >= 48; // ~20sp on xx-hdpi displays
+        boolean isDisplay = textSizePx >= 48;
         String category = isDisplay ? "SF-Pro-Display" : "SF-Pro-Text";
 
         String weightName;
@@ -179,21 +270,51 @@ public class FontManager {
             return typefaceCache.get(fileName);
         }
 
+        // 1. Try loading directly from APK assets
+        if (context != null) {
+            try {
+                Typeface tf = Typeface.createFromAsset(context.getAssets(), "fonts/sf_pro/" + fileName);
+                if (tf != null) {
+                    typefaceCache.put(fileName, tf);
+                    return tf;
+                }
+            } catch (Throwable ignored) {}
+        }
+
+        // 2. Try loading from filesDir
         File fontFile = new File(new File(getFontsDirectory(context), "sf_pro"), fileName);
-        if (!fontFile.exists()) {
-            // Fallback to regular file if specific weight isn't found
-            File regularFallback = new File(new File(getFontsDirectory(context), "sf_pro"), "SF-Pro-Text-Regular.otf");
-            if (regularFallback.exists()) {
+        if (fontFile.exists()) {
+            try {
+                Typeface tf = Typeface.createFromFile(fontFile);
+                if (tf != null) {
+                    typefaceCache.put(fileName, tf);
+                    return tf;
+                }
+            } catch (Throwable ignored) {}
+        }
+
+        // 3. Fallback to regular Text variant from assets
+        if (context != null) {
+            try {
+                Typeface regularFallback = Typeface.createFromAsset(context.getAssets(), "fonts/sf_pro/SF-Pro-Text-Regular.otf");
+                if (regularFallback != null) {
+                    typefaceCache.put(fileName, regularFallback);
+                    return regularFallback;
+                }
+            } catch (Throwable ignored) {}
+        }
+
+        // 4. Fallback to regular Text variant from file
+        File regularFallback = new File(new File(getFontsDirectory(context), "sf_pro"), "SF-Pro-Text-Regular.otf");
+        if (regularFallback.exists()) {
+            try {
                 Typeface tf = Typeface.createFromFile(regularFallback);
                 typefaceCache.put(fileName, tf);
                 return tf;
-            }
-            return null;
+            } catch (Throwable ignored) {}
         }
 
-        Typeface tf = Typeface.createFromFile(fontFile);
-        typefaceCache.put(fileName, tf);
-        return tf;
+        return null;
     }
 
     private static Typeface getCustomTypeface(Context context, boolean isBold, boolean isItalic) {
@@ -209,44 +330,171 @@ public class FontManager {
             return typefaceCache.get(key);
         }
 
-        Typeface base = Typeface.createFromFile(f);
-        int style = Typeface.NORMAL;
-        if (isBold && isItalic) style = Typeface.BOLD_ITALIC;
-        else if (isBold) style = Typeface.BOLD;
-        else if (isItalic) style = Typeface.ITALIC;
+        try {
+            Typeface base = Typeface.createFromFile(f);
+            int style = Typeface.NORMAL;
+            if (isBold && isItalic) style = Typeface.BOLD_ITALIC;
+            else if (isBold) style = Typeface.BOLD;
+            else if (isItalic) style = Typeface.ITALIC;
 
-        Typeface styled = Typeface.create(base, style);
-        typefaceCache.put(key, styled);
-        return styled;
+            Typeface styled = Typeface.create(base, style);
+            typefaceCache.put(key, styled);
+            return styled;
+        } catch (Throwable ignored) {}
+
+        return null;
     }
 
     /**
-     * Recursively walks view tree and updates all text elements with hierarchical font weights.
+     * Reflectively hooks into Typeface.sSystemFontMap and standard static Typeface fields
+     * to globally replace sans-serif, roboto, and Instagram fonts with custom typography.
+     */
+    @SuppressWarnings("unchecked")
+    public static void applySystemFontOverride(Context context) {
+        if (context == null) return;
+
+        try {
+            Field field = Typeface.class.getDeclaredField("sSystemFontMap");
+            field.setAccessible(true);
+            Map<String, Typeface> systemFontMap = (Map<String, Typeface>) field.get(null);
+
+            if (originalSystemFontMap == null && systemFontMap != null) {
+                originalSystemFontMap = new HashMap<>(systemFontMap);
+            }
+
+            if (!isCustomFontEnabled()) {
+                if (originalSystemFontMap != null) {
+                    field.set(null, Collections.unmodifiableMap(originalSystemFontMap));
+                }
+                return;
+            }
+
+            Typeface regular = resolveTypeface(context, null, 32f, false, false);
+            Typeface bold = resolveTypeface(context, null, 32f, true, false);
+            Typeface medium = resolveTypeface(context, null, 40f, false, false);
+            Typeface light = resolveTypeface(context, null, 24f, false, false);
+
+            if (regular == null) return;
+            if (bold == null) bold = regular;
+            if (medium == null) medium = regular;
+            if (light == null) light = regular;
+
+            Map<String, Typeface> newMap = new HashMap<>();
+            if (originalSystemFontMap != null) {
+                newMap.putAll(originalSystemFontMap);
+            } else if (systemFontMap != null) {
+                newMap.putAll(systemFontMap);
+            }
+
+            // Standard Android / Roboto typography mappings
+            newMap.put("sans-serif", regular);
+            newMap.put("sans-serif-regular", regular);
+            newMap.put("sans-serif-medium", medium);
+            newMap.put("sans-serif-bold", bold);
+            newMap.put("sans-serif-light", light);
+            newMap.put("sans-serif-thin", light);
+            newMap.put("sans-serif-black", bold);
+            newMap.put("sans-serif-condensed", regular);
+            newMap.put("sans-serif-condensed-light", light);
+            newMap.put("sans-serif-condensed-medium", medium);
+            newMap.put("sans-serif-condensed-bold", bold);
+            newMap.put("roboto", regular);
+            newMap.put("roboto-regular", regular);
+            newMap.put("roboto-medium", medium);
+            newMap.put("roboto-bold", bold);
+            newMap.put("roboto-light", light);
+            newMap.put("serif", regular);
+            newMap.put("default", regular);
+            newMap.put("default-bold", bold);
+
+            // Instagram-specific typography mappings
+            newMap.put("Instagram Sans", regular);
+            newMap.put("Instagram Sans Medium", medium);
+            newMap.put("Instagram Sans Bold", bold);
+            newMap.put("Instagram Sans Regular", regular);
+            newMap.put("Instagram Sans Headline", bold);
+            newMap.put("Instagram Sans Condensed", regular);
+            newMap.put("InstagramSans", regular);
+            newMap.put("InstagramSans-Regular", regular);
+            newMap.put("InstagramSans-Medium", medium);
+            newMap.put("InstagramSans-Bold", bold);
+            newMap.put("instagram-sans", regular);
+            newMap.put("instagram_sans", regular);
+            newMap.put("ig_sans", regular);
+            newMap.put("ig-sans", regular);
+
+            // Map custom emoji typeface into fallback font map if enabled
+            if (EmojiManager.isCustomEmojiEnabled()) {
+                Typeface emojiTf = EmojiManager.getEmojiTypeface(context);
+                if (emojiTf != null) {
+                    newMap.put("emoji", emojiTf);
+                    newMap.put("NotoColorEmoji", emojiTf);
+                    newMap.put("noto-color-emoji", emojiTf);
+                    newMap.put("AndroidEmoji", emojiTf);
+                }
+            }
+
+            field.set(null, Collections.unmodifiableMap(newMap));
+
+            // Reflectively set standard Typeface static fields
+            setStaticTypefaceField("DEFAULT", regular);
+            setStaticTypefaceField("DEFAULT_BOLD", bold);
+            setStaticTypefaceField("SANS_SERIF", regular);
+            setStaticTypefaceField("SERIF", regular);
+
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    private static void setStaticTypefaceField(String fieldName, Typeface value) {
+        try {
+            Field f = Typeface.class.getDeclaredField(fieldName);
+            f.setAccessible(true);
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
+            f.set(null, value);
+        } catch (Throwable ignored) {}
+    }
+
+    /**
+     * Recursively walks view tree and updates all text elements with hierarchical font weights and emojis.
      */
     public static void applyToViewHierarchy(View view) {
-        if (view == null || !isCustomFontEnabled()) return;
+        if (view == null) return;
 
         if (view instanceof TextView) {
             TextView tv = (TextView) view;
-            Typeface currentTf = tv.getTypeface();
-            boolean isBold = false;
-            boolean isItalic = false;
 
-            if (currentTf != null) {
-                isBold = currentTf.isBold();
-                isItalic = currentTf.isItalic();
+            // Apply Custom Font
+            if (isCustomFontEnabled()) {
+                Typeface currentTf = tv.getTypeface();
+                boolean isBold = false;
+                boolean isItalic = false;
+
+                if (currentTf != null) {
+                    isBold = currentTf.isBold();
+                    isItalic = currentTf.isItalic();
+                }
+
+                Paint paint = tv.getPaint();
+                if (paint != null && paint.isFakeBoldText()) {
+                    isBold = true;
+                }
+
+                float textSize = tv.getTextSize();
+                Typeface target = resolveTypeface(tv.getContext(), currentTf, textSize, isBold, isItalic);
+                if (target != null && target != currentTf) {
+                    tv.setTypeface(target);
+                }
             }
 
-            Paint paint = tv.getPaint();
-            if (paint != null && paint.isFakeBoldText()) {
-                isBold = true;
+            // Apply Custom Emoji Spans & Transformation
+            if (EmojiManager.isCustomEmojiEnabled()) {
+                EmojiManager.applyToTextView(tv);
             }
 
-            float textSize = tv.getTextSize();
-            Typeface target = resolveTypeface(tv.getContext(), currentTf, textSize, isBold, isItalic);
-            if (target != null && target != currentTf) {
-                tv.setTypeface(target);
-            }
         } else if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;
             for (int i = 0; i < group.getChildCount(); i++) {
@@ -255,9 +503,33 @@ public class FontManager {
         }
     }
 
+    /**
+     * Attaches global layout listener and applies custom typography and emojis to the activity decor view.
+     */
     public static void applyToActivity(Activity activity) {
-        if (activity == null || !isCustomFontEnabled()) return;
+        if (activity == null) return;
+        applySystemFontOverride(activity);
+
+        if (!isCustomFontEnabled() && !EmojiManager.isCustomEmojiEnabled()) return;
+
         View decor = activity.getWindow().getDecorView();
         decor.post(() -> applyToViewHierarchy(decor));
+
+        // Attach listener for dynamic Instagram Litho / RecyclerView components
+        ViewTreeObserver observer = decor.getViewTreeObserver();
+        if (observer != null && observer.isAlive()) {
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                private long lastRun = 0;
+
+                @Override
+                public void onGlobalLayout() {
+                    long now = System.currentTimeMillis();
+                    if (now - lastRun > 150) { // Throttled to avoid unnecessary cycles
+                        lastRun = now;
+                        applyToViewHierarchy(decor);
+                    }
+                }
+            });
+        }
     }
 }

@@ -108,31 +108,25 @@ jobs:
           echo "Base Instagram APK ready for Instafel modding:"
           ls -lh instagram.apk
 
-      - name: Fetch Custom Emojis & Fonts Assets
+      - name: Fetch Fresh Google 3D Emojis & Prepare Bundled Assets
         if: steps.prepare_apk.outputs.skip_build != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Fetching Google 3D Emojis and iOS Emojis..."
+          echo "Preparing local fonts and emojis bundle..."
           mkdir -p assets_bundle/emojis assets_bundle/fonts/sf_pro
 
-          # Fetch Google 3D Emoji TTF from latest release
-          wget -q -O assets_bundle/emojis/GoogleEmoji3D.ttf \
-            "https://github.com/junksidetm/Google-Emoji-3D/releases/download/v1.1.1/GoogleEmoji3D.ttf" || echo "GoogleEmoji3D fallback"
+          # Fetch fresh Google 3D Emoji TTF from latest release of junksidetm/Google-Emoji-3D
+          echo "Downloading latest GoogleEmoji3D.ttf from junksidetm/Google-Emoji-3D..."
+          gh release download --repo junksidetm/Google-Emoji-3D --pattern "GoogleEmoji3D.ttf" --dir assets_bundle/emojis --clobber || \
+            wget -q -O assets_bundle/emojis/GoogleEmoji3D.ttf "https://github.com/junksidetm/Google-Emoji-3D/releases/latest/download/GoogleEmoji3D.ttf" || \
+            echo "Using existing or fallback GoogleEmoji3D.ttf"
 
-          # Fetch iOS 26.4 Emoji TTF from user assests repo
-          wget -q -O assets_bundle/emojis/iOS_26.4.ttf \
-            "https://raw.githubusercontent.com/junksidetm/assests/main/Emojis/iOS%2026.4.ttf" || echo "iOS emoji fallback"
-
-          # Fetch Apple San Francisco Pro fonts
-          git clone --depth 1 https://github.com/junksidetm/assests.git assests_repo
-          if [ -d "assests_repo/fonts/IOS - San Francisco/SF-Pro" ]; then
-            cp -r "assests_repo/fonts/IOS - San Francisco/SF-Pro"/* assets_bundle/fonts/sf_pro/
-          fi
-
-          # Fetch Google Sans Flex
-          wget -q -O assets_bundle/fonts/GoogleSansFlex.ttf \
-            "https://raw.githubusercontent.com/google/fonts/main/ofl/googlesansflex/GoogleSansFlex%5BGRAD%2CROND%2Copsz%2Cslnt%2Cwdth%2Cwght%5D.ttf" || echo "GSF fallback"
-
-          rm -rf assests_repo
+          # Verify bundled assets
+          echo "Assets bundled for packaging:"
+          ls -lh assets_bundle/fonts/
+          ls -lh assets_bundle/fonts/sf_pro/ | head -n 10
+          ls -lh assets_bundle/emojis/
 
       - name: Build Instafel Engine & Update Patcher Sources
         if: steps.prepare_apk.outputs.skip_build != 'true'

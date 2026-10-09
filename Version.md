@@ -135,3 +135,29 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `patcher/src/main/kotlin/instafel/patcher/commands/CreateIflSourceZip.kt`: Synchronously joined background worker thread (`thread.join()`) during source extraction.
   - `.github/workflows/generate_instafel.yml`: Rebuilt `:patcher-core:build-jar` immediately after `updatePatcherSources` so embedded `ifl_sources` are packaged into the core JAR, staged the local core to working directory and `~/.local/share/ipatcher/core_data/core.jar`, and exported `IFL_CORE_JAR` across all build steps.
 - **Status**: 100% (Completed)
+## [2026-10-09 18:27:00 IST] - Direct Asset Loading, Global Reflection Font Override, Emoji Transformation Spans & Local Asset Bundling
+- **Action**: Resolved issue where toggling custom fonts and emojis in Instafel settings produced no visible changes in Instagram. Implemented direct `AssetManager` font loaders, reflection-based `Typeface.sSystemFontMap` override, dynamic `EmojiTransformationMethod` spans, decor view layout listeners, and pre-bundled local typography assets.
+- **Root Cause Analysis**:
+  - **Asset Location Disconnect:** Assets packaged into APK's `assets/` directory were queried exclusively via `context.getFilesDir() + "/fonts"` and `context.getFilesDir() + "/emojis"`. Because Android does not automatically unpack APK assets into internal storage, `fontFile.exists()` returned `false` 100% of the time.
+  - **Emoji Application Void:** `EmojiManager.java` had zero view-binding logic or text transformations in the app; it was only queried once by the settings preview.
+  - **Dynamic View Traversal:** `FontManager.applyToActivity` ran a single one-shot traversal on `Activity` resume. Instagram's dynamic feeds, reels, and stories (Litho / RecyclerView) bypass static decor view traversals.
+- **Components Modified**:
+  - `app/src/main/java/instafel/app/managers/FontManager.java`:
+    - Implemented dual-source loading: attempts direct loading from `context.getAssets()` first, with fallback to `context.getFilesDir()`.
+    - Added background asset extraction unpacking bundled assets to `files/fonts/`.
+    - Implemented reflection-based system font override modifying `Typeface.sSystemFontMap` and static fields (`DEFAULT`, `DEFAULT_BOLD`, `SANS_SERIF`, `SERIF`) mapping `"sans-serif"`, `"roboto"`, `"Instagram Sans"`, and custom fallbacks.
+    - Added throttled `ViewTreeObserver.OnGlobalLayoutListener` to decor view to continuously apply typography to dynamic and recycled views.
+  - `app/src/main/java/instafel/app/managers/EmojiManager.java`:
+    - Implemented direct asset loading and background extraction for `iOS_26.4.ttf` and `GoogleEmoji3D.ttf`.
+    - Implemented `EmojiTransformationMethod` and `EmojiTypefaceSpan` using Unicode emoji regex (detecting pictographs, skin tone modifiers, variation selectors, flags, and ZWJ combinations) to apply custom emoji typefaces exclusively to emoji spans.
+    - Added `applyToTextView(TextView)` with `EditText` watcher.
+  - `app/src/main/java/instafel/app/activity/ifl_a_typography.java`:
+    - Invalidate caches (`FontManager.clearCache()`, `EmojiManager.clearCache()`) and reapply system overrides immediately upon switch/dialog selection.
+    - Applied `EmojiManager.applyToTextView(previewEmojis)` to live preview.
+  - `assets_bundle/`:
+    - Pre-bundled 30 Apple SF Pro weights (`assets_bundle/fonts/sf_pro/`), Google Sans Flex variable font (`assets_bundle/fonts/GoogleSansFlex.ttf`), and Apple iOS 26.4 emojis (`assets_bundle/emojis/iOS_26.4.ttf`) locally in repository.
+  - `.github/workflows/generate_instafel.yml`:
+    - Updated asset preparation step to consume pre-bundled local font/emoji assets and fetch fresh `GoogleEmoji3D.ttf` from latest release of `junksidetm/Google-Emoji-3D`.
+  - `.gitignore`:
+    - Ignored `assets_bundle/emojis/GoogleEmoji3D.ttf` to keep dynamically fetched release binary out of git history while tracking all bundled fonts and iOS emojis.
+- **Status**: 100% (Completed)

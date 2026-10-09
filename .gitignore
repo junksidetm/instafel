@@ -54,3 +54,6 @@ env.properties
 /updater/.externalNativeBuild
 /updater/.cxx
 /updater/local.properties
+
+# Google 3D Emoji (fetched dynamically from junksidetm/Google-Emoji-3D)
+assets_bundle/emojis/GoogleEmoji3D.ttf

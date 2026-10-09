@@ -73,6 +73,8 @@ public class ifl_a_typography extends AppCompatActivity {
         Switch fontSwitchView = switchFont.getSwitchView();
         fontSwitchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
             preferenceManager.setPreferenceBoolean(PreferenceKeys.ifl_enable_custom_fonts, isChecked);
+            FontManager.clearCache();
+            FontManager.applySystemFontOverride(this);
             updatePreviews();
             Toast.makeText(this, isChecked ? "Custom fonts enabled" : "Custom fonts disabled", Toast.LENGTH_SHORT).show();
         });
@@ -80,6 +82,8 @@ public class ifl_a_typography extends AppCompatActivity {
         Switch emojiSwitchView = switchEmoji.getSwitchView();
         emojiSwitchView.setOnCheckedChangeListener((buttonView, isChecked) -> {
             preferenceManager.setPreferenceBoolean(PreferenceKeys.ifl_enable_custom_emojis, isChecked);
+            EmojiManager.clearCache();
+            FontManager.applySystemFontOverride(this);
             updatePreviews();
             Toast.makeText(this, isChecked ? "Custom emojis enabled" : "Custom emojis disabled", Toast.LENGTH_SHORT).show();
         });
@@ -136,6 +140,8 @@ public class ifl_a_typography extends AppCompatActivity {
                     else selectedKey = FontManager.FONT_TYPE_DEFAULT;
 
                     preferenceManager.setPreferenceString(PreferenceKeys.ifl_custom_font_family, selectedKey);
+                    FontManager.clearCache();
+                    FontManager.applySystemFontOverride(this);
                     tileSelectFont.setSubtitleText(options[which]);
                     updatePreviews();
                 })
@@ -158,6 +164,8 @@ public class ifl_a_typography extends AppCompatActivity {
                     else selectedKey = EmojiManager.EMOJI_TYPE_DEFAULT;
 
                     preferenceManager.setPreferenceString(PreferenceKeys.ifl_custom_emoji_pack, selectedKey);
+                    EmojiManager.clearCache();
+                    FontManager.applySystemFontOverride(this);
                     tileSelectEmoji.setSubtitleText(options[which]);
                     updatePreviews();
                 })
@@ -186,6 +194,7 @@ public class ifl_a_typography extends AppCompatActivity {
         Typeface emojiTf = EmojiManager.getEmojiTypeface(this);
         if (emojiTf != null) {
             previewEmojis.setTypeface(emojiTf);
+            EmojiManager.applyToTextView(previewEmojis);
         } else {
             previewEmojis.setTypeface(Typeface.DEFAULT);
         }
