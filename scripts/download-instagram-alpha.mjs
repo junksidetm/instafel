@@ -183,7 +183,12 @@ async function downloadFile(url, referer, destPath) {
     }
   }
 
-  fileStream.end();
+  await new Promise((resolve, reject) => {
+    fileStream.on('finish', resolve);
+    fileStream.on('error', reject);
+    fileStream.end();
+  });
+
   console.log(`[Downloader] Successfully completed download: ${(downloadedBytes / (1024 * 1024)).toFixed(2)} MB saved to ${destPath}`);
 }
 

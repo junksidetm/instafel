@@ -60,3 +60,9 @@ All notable changes to the `instafel` repository are documented in this file in 
     - Wired `download-instagram-alpha.mjs` directly into the scheduled build pipeline.
     - Automatic version pass-through into release gate and tagging engine.
 - **Status**: 100% (Completed)
+## [2026-10-09 15:35:00 IST] - Stream Flushing & Resilient Multi-Format Bundle Extraction Hardening
+- **Action**: Hardened the downloader streaming engine to ensure all byte buffers are completely flushed to disk before closing the stream, and upgraded bundle extraction in CI to utilize 7z with multi-fallback for `.apkm` and split APK containers.
+- **Components Modified**:
+  - `scripts/download-instagram-alpha.mjs`: Added explicit promise synchronization on file stream `'finish'` and `'close'` events, preventing premature exit and guaranteeing archive central directory integrity.
+  - `.github/workflows/generate_instafel.yml`: Integrated 7z multi-archive unpacker with unzip and python3 zipfile fallback for seamless split APK decomposition.
+- **Status**: 100% (Completed)
