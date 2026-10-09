@@ -9,11 +9,11 @@ on:
   workflow_dispatch:
     inputs:
       base_apk_url:
-        description: 'Direct URL for Base Instagram APK (Leave empty to auto-fetch latest Alpha)'
+        description: 'Direct URL for Base Instagram APK (Leave empty to auto-fetch latest from APKMirror)'
         required: false
         default: ''
       force_build:
-        description: 'Force build even if this Alpha version was already released'
+        description: 'Force build even if this version was already released'
         type: boolean
         default: false
 
@@ -38,17 +38,16 @@ jobs:
       - name: Grant Execute Permission for Gradlew
         run: chmod +x gradlew
 
-      - name: Auto-Discover & Download Latest Instagram Alpha
-        id: apkdown
+      - name: Auto-Discover & Download Latest Instagram from APKMirror
+        id: apkmirror_dl
         if: ${{ !inputs.base_apk_url }}
-        uses: eduardo3677-ai/apkdown-cli@v1
+        uses: Yakov5776/gh-apkmirror-dl@main
         continue-on-error: true
         with:
-          id: 'com.instagram.android'
-          arch: 'arm64-v8a'
-          channel: 'alpha'
-          provider: 'all'
-          output-dir: './downloads'
+          org: 'instagram'
+          repo: 'instagram-android'
+          bundle: true
+          filename: 'downloaded_bundle'
 
       - name: Fallback Direct URL Download (If manual URL provided)
         id: manual_dl
@@ -64,45 +63,64 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          DOWNLOADED_FILE="${{ steps.manual_dl.outputs.file-path || steps.apkdown.outputs.file-path }}"
-          if [ -z "$DOWNLOADED_FILE" ] || [ ! -f "$DOWNLOADED_FILE" ]; then
-            DOWNLOADED_FILE=$(find downloads -type f \( -name "*.apk" -o -name "*.apkm" -o -name "*.xapk" -o -name "*.zip" \) 2>/dev/null | head -n 1)
+          # Locate downloaded package from manual or apkmirror step
+          DOWNLOADED_FILE=""
+          if [ -f "downloads/instagram_manual.apk" ]; then
+            DOWNLOADED_FILE="downloads/instagram_manual.apk"
+          fi
+
+          if [ -z "$DOWNLOADED_FILE" ]; then
+            # Search for downloaded file from gh-apkmirror-dl
+            DOWNLOADED_FILE=$(find . -maxdepth 2 -type f \( -name "*downloaded_bundle*" -o -name "*.apk" -o -name "*.apkm" -o -name "*.xapk" \) ! -name "*APKEditor*" ! -name "*patcher*" ! -path "*/.gradle/*" ! -path "*/build/*" | head -n 1)
           fi
 
           if [ -z "$DOWNLOADED_FILE" ] || [ ! -f "$DOWNLOADED_FILE" ]; then
-            echo "::error::Failed to obtain Instagram Alpha APK. No package file found in downloads directory."
+            echo "::error::Failed to download Instagram package. Please ensure APKMirror is accessible or provide a manual base_apk_url."
             exit 1
           fi
 
-          echo "Detected downloaded package: $DOWNLOADED_FILE"
+          echo "Found package file: $DOWNLOADED_FILE"
 
-          # Download APKEditor for split extraction / merging if needed
+          # Download APKEditor for split extraction / merging
           wget -q -O APKEditor.jar "https://github.com/REAndroid/APKEditor/releases/download/V1.4.5/APKEditor-1.4.5.jar"
 
-          # Check if the file is an APKM / XAPK / ZIP bundle
-          if [[ "$DOWNLOADED_FILE" == *.apkm ]] || [[ "$DOWNLOADED_FILE" == *.xapk ]] || [[ "$DOWNLOADED_FILE" == *.zip ]]; then
-            echo "Package is an App Bundle (.apkm/.xapk/.zip). Extracting splits..."
-            mkdir -p apks
-            unzip -q -o "$DOWNLOADED_FILE" -d apks/
-            echo "Merging split APKs using APKEditor..."
-            java -jar APKEditor.jar m -i apks -o instagram.apk
+          # Determine whether the file is a zip/apkm bundle or standalone APK
+          FILE_MIME=$(file -b --mime-type "$DOWNLOADED_FILE" || echo "")
+          echo "File mime type: $FILE_MIME"
+
+          if [[ "$DOWNLOADED_FILE" == *.apkm ]] || [[ "$DOWNLOADED_FILE" == *.xapk ]] || unzip -tq "$DOWNLOADED_FILE" >/dev/null 2>&1; then
+            # If unzip succeeds, check if it's a split bundle (contains multiple APKs)
+            mkdir -p /tmp/inspect_zip
+            unzip -q -o "$DOWNLOADED_FILE" -d /tmp/inspect_zip
+            APK_COUNT=$(find /tmp/inspect_zip -name "*.apk" | wc -l)
+            if [ "$APK_COUNT" -gt 1 ]; then
+              echo "Package is a multi-APK split bundle ($APK_COUNT APKs found). Merging splits with APKEditor..."
+              mkdir -p apks
+              cp /tmp/inspect_zip/*.apk apks/
+              java -jar APKEditor.jar m -i apks -o instagram.apk
+            elif [ "$APK_COUNT" -eq 1 ]; then
+              echo "Single APK found inside archive. Extracting..."
+              cp $(find /tmp/inspect_zip -name "*.apk" | head -n 1) instagram.apk
+            else
+              echo "Direct standalone APK or non-bundle archive."
+              cp "$DOWNLOADED_FILE" instagram.apk
+            fi
+            rm -rf /tmp/inspect_zip
           else
             echo "Package is a standalone APK. Copying to instagram.apk..."
             cp "$DOWNLOADED_FILE" instagram.apk
           fi
 
-          # Extract version from step output or fallback to aapt / APKEditor
-          VERSION="${{ steps.apkdown.outputs.version }}"
-          if [ -z "$VERSION" ]; then
-            AAPT=$(find "$ANDROID_HOME/build-tools" -name aapt 2>/dev/null | head -n 1)
-            if [ -n "$AAPT" ]; then
-              VERSION=$($AAPT dump badging instagram.apk 2>/dev/null | grep "versionName" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p")
-            fi
+          # Extract version from instagram.apk using aapt
+          AAPT=$(find "$ANDROID_HOME/build-tools" -name aapt 2>/dev/null | head -n 1)
+          VERSION=""
+          if [ -n "$AAPT" ] && [ -f "instagram.apk" ]; then
+            VERSION=$($AAPT dump badging instagram.apk 2>/dev/null | grep "versionName" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p")
           fi
           if [ -z "$VERSION" ]; then
             VERSION="alpha-$(date +'%Y%m%d%H%M')"
           fi
-          echo "Resolved Instagram Alpha Version: $VERSION"
+          echo "Resolved Instagram Version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
           # Version Check: Skip build if already released and force_build is false
