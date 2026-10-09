@@ -123,3 +123,8 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `README.md`: Updated deliverables specification table to reflect the two clean variants.
   - GitHub Release `v451.0.0.0.70`: Pruned duplicate asset `instafel-v451.0.0.0.70-arm64-v8a.apk` and aligned release notes.
 - **Status**: 100% (Completed)
+## [2026-10-09 16:56:00 IST] - Privacy Protection: Scrubbing Email Exposure from Documentation
+- **Action**: Completely scrubbed explicit email addresses from `README.md` mirror specifications to preserve privacy and prevent address harvesting.
+- **Components Modified**:
+  - `README.md`: Replaced raw emails in cryptographic signing section with privacy-preserving handle references (`@junksidetm` for GitHub, `@mrdarksidetm` for GitLab & Codeberg).
+- **Status**: 100% (Completed)

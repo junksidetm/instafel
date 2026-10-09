@@ -102,8 +102,8 @@ Following our decentralized multi-platform policy, Instafel maintains active fun
 - **Codeberg (Mirror)**: [`https://codeberg.org/mrdarksidetm/instafel`](https://codeberg.org/mrdarksidetm/instafel)
 
 Every commit across all three mirrors is cryptographically signed with verified SSH keys:
-- GitHub: `junksidetm` (`331540275+junksidetm@users.noreply.github.com`)
-- GitLab / Codeberg: `mrdarksidetm` (`ajukr99901@gmail.com`)
+- **GitHub**: Verified commits by `@junksidetm`
+- **GitLab & Codeberg**: Verified commits by `@mrdarksidetm`
 
 ---
 
