@@ -29,7 +29,7 @@ class CreateIflSourceZip: Command {
                 Log.warning("Please select an .apk file");
                 return;
             }
-            Thread {
+            val thread = Thread {
                 CoreHandler.invokeKotlinObjectWithParams(
                     "jobs.CreateIflZip",
                     "runJob",
@@ -38,7 +38,9 @@ class CreateIflSourceZip: Command {
                         ).absolutePath
                     )
                 )
-            }.start()
+            }
+            thread.start()
+            thread.join()
         } catch (e: Exception) {
             e.printStackTrace()
             Log.info("An error occurred while running command")

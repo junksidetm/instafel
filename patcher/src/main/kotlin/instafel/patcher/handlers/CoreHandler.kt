@@ -66,9 +66,22 @@ object CoreHandler {
     }
 
     private fun checkDebugCoreJAR() {
-        val debugCore = File(Paths.get(Utils.USER_DIR, "ifl-patcher-core-" + Utils.PROP_CLI_COMMIT_HASH + ".jar").toString())
-        if (debugCore.exists()) {
-            Log.info("Patcher uses debug core")
+        val envCore = System.getenv("IFL_CORE_JAR")?.let { File(it) }
+        val outputDir = File(Utils.USER_DIR, ".output")
+        val candidateCores = listOfNotNull(
+            envCore,
+            File(Paths.get(Utils.USER_DIR, "ifl-patcher-core-" + Utils.PROP_CLI_COMMIT_HASH + ".jar").toString()),
+            File(Paths.get(Utils.USER_DIR, "ifl-patcher-core.jar").toString()),
+            File(Paths.get(Utils.USER_DIR, ".output", "ifl-patcher-core.jar").toString()),
+            if (outputDir.exists() && outputDir.isDirectory) {
+                outputDir.listFiles { file -> file.isFile && file.name.startsWith("ifl-patcher-core") && file.name.endsWith(".jar") }?.firstOrNull()
+            } else null,
+            File(Utils.USER_DIR).listFiles { file -> file.isFile && file.name.startsWith("ifl-patcher-core") && file.name.endsWith(".jar") }?.firstOrNull()
+        )
+
+        val debugCore = candidateCores.firstOrNull { it.exists() }
+        if (debugCore != null) {
+            Log.info("Patcher uses debug core: ${debugCore.name}")
             CORE_JAR_FILE = debugCore
             loadCoreJAR()
         } else {

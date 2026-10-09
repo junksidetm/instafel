@@ -128,3 +128,10 @@ All notable changes to the `instafel` repository are documented in this file in 
 - **Components Modified**:
   - `README.md`: Replaced raw emails in cryptographic signing section with privacy-preserving handle references (`@junksidetm` for GitHub, `@mrdarksidetm` for GitLab & Codeberg).
 - **Status**: 100% (Completed)
+## [2026-10-09 17:07:00 IST] - Local Core Enforcement & Upstream Fallback Bypass Resolution
+- **Action**: Resolved issue where CI pipeline bypassed locally built patcher core and fell back to downloading outdated upstream core binary, which prevented custom typography and emoji settings from appearing in the Instagram app.
+- **Components Modified**:
+  - `patcher/src/main/kotlin/instafel/patcher/handlers/CoreHandler.kt`: Enhanced `checkDebugCoreJAR()` with dynamic resolution supporting `IFL_CORE_JAR` environment variable, `.output` directory scanning, and working directory discovery.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/CreateIflSourceZip.kt`: Synchronously joined background worker thread (`thread.join()`) during source extraction.
+  - `.github/workflows/generate_instafel.yml`: Rebuilt `:patcher-core:build-jar` immediately after `updatePatcherSources` so embedded `ifl_sources` are packaged into the core JAR, staged the local core to working directory and `~/.local/share/ipatcher/core_data/core.jar`, and exported `IFL_CORE_JAR` across all build steps.
+- **Status**: 100% (Completed)

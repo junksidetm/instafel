@@ -139,10 +139,17 @@ jobs:
         run: |
           echo "Building :app and updating patcher-core embedded sources..."
           ./gradlew updatePatcherSources
+          ./gradlew :patcher-core:build-jar
           ./gradlew :patcher:build-jar
           PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
+          CORE_JAR=$(find .output -name "ifl-patcher-core*.jar" | head -n 1)
           echo "Built executable patcher JAR: $PATCHER_JAR"
+          echo "Built core JAR: $CORE_JAR"
+          cp "$CORE_JAR" "ifl-patcher-core.jar"
+          mkdir -p "$HOME/.local/share/ipatcher/core_data"
+          cp "$CORE_JAR" "$HOME/.local/share/ipatcher/core_data/core.jar"
           echo "patcher_jar=$PATCHER_JAR" >> $GITHUB_ENV
+          echo "IFL_CORE_JAR=$PWD/ifl-patcher-core.jar" >> $GITHUB_ENV
 
       - name: Initialize Decompilation
         if: steps.prepare_apk.outputs.skip_build != 'true'
