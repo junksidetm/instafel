@@ -264,10 +264,7 @@ jobs:
           TAG_NAME="v${VERSION}"
           RELEASE_TITLE="Instafel v${VERSION} (Alpha arm64-v8a)"
 
-          gh release create "$TAG_NAME" release_apks/* \
-            --title "$RELEASE_TITLE" \
-            --clobber \
-            --notes "### Instafel Alpha Release v${VERSION}
+          NOTES="### Instafel Alpha Release v${VERSION}
           - **Architecture:** \`arm64-v8a\`
           - **Automated Pipeline:** 100% Autonomous CI/CD Release
           - **Variants Provided:**
@@ -280,3 +277,13 @@ jobs:
             - Apple iOS Emojis (iOS 26.4 glyph suite)
             - Google 3D Emojis (\`GoogleEmoji3D.ttf\` vector/color emojis)
           - **Patches Applied:** Developer Options, Remove Ads, AMOLED Theme, Snooze Bypass, Clone, Channel Name."
+
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            echo "Release $TAG_NAME already exists. Uploading/updating release assets..."
+            gh release upload "$TAG_NAME" release_apks/* --clobber
+          else
+            echo "Creating new release $TAG_NAME..."
+            gh release create "$TAG_NAME" release_apks/* \
+              --title "$RELEASE_TITLE" \
+              --notes "$NOTES"
+          fi

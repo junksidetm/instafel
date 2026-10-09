@@ -98,3 +98,8 @@ All notable changes to the `instafel` repository are documented in this file in 
     - Updated `find` pattern to `ifl-patcher-*.jar ! -name "*-core*"` across build, decompilation, patch execution, and signing steps.
     - Exported `patcher_jar` environment variable to ensure deterministic invocation of the CLI JAR with valid manifest main attributes.
 - **Status**: 100% (Completed)
+## [2026-10-09 16:27:00 IST] - Release Creation & Asset Upload Command Hardening
+- **Action**: Corrected GitHub CLI release command syntax to conditionally execute `gh release create` for new tags or `gh release upload --clobber` for existing releases, eliminating invalid `--clobber` flag invocation on create.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`: Added branch logic checking if tag exists via `gh release view` before deciding between `create` and `upload`.
+- **Status**: 100% (Completed)
