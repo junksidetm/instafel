@@ -47,3 +47,16 @@ All notable changes to the `instafel` repository are documented in this file in 
     - Duplicate Release Gate: Queries GitHub Releases via `gh release view` for the resolved version tag; skips redundant builds if the version was already compiled and released.
     - Production Deliverables: Compiles and signs the patched APK with typography (SF Pro & Google Sans Flex) and custom emoji (iOS 26.4 & Google 3D) suites, uploading the final artifact and creating an official GitHub Release with changelog.
 - **Status**: 100% (Completed)
+## [2026-10-09 15:18:00 IST] - Zero-Dependency Autonomous Crawler Engine Deployment
+- **Action**: Engineered and deployed an autonomous Node.js crawler (`scripts/download-instagram-alpha.mjs`) replacing external third-party actions with a native, zero-credential direct crawler.
+- **Components Added & Modified**:
+  - `scripts/download-instagram-alpha.mjs`:
+    - APKMirror API headers integration (`APKUpdater-v0` token authorization).
+    - Dynamic release discovery with descending semver resolution for newest Alpha builds (e.g., `451.0.0.0.70`).
+    - Automated `arm64-v8a` variant resolution (targeting modern high-density screen variants).
+    - Multi-stage intermediate download page navigation with session referer propagation.
+    - Chunks-based streaming downloader directly saving the `.apkm` bundle to CI workspace.
+  - `.github/workflows/generate_instafel.yml`:
+    - Wired `download-instagram-alpha.mjs` directly into the scheduled build pipeline.
+    - Automatic version pass-through into release gate and tagging engine.
+- **Status**: 100% (Completed)
