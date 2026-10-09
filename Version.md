@@ -161,3 +161,11 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.gitignore`:
     - Ignored `assets_bundle/emojis/GoogleEmoji3D.ttf` to keep dynamically fetched release binary out of git history while tracking all bundled fonts and iOS emojis.
 - **Status**: 100% (Completed)
+
+## [2026-10-09 19:28:00 IST] - Multi-Platform Mirror CI/CD Integration
+- **Action**: Added GitLab CI pipeline and Forgejo Actions workflow for autonomous engine validation and build replication on mirror platforms.
+- **Files Added**:
+  - `.gitlab-ci.yml`
+  - `.forgejo/workflows/generate_instafel.yml`
+  - `Version.md`
+- **Status**: 100% (Completed & Synced)

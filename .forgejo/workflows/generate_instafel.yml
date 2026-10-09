@@ -1,0 +1,266 @@
+name: Generate Instafel (Full Online Pipeline)
+
+on:
+  schedule:
+    # Run automatically every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  repository_dispatch:
+    types: [generate_instafel]
+  workflow_dispatch:
+    inputs:
+      target_version:
+        description: 'Specific Instagram Alpha version (leave empty for latest from junksidetm/Alpha-Insta)'
+        required: false
+        default: ''
+      base_apk_url:
+        description: 'Direct URL override for Base Instagram APK (optional)'
+        required: false
+        default: ''
+      force_build:
+        description: 'Force build even if this Alpha version was already released by Instafel'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  ifl_generator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Java 21 & Android Environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: '21'
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Resolve Target Instagram Alpha & Gate Check
+        id: prepare_apk
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARGET_VER="${{ inputs.target_version }}"
+          if [ -n "$TARGET_VER" ]; then
+            TAG="v${TARGET_VER}"
+            VERSION="${TARGET_VER}"
+          else
+            echo "Querying junksidetm/Alpha-Insta for latest released Instagram Alpha APK..."
+            TAG=$(gh release view --repo junksidetm/Alpha-Insta --json tagName --jq '.tagName' 2>/dev/null || echo "")
+            if [ -z "$TAG" ]; then
+              echo "::error::No releases found in junksidetm/Alpha-Insta yet."
+              exit 1
+            fi
+            VERSION="${TAG#v}"
+          fi
+
+          echo "Resolved Target Instagram Alpha Version: v${VERSION} (Tag: ${TAG})"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+          # Duplicate Mod Check: skip if Instafel has already modded and published this version
+          if [ "${{ inputs.force_build }}" != "true" ]; then
+            if gh release view "v${VERSION}" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+              echo "Release v${VERSION} has already been modded and published by Instafel!"
+              echo "No new Instagram Alpha release was published by Alpha-Insta today. Skipping build to avoid redundant modding."
+              echo "skip_build=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+          fi
+
+          echo "New Alpha build detected or force_build enabled. Proceeding with Instafel modding..."
+          echo "skip_build=false" >> $GITHUB_OUTPUT
+
+      - name: Fetch Clean Standalone Base APK from junksidetm/Alpha-Insta
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ inputs.base_apk_url }}" ]; then
+            echo "Downloading APK from manual override URL: ${{ inputs.base_apk_url }}"
+            wget -q -O instagram.apk "${{ inputs.base_apk_url }}"
+          else
+            TAG="${{ steps.prepare_apk.outputs.tag }}"
+            echo "Downloading pre-bundled standalone APK from junksidetm/Alpha-Insta release ${TAG}..."
+            mkdir -p /tmp/alpha_dl
+            gh release download "$TAG" --repo junksidetm/Alpha-Insta --pattern "*.apk" --dir /tmp/alpha_dl
+            APK_FILE=$(find /tmp/alpha_dl -name "*.apk" | head -n 1)
+            if [ -z "$APK_FILE" ] || [ ! -f "$APK_FILE" ]; then
+              echo "::error::Could not find APK file in junksidetm/Alpha-Insta release ${TAG}."
+              exit 1
+            fi
+            cp "$APK_FILE" instagram.apk
+            rm -rf /tmp/alpha_dl
+          fi
+
+          echo "Base Instagram APK ready for Instafel modding:"
+          ls -lh instagram.apk
+
+      - name: Fetch Fresh Google 3D Emojis & Prepare Bundled Assets
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Preparing local fonts and emojis bundle..."
+          mkdir -p assets_bundle/emojis assets_bundle/fonts/sf_pro
+
+          # Fetch fresh Google 3D Emoji TTF from latest release of junksidetm/Google-Emoji-3D
+          echo "Downloading latest GoogleEmoji3D.ttf from junksidetm/Google-Emoji-3D..."
+          gh release download --repo junksidetm/Google-Emoji-3D --pattern "GoogleEmoji3D.ttf" --dir assets_bundle/emojis --clobber || \
+            wget -q -O assets_bundle/emojis/GoogleEmoji3D.ttf "https://github.com/junksidetm/Google-Emoji-3D/releases/latest/download/GoogleEmoji3D.ttf" || \
+            echo "Using existing or fallback GoogleEmoji3D.ttf"
+
+          # Verify bundled assets
+          echo "Assets bundled for packaging:"
+          ls -lh assets_bundle/fonts/
+          ls -lh assets_bundle/fonts/sf_pro/ | head -n 10
+          ls -lh assets_bundle/emojis/
+
+      - name: Build Instafel Engine & Update Patcher Sources
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        run: |
+          echo "Building :app and updating patcher-core embedded sources..."
+          ./gradlew updatePatcherSources
+          ./gradlew :patcher-core:build-jar
+          ./gradlew :patcher:build-jar
+          PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
+          CORE_JAR=$(find .output -name "ifl-patcher-core*.jar" | head -n 1)
+          echo "Built executable patcher JAR: $PATCHER_JAR"
+          echo "Built core JAR: $CORE_JAR"
+          cp "$CORE_JAR" "ifl-patcher-core.jar"
+          mkdir -p "$HOME/.local/share/ipatcher/core_data"
+          cp "$CORE_JAR" "$HOME/.local/share/ipatcher/core_data/core.jar"
+          echo "patcher_jar=$PATCHER_JAR" >> $GITHUB_ENV
+          echo "IFL_CORE_JAR=$PWD/ifl-patcher-core.jar" >> $GITHUB_ENV
+
+      - name: Initialize Decompilation
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        run: |
+          PATCHER_JAR="${{ env.patcher_jar }}"
+          if [ -z "$PATCHER_JAR" ] || [ ! -f "$PATCHER_JAR" ]; then
+            PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
+          fi
+          echo "Using patcher: $PATCHER_JAR"
+          java -jar "$PATCHER_JAR" about
+          java -jar "$PATCHER_JAR" init instagram.apk
+
+      - name: Bundle Fonts & Emojis into Target APK
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        run: |
+          echo "Copying fonts and emoji assets into target APK..."
+          mkdir -p instagram/sources/assets/fonts/sf_pro
+          mkdir -p instagram/sources/assets/emojis
+
+          cp -r assets_bundle/fonts/* instagram/sources/assets/fonts/
+          cp -r assets_bundle/emojis/* instagram/sources/assets/emojis/
+
+      - name: Run Patches (with Typography & Emojis)
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        run: |
+          PATCHER_JAR="${{ env.patcher_jar }}"
+          if [ -z "$PATCHER_JAR" ] || [ ! -f "$PATCHER_JAR" ]; then
+            PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
+          fi
+          java -jar "$PATCHER_JAR" run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel font_emoji change_channel_name clone
+
+      - name: Build & Sign Final APK
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        run: |
+          PATCHER_JAR="${{ env.patcher_jar }}"
+          if [ -z "$PATCHER_JAR" ] || [ ! -f "$PATCHER_JAR" ]; then
+            PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
+          fi
+          java -jar "$PATCHER_JAR" build instagram
+
+      - name: Package & Prepare Output Deliverables
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        run: |
+          VERSION="${{ steps.prepare_apk.outputs.version }}"
+          mkdir -p release_apks
+
+          echo "Listing all generated files in instagram/ and instagram/build/..."
+          find instagram/build -type f -ls || ls -la instagram/
+
+          # 1. Unclone APK
+          UNCLONE_SRC=$(find instagram/build -type f \( -name "*unclone*.apk" -o -name "*_uc_*.apk" \) | head -n 1)
+          if [ -n "$UNCLONE_SRC" ] && [ -f "$UNCLONE_SRC" ]; then
+            echo "Found unclone APK: $UNCLONE_SRC"
+            cp "$UNCLONE_SRC" "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk"
+          fi
+
+          # 2. Clone APK
+          CLONE_SRC=$(find instagram/build -type f \( -name "*clone*.apk" ! -name "*unclone*" -o -name "*_c_*.apk" ! -name "*_uc_*" \) | head -n 1)
+          if [ -n "$CLONE_SRC" ] && [ -f "$CLONE_SRC" ]; then
+            echo "Found clone APK: $CLONE_SRC"
+            cp "$CLONE_SRC" "release_apks/instafel-v${VERSION}-arm64-v8a-clone.apk"
+          fi
+
+          # Fallback if specific names not matched but any APK exists in instagram/
+          if [ ! -f "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk" ]; then
+            ANY_APK=$(find instagram -type f -name "*.apk" | grep -v "instagram.apk" | head -n 1)
+            if [ -n "$ANY_APK" ]; then
+              echo "Fallback APK found: $ANY_APK"
+              cp "$ANY_APK" "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk"
+            fi
+          fi
+
+          # Copy build_info.json if present
+          if [ -f "instagram/build/build_info.json" ]; then
+            cp "instagram/build/build_info.json" "release_apks/build_info.json"
+          fi
+
+          echo "Prepared Deliverables in release_apks:"
+          ls -lh release_apks/
+
+      - name: Upload Production APK Artifact
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: instafel-production-apk
+          path: release_apks/*
+          if-no-files-found: warn
+
+      - name: Publish GitHub Release
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.prepare_apk.outputs.version }}"
+          TAG_NAME="v${VERSION}"
+          RELEASE_TITLE="Instafel v${VERSION} (Alpha arm64-v8a)"
+
+          NOTES="### Instafel Alpha Release v${VERSION}
+          - **Architecture:** \`arm64-v8a\`
+          - **Automated Pipeline:** 100% Autonomous CI/CD Release
+          - **Variants Provided:**
+            - **Unclone:** \`instafel-v${VERSION}-arm64-v8a-unclone.apk\` (replaces official Instagram)
+            - **Clone:** \`instafel-v${VERSION}-arm64-v8a-clone.apk\` (standalone dual-app package)
+          - **Custom Typography Engine:**
+            - Apple San Francisco Pro (\`SF Pro\`) multi-weight hierarchy
+            - Google Sans Flex (\`opsz=ON\`, \`wdth=97.5\`, \`ROND=73\`, context weights 300–800)
+          - **Custom Emoji Engine:**
+            - Apple iOS Emojis (iOS 26.4 glyph suite)
+            - Google 3D Emojis (\`GoogleEmoji3D.ttf\` vector/color emojis)
+          - **Patches Applied:** Developer Options, Remove Ads, AMOLED Theme, Snooze Bypass, Clone, Channel Name."
+
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            echo "Release $TAG_NAME already exists. Uploading/updating release assets..."
+            gh release upload "$TAG_NAME" release_apks/* --clobber
+          else
+            echo "Creating new release $TAG_NAME..."
+            gh release create "$TAG_NAME" release_apks/* \
+              --title "$RELEASE_TITLE" \
+              --notes "$NOTES"
+          fi
