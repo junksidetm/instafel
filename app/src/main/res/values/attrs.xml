@@ -11,6 +11,7 @@
     <!-- STYLE ATTRS -->
     <attr name="ifl_attr_background_color" format="color" />
     <attr name="ifl_attr_tile_color" format="color" />
+    <attr name="ifl_attr_tile_background" format="color" />
     <attr name="ifl_attr_title_color" format="color"/>
     <attr name="ifl_attr_subtitle_color" format="color" />
     <attr name="ifl_attr_iview_tint" format="color" />

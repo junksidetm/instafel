@@ -66,3 +66,10 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `scripts/download-instagram-alpha.mjs`: Added explicit promise synchronization on file stream `'finish'` and `'close'` events, preventing premature exit and guaranteeing archive central directory integrity.
   - `.github/workflows/generate_instafel.yml`: Integrated 7z multi-archive unpacker with unzip and python3 zipfile fallback for seamless split APK decomposition.
 - **Status**: 100% (Completed)
+## [2026-10-09 15:46:00 IST] - Resource Attribute Linking Resolution & AAPT Compatibility
+- **Action**: Resolved AAPT resource linking compilation failure in `:app` module by correcting tile background attribute references in the typography settings layout and adding declared theme attributes.
+- **Components Modified**:
+  - `app/src/main/res/layout/ifl_at_typography.xml`: Corrected preview CardView `app:cardBackgroundColor` references from undeclared `?ifl_attr_tile_background` to canonical theme attribute `?ifl_attr_tile_color`.
+  - `app/src/main/res/values/attrs.xml`: Added explicit `<attr name="ifl_attr_tile_background" format="color" />` declaration as fallback alias.
+  - `app/src/main/res/values/styles.xml`: Mapped `ifl_attr_tile_background` in `ifl_theme_light` and `ifl_theme_dark` styles for bulletproof backward and theme compatibility.
+- **Status**: 100% (Completed)

@@ -11,6 +11,7 @@
     <style name="ifl_theme_light" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="ifl_attr_background_color">@color/ifl_background_color_light</item>
         <item name="ifl_attr_tile_color">@color/ifl_tile_color_light</item>
+        <item name="ifl_attr_tile_background">@color/ifl_tile_color_light</item>
         <item name="ifl_attr_subtitle_color">@color/ifl_sub_line_light</item>
         <item name="ifl_attr_title_color">@color/ifl_black</item>
         <item name="ifl_attr_iview_tint">@color/ifl_black</item>
@@ -19,6 +20,7 @@
     <style name="ifl_theme_dark" parent="ifl_theme_light" >
         <item name="ifl_attr_background_color">@color/ifl_background_color</item>
         <item name="ifl_attr_tile_color">#25282D</item>
+        <item name="ifl_attr_tile_background">#25282D</item>
         <item name="ifl_attr_subtitle_color">@color/ifl_sub_line</item>
         <item name="ifl_attr_title_color">@color/ifl_white</item>
         <item name="ifl_attr_iview_tint">@color/ifl_white</item>
