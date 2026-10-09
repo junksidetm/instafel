@@ -13,6 +13,17 @@
   <img src="https://img.shields.io/badge/Architecture-arm64--v8a-success?style=flat-square" alt="Architecture">
 </p>
 
+<br>
+
+<div align="center">
+
+Get the latest `unclone` version by clicking the button below. 
+
+  <a href="https://github.com/junksidetm/instafel/releases/download/v451.0.0.0.70/instafel-v451.0.0.0.70-arm64-v8a-unclone.apk" target="_blank" rel="noopener noreferrer">
+    <img src="https://raw.githubusercontent.com/junksidetm/assests/d8774837b8c8658389ea37193a77a9a100414bc5/Images/badges/SVG%20-%20Version/Android%20Direct%20Link%20Frame.svg" alt="Direct Link" width="290">
+  </a>
+</div>
+
 ---
 
 ## 🌟 Highlights & New Features

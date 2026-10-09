@@ -169,3 +169,9 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.forgejo/workflows/generate_instafel.yml`
   - `Version.md`
 - **Status**: 100% (Completed & Synced)
+
+## [2026-10-09 22:05:00 IST] - Direct Download Badge Link Resolution
+- **Action**: Wired direct APK download button badge in README.md to the latest unclone production release APK (`instafel-v451.0.0.0.70-arm64-v8a-unclone.apk`).
+- **Files Modified**:
+  - `README.md`: Updated Direct Link Frame badge href to direct GitHub release asset endpoint.
+- **Status**: 100% (Completed)
