@@ -91,3 +91,10 @@ All notable changes to the `instafel` repository are documented in this file in 
     - Exported both Default (`instafel-v${VERSION}-arm64-v8a.apk`), Unclone, and Clone (`instafel-v${VERSION}-arm64-v8a-clone.apk`) signed variants into `release_apks/`.
     - Added `--clobber` support to `gh release create` for resilient GitHub Releases publication.
 - **Status**: 100% (Completed)
+## [2026-10-09 16:14:00 IST] - Executable Patcher ShadowJar Resolution Fix
+- **Action**: Corrected CI patcher JAR selection logic in GitHub Actions workflow to specifically target the standalone executable shadowJar rather than the non-executable `ifl-patcher-core` library archive.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`:
+    - Updated `find` pattern to `ifl-patcher-*.jar ! -name "*-core*"` across build, decompilation, patch execution, and signing steps.
+    - Exported `patcher_jar` environment variable to ensure deterministic invocation of the CLI JAR with valid manifest main attributes.
+- **Status**: 100% (Completed)

@@ -163,11 +163,17 @@ jobs:
           echo "Building :app and updating patcher-core embedded sources..."
           ./gradlew updatePatcherSources
           ./gradlew :patcher:build-jar
+          PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
+          echo "Built executable patcher JAR: $PATCHER_JAR"
+          echo "patcher_jar=$PATCHER_JAR" >> $GITHUB_ENV
 
       - name: Initialize Decompilation
         if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
-          PATCHER_JAR=$(find .output -name "ifl-patcher*.jar" | head -n 1)
+          PATCHER_JAR="${{ env.patcher_jar }}"
+          if [ -z "$PATCHER_JAR" ] || [ ! -f "$PATCHER_JAR" ]; then
+            PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
+          fi
           echo "Using patcher: $PATCHER_JAR"
           java -jar "$PATCHER_JAR" about
           java -jar "$PATCHER_JAR" init instagram.apk
@@ -185,13 +191,19 @@ jobs:
       - name: Run Patches (with Typography & Emojis)
         if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
-          PATCHER_JAR=$(find .output -name "ifl-patcher*.jar" | head -n 1)
+          PATCHER_JAR="${{ env.patcher_jar }}"
+          if [ -z "$PATCHER_JAR" ] || [ ! -f "$PATCHER_JAR" ]; then
+            PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
+          fi
           java -jar "$PATCHER_JAR" run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel font_emoji change_channel_name clone
 
       - name: Build & Sign Final APK
         if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
-          PATCHER_JAR=$(find .output -name "ifl-patcher*.jar" | head -n 1)
+          PATCHER_JAR="${{ env.patcher_jar }}"
+          if [ -z "$PATCHER_JAR" ] || [ ! -f "$PATCHER_JAR" ]; then
+            PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
+          fi
           java -jar "$PATCHER_JAR" build instagram
 
       - name: Package & Prepare Output Deliverables
