@@ -116,3 +116,10 @@ All notable changes to the `instafel` repository are documented in this file in 
 - **Components Modified**:
   - `README.md`: Documented Apple SF Pro hierarchy, Google Sans Flex variable axis formulas, iOS 26.4 / Google 3D emoji suites, Mermaid architecture diagram, deliverable variant breakdown, and GitLab / Codeberg mirror synchronization.
 - **Status**: 100% (Completed)
+## [2026-10-09 16:47:00 IST] - Deliverable Standardization & Redundant Artifact Elimination
+- **Action**: Standardized release deliverables on explicit `unclone` and `clone` naming conventions, eliminated redundant duplicate unclone artifact from CI packaging pipeline, and pruned duplicate asset from live release.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`: Updated packaging logic to output exclusively `instafel-v${VERSION}-arm64-v8a-unclone.apk` and `instafel-v${VERSION}-arm64-v8a-clone.apk`, eliminating duplicate `instafel-v${VERSION}-arm64-v8a.apk` file.
+  - `README.md`: Updated deliverables specification table to reflect the two clean variants.
+  - GitHub Release `v451.0.0.0.70`: Pruned duplicate asset `instafel-v451.0.0.0.70-arm64-v8a.apk` and aligned release notes.
+- **Status**: 100% (Completed)

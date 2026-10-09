@@ -87,9 +87,8 @@ Every release on [GitHub Releases](https://github.com/junksidetm/instafel/releas
 
 | Deliverable | Package Target | Description |
 |---|---|---|
-| `instafel-v<VERSION>-arm64-v8a.apk` | `com.instagram.android` | Default / Unclone variant. Directly replaces official Instagram. |
-| `instafel-v<VERSION>-arm64-v8a-clone.apk` | Cloned Package | Standalone clone variant. Installs alongside official Instagram. |
-| `instafel-v<VERSION>-arm64-v8a-unclone.apk` | `com.instagram.android` | Explicit unclone archive. |
+| `instafel-v<VERSION>-arm64-v8a-unclone.apk` | `com.instagram.android` | Unclone variant. Directly replaces official Instagram. |
+| `instafel-v<VERSION>-arm64-v8a-clone.apk` | `com.instafel.android` | Standalone clone variant. Installs alongside official Instagram. |
 | `build_info.json` | Metadata | Cryptographic MD5 hashes, commit IDs, and generation timestamps. |
 
 ---

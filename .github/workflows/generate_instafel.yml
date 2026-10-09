@@ -196,7 +196,6 @@ jobs:
           UNCLONE_SRC=$(find instagram/build -type f \( -name "*unclone*.apk" -o -name "*_uc_*.apk" \) | head -n 1)
           if [ -n "$UNCLONE_SRC" ] && [ -f "$UNCLONE_SRC" ]; then
             echo "Found unclone APK: $UNCLONE_SRC"
-            cp "$UNCLONE_SRC" "release_apks/instafel-v${VERSION}-arm64-v8a.apk"
             cp "$UNCLONE_SRC" "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk"
           fi
 
@@ -208,11 +207,11 @@ jobs:
           fi
 
           # Fallback if specific names not matched but any APK exists in instagram/
-          if [ ! -f "release_apks/instafel-v${VERSION}-arm64-v8a.apk" ]; then
+          if [ ! -f "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk" ]; then
             ANY_APK=$(find instagram -type f -name "*.apk" | grep -v "instagram.apk" | head -n 1)
             if [ -n "$ANY_APK" ]; then
               echo "Fallback APK found: $ANY_APK"
-              cp "$ANY_APK" "release_apks/instafel-v${VERSION}-arm64-v8a.apk"
+              cp "$ANY_APK" "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk"
             fi
           fi
 
@@ -245,7 +244,7 @@ jobs:
           - **Architecture:** \`arm64-v8a\`
           - **Automated Pipeline:** 100% Autonomous CI/CD Release
           - **Variants Provided:**
-            - **Default / Unclone:** \`instafel-v${VERSION}-arm64-v8a.apk\` (replaces official Instagram)
+            - **Unclone:** \`instafel-v${VERSION}-arm64-v8a-unclone.apk\` (replaces official Instagram)
             - **Clone:** \`instafel-v${VERSION}-arm64-v8a-clone.apk\` (standalone dual-app package)
           - **Custom Typography Engine:**
             - Apple San Francisco Pro (\`SF Pro\`) multi-weight hierarchy
