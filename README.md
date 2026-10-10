@@ -13,6 +13,17 @@
   <img src="https://img.shields.io/badge/Architecture-arm64--v8a-success?style=flat-square" alt="Architecture">
 </p>
 
+<br>
+
+<div align="center">
+
+Get the latest `unclone` version by clicking the button below. 
+
+  <a href="https://github.com/junksidetm/instafel/releases/download/v451.0.0.0.70/instafel-v451.0.0.0.70-arm64-v8a-unclone.apk" target="_blank" rel="noopener noreferrer">
+    <img src="https://raw.githubusercontent.com/junksidetm/assests/d8774837b8c8658389ea37193a77a9a100414bc5/Images/badges/SVG%20-%20Version/Android%20Direct%20Link%20Frame.svg" alt="Direct Link" width="290">
+  </a>
+</div>
+
 ---
 
 ## 🌟 Highlights & New Features
@@ -117,3 +128,16 @@ Instafel is **not affiliated with, maintained by, or endorsed by Meta or Instagr
   <i>Forked and extended with ❤️ by <a href="https://github.com/junksidetm">junksidetm</a></i><br/>
   <i>Original base created by <a href="https://github.com/mamiiblt">mamiiblt</a></i>
 </p>
+
+
+---
+
+<div align="center">
+<a href="https://github.com/junksidetm/junksidetm.github.io">
+  <img src="https://raw.githubusercontent.com/junksidetm/assests/981a029b9f59b8ed581bbee9be318c86da52dcca/Images/Codium/Codium%20Banner/SVG/Codium%20-%20Banner%20Black.svg" width="360"></a>
+<br><br>
+<sub>
+<p>This repository is a part of `"Codeium"`. A part of Darkside Studio.
+</p>
+</sub>
+<p><b><sub>© 2026 Abhijeet Yadav.  All rights reserved. All logos are Copyright Law </sub></b></p>
