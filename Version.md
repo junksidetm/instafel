@@ -175,3 +175,10 @@ All notable changes to the `instafel` repository are documented in this file in 
 - **Files Modified**:
   - `README.md`: Updated Direct Link Frame badge href to direct GitHub release asset endpoint.
 - **Status**: 100% (Completed)
+
+## [2026-10-10 15:15:00 IST] - Documentation & Codeium Ecosystem Branding
+- **Action**: Added official Codeium / Darkside Studio ecosystem footer and banner to README.md.
+- **Files Modified**:
+  - `README.md`
+  - `Version.md`
+- **Status**: 100% (Completed & Synced)

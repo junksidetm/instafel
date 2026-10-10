@@ -128,3 +128,16 @@ Instafel is **not affiliated with, maintained by, or endorsed by Meta or Instagr
   <i>Forked and extended with ❤️ by <a href="https://github.com/junksidetm">junksidetm</a></i><br/>
   <i>Original base created by <a href="https://github.com/mamiiblt">mamiiblt</a></i>
 </p>
+
+
+---
+
+<div align="center">
+<a href="https://github.com/junksidetm/junksidetm.github.io">
+  <img src="https://raw.githubusercontent.com/junksidetm/assests/981a029b9f59b8ed581bbee9be318c86da52dcca/Images/Codium/Codium%20Banner/SVG/Codium%20-%20Banner%20Black.svg" width="360"></a>
+<br><br>
+<sub>
+<p>This repository is a part of `"Codeium"`. A part of Darkside Studio.
+</p>
+</sub>
+<p><b><sub>© 2026 Abhijeet Yadav.  All rights reserved. All logos are Copyright Law </sub></b></p>
