@@ -166,6 +166,12 @@ jobs:
           cp -r assets_bundle/fonts/* instagram/sources/assets/fonts/
           cp -r assets_bundle/emojis/* instagram/sources/assets/emojis/
 
+          # Replace Instagram native brand fonts with custom typography so direct asset loads use custom fonts
+          for f in $(find instagram/sources/assets/fonts/ -maxdepth 1 -name "InstagramSans*.ttf" -o -name "InstagramSans*.otf" 2>/dev/null); do
+            echo "Aliasing Instagram native font: $f -> SF-Pro-Text-Regular.otf"
+            cp assets_bundle/fonts/sf_pro/SF-Pro-Text-Regular.otf "$f" 2>/dev/null || true
+          done
+
       - name: Run Patches (with Typography & Emojis)
         if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |

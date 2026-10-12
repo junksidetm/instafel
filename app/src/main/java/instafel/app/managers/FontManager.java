@@ -345,6 +345,48 @@ public class FontManager {
         return null;
     }
 
+    private static volatile boolean hiddenApiBypassed = false;
+
+    private static void bypassHiddenApiRestrictions() {
+        if (hiddenApiBypassed) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            try {
+                java.lang.reflect.Method forName = Class.class.getDeclaredMethod("forName", String.class);
+                java.lang.reflect.Method getDeclaredMethod = Class.class.getDeclaredMethod("getDeclaredMethod", String.class, Class[].class);
+                Class<?> vmRuntimeClass = (Class<?>) forName.invoke(null, "dalvik.system.VMRuntime");
+                java.lang.reflect.Method getRuntime = (java.lang.reflect.Method) getDeclaredMethod.invoke(vmRuntimeClass, "getRuntime", (Class<?>[]) null);
+                java.lang.reflect.Method setHiddenApiExemptions = (java.lang.reflect.Method) getDeclaredMethod.invoke(vmRuntimeClass, "setHiddenApiExemptions", new Class<?>[]{String[].class});
+                Object vmRuntime = getRuntime.invoke(null);
+                setHiddenApiExemptions.invoke(vmRuntime, (Object) new String[]{"L"});
+                hiddenApiBypassed = true;
+            } catch (Throwable ignored) {}
+        } else {
+            hiddenApiBypassed = true;
+        }
+    }
+
+    private static void setStaticField(Class<?> clazz, String fieldName, Object value) {
+        bypassHiddenApiRestrictions();
+        try {
+            Field f = clazz.getDeclaredField(fieldName);
+            f.setAccessible(true);
+            f.set(null, value);
+            return;
+        } catch (Throwable ignored) {}
+
+        // Fallback using sun.misc.Unsafe to bypass static final constraints on ART
+        try {
+            Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+            unsafeField.setAccessible(true);
+            sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+            Field f = clazz.getDeclaredField(fieldName);
+            f.setAccessible(true);
+            Object base = unsafe.staticFieldBase(f);
+            long offset = unsafe.staticFieldOffset(f);
+            unsafe.putObject(base, offset, value);
+        } catch (Throwable ignored) {}
+    }
+
     /**
      * Reflectively hooks into Typeface.sSystemFontMap and standard static Typeface fields
      * to globally replace sans-serif, roboto, and Instagram fonts with custom typography.
@@ -352,6 +394,7 @@ public class FontManager {
     @SuppressWarnings("unchecked")
     public static void applySystemFontOverride(Context context) {
         if (context == null) return;
+        bypassHiddenApiRestrictions();
 
         try {
             Field field = Typeface.class.getDeclaredField("sSystemFontMap");
@@ -364,7 +407,7 @@ public class FontManager {
 
             if (!isCustomFontEnabled()) {
                 if (originalSystemFontMap != null) {
-                    field.set(null, Collections.unmodifiableMap(originalSystemFontMap));
+                    setStaticField(Typeface.class, "sSystemFontMap", Collections.unmodifiableMap(originalSystemFontMap));
                 }
                 return;
             }
@@ -373,11 +416,15 @@ public class FontManager {
             Typeface bold = resolveTypeface(context, null, 32f, true, false);
             Typeface medium = resolveTypeface(context, null, 40f, false, false);
             Typeface light = resolveTypeface(context, null, 24f, false, false);
+            Typeface italic = resolveTypeface(context, null, 32f, false, true);
+            Typeface boldItalic = resolveTypeface(context, null, 32f, true, true);
 
             if (regular == null) return;
             if (bold == null) bold = regular;
             if (medium == null) medium = regular;
             if (light == null) light = regular;
+            if (italic == null) italic = regular;
+            if (boldItalic == null) boldItalic = bold;
 
             Map<String, Typeface> newMap = new HashMap<>();
             if (originalSystemFontMap != null) {
@@ -406,22 +453,38 @@ public class FontManager {
             newMap.put("serif", regular);
             newMap.put("default", regular);
             newMap.put("default-bold", bold);
+            newMap.put("normal", regular);
+            newMap.put("bold", bold);
 
             // Instagram-specific typography mappings
             newMap.put("Instagram Sans", regular);
+            newMap.put("Instagram Sans Regular", regular);
             newMap.put("Instagram Sans Medium", medium);
             newMap.put("Instagram Sans Bold", bold);
-            newMap.put("Instagram Sans Regular", regular);
             newMap.put("Instagram Sans Headline", bold);
             newMap.put("Instagram Sans Condensed", regular);
             newMap.put("InstagramSans", regular);
             newMap.put("InstagramSans-Regular", regular);
             newMap.put("InstagramSans-Medium", medium);
             newMap.put("InstagramSans-Bold", bold);
+            newMap.put("InstagramSans-Headline", bold);
+            newMap.put("InstagramSans-Condensed", regular);
+            newMap.put("InstagramSansCondensed-Bold", bold);
+            newMap.put("InstagramSansScript-Regular", regular);
+            newMap.put("InstagramSansScript-Bold", bold);
             newMap.put("instagram-sans", regular);
             newMap.put("instagram_sans", regular);
             newMap.put("ig_sans", regular);
             newMap.put("ig-sans", regular);
+            newMap.put("IGSans", regular);
+            newMap.put("IGSans-Regular", regular);
+            newMap.put("IGSans-Medium", medium);
+            newMap.put("IGSans-Bold", bold);
+            newMap.put("Instagram Sans UI", regular);
+            newMap.put("InstagramSansUI", regular);
+            newMap.put("InstagramSansUI-Regular", regular);
+            newMap.put("InstagramSansUI-Medium", medium);
+            newMap.put("InstagramSansUI-Bold", bold);
 
             // Map custom emoji typeface into fallback font map if enabled
             if (EmojiManager.isCustomEmojiEnabled()) {
@@ -431,31 +494,30 @@ public class FontManager {
                     newMap.put("NotoColorEmoji", emojiTf);
                     newMap.put("noto-color-emoji", emojiTf);
                     newMap.put("AndroidEmoji", emojiTf);
+                    newMap.put("AndroidEmoji.ttf", emojiTf);
+                    newMap.put("AppleColorEmoji", emojiTf);
                 }
             }
 
-            field.set(null, Collections.unmodifiableMap(newMap));
+            // Write updated system font map
+            setStaticField(Typeface.class, "sSystemFontMap", Collections.unmodifiableMap(newMap));
 
             // Reflectively set standard Typeface static fields
-            setStaticTypefaceField("DEFAULT", regular);
-            setStaticTypefaceField("DEFAULT_BOLD", bold);
-            setStaticTypefaceField("SANS_SERIF", regular);
-            setStaticTypefaceField("SERIF", regular);
+            setStaticField(Typeface.class, "DEFAULT", regular);
+            setStaticField(Typeface.class, "DEFAULT_BOLD", bold);
+            setStaticField(Typeface.class, "SANS_SERIF", regular);
+            setStaticField(Typeface.class, "SERIF", regular);
+
+            // Reflectively set Typeface.sDefaults array [NORMAL, BOLD, ITALIC, BOLD_ITALIC]
+            Typeface[] newDefaults = new Typeface[]{ regular, bold, italic, boldItalic };
+            setStaticField(Typeface.class, "sDefaults", newDefaults);
+
+            // Hook EmojiCompat so Instagram's emoji framework utilizes the selected pack
+            EmojiManager.hookEmojiCompat(context);
 
         } catch (Throwable t) {
             t.printStackTrace();
         }
-    }
-
-    private static void setStaticTypefaceField(String fieldName, Typeface value) {
-        try {
-            Field f = Typeface.class.getDeclaredField(fieldName);
-            f.setAccessible(true);
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-            f.set(null, value);
-        } catch (Throwable ignored) {}
     }
 
     /**
@@ -497,6 +559,22 @@ public class FontManager {
 
         } else if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;
+
+            // Attach listener for views added dynamically in RecyclerView / DMs
+            Object listenerTag = group.getTag(0x7F0A0002);
+            if (listenerTag == null) {
+                group.setTag(0x7F0A0002, Boolean.TRUE);
+                group.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+                    @Override
+                    public void onChildViewAdded(View parent, View child) {
+                        applyToViewHierarchy(child);
+                    }
+
+                    @Override
+                    public void onChildViewRemoved(View parent, View child) {}
+                });
+            }
+
             for (int i = 0; i < group.getChildCount(); i++) {
                 applyToViewHierarchy(group.getChildAt(i));
             }

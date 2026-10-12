@@ -44,11 +44,19 @@ public class EmojiManager {
     private static Context appContext;
     private static PreferenceManager preferenceManager;
 
-    // Unicode Emoji sequence matcher (base pictographs, symbols, variation selectors, modifiers, flags, and ZWJ sequences)
+    // Comprehensive Unicode Emoji pattern matching all base pictographs, flags, keycaps, modifiers, and multi-codepoint ZWJ sequences
     private static final Pattern EMOJI_PATTERN = Pattern.compile(
-            "([\\uD83C-\\uD83E][\\uDC00-\\uDFFF]|[\\u2600-\\u27BF]|[\\u2B50-\\u2B55]|[\\u23E9-\\u23FA]|[\\u2194-\\u21AA])" +
-            "([\\uFE0E\\uFE0F]|[\\uD83C][\\uDFFB-\\uDFFF])?" +
-            "([\\u200D]([\\uD83C-\\uD83E][\\uDC00-\\uDFFF]|[\\u2600-\\u27BF])([\\uFE0E\\uFE0F]|[\\uD83C][\\uDFFB-\\uDFFF])?)*"
+            "(?:[\\uD83C\\uDDE6-\\uD83C\\uDDFF]{2})" + // Flags (Regional Indicators pair)
+            "|(?:[0-9#*]\\uFE0F?\\u20E3)" + // Keycaps
+            "|(?:[\\u203C-\\u3299\\u2194-\\u21AA\\u231A-\\u23FA\\u24C2\\u25AA-\\u27BF\\u2934-\\u2B55]" +
+            "|[\\uD83C-\\uD83E][\\uDC00-\\uDFFF])" + // Base symbols & pictographs
+            "(?:[\\uFE0E\\uFE0F])?" + // Presentation selector
+            "(?:[\\uD83C][\\uDFFB-\\uDFFF])?" + // Skin tone modifier
+            "(?:\\u200D" + // ZWJ sequences
+            "(?:[\\u203C-\\u3299\\u2194-\\u21AA\\u231A-\\u23FA\\u24C2\\u25AA-\\u27BF\\u2934-\\u2B55]" +
+            "|[\\uD83C-\\uD83E][\\uDC00-\\uDFFF])" +
+            "(?:[\\uFE0E\\uFE0F])?" +
+            "(?:[\\uD83C][\\uDFFB-\\uDFFF])?)*"
     );
 
     public static void init(Context context) {
@@ -56,6 +64,7 @@ public class EmojiManager {
         appContext = context.getApplicationContext();
         preferenceManager = new PreferenceManager(appContext);
         ensureAssetsExtracted(appContext);
+        hookEmojiCompat(appContext);
     }
 
     public static void clearCache() {
@@ -195,10 +204,64 @@ public class EmojiManager {
         return spannable;
     }
 
+    /**
+     * Reflectively configures androidx.emoji2.text.EmojiCompat metadata repository
+     * to render all emojis across Instagram using the custom emoji typeface.
+     */
+    public static void hookEmojiCompat(Context context) {
+        if (context == null || !isCustomEmojiEnabled()) return;
+        Typeface emojiTf = getEmojiTypeface(context);
+        if (emojiTf == null) return;
+
+        try {
+            Class<?> emojiCompatClass = Class.forName("androidx.emoji2.text.EmojiCompat");
+            java.lang.reflect.Method isConfiguredMethod = emojiCompatClass.getMethod("isConfigured");
+            boolean isConfigured = (boolean) isConfiguredMethod.invoke(null);
+            if (!isConfigured) return;
+
+            java.lang.reflect.Method getMethod = emojiCompatClass.getMethod("get");
+            Object compatInstance = getMethod.invoke(null);
+            if (compatInstance == null) return;
+
+            // In EmojiCompat, mHelper contains mMetadataRepo
+            for (java.lang.reflect.Field f : emojiCompatClass.getDeclaredFields()) {
+                if (f.getName().equals("mHelper") || f.getType().getName().contains("CompatInternal")) {
+                    f.setAccessible(true);
+                    Object helper = f.get(compatInstance);
+                    if (helper != null) {
+                        for (java.lang.reflect.Field hf : helper.getClass().getDeclaredFields()) {
+                            if (hf.getType().getName().contains("MetadataRepo")) {
+                                hf.setAccessible(true);
+                                Object metadataRepo = hf.get(helper);
+                                if (metadataRepo != null) {
+                                    for (java.lang.reflect.Field mf : metadataRepo.getClass().getDeclaredFields()) {
+                                        if (mf.getType().equals(Typeface.class)) {
+                                            mf.setAccessible(true);
+                                            mf.set(metadataRepo, emojiTf);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Throwable ignored) {}
+    }
+
     public static void applyToTextView(TextView tv) {
         if (tv == null || !isCustomEmojiEnabled()) return;
         Typeface emojiTf = getEmojiTypeface(tv.getContext());
         if (emojiTf == null) return;
+
+        // Apply spans directly if text already contains emojis
+        CharSequence text = tv.getText();
+        if (text != null && text.length() > 0) {
+            CharSequence transformed = applyEmojiSpans(text, emojiTf);
+            if (transformed != text) {
+                tv.setText(transformed, TextView.BufferType.SPANNABLE);
+            }
+        }
 
         TransformationMethod currentMethod = tv.getTransformationMethod();
         if (!(currentMethod instanceof EmojiTransformationMethod)) {

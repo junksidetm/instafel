@@ -56,6 +56,35 @@ class FontEmojiPatch : InstafelPatch() {
                 }
                 success("Assets directory structure configured for fonts and emojis.")
             }
+        },
+        @PInfos.TaskInfo("Alias native Instagram brand fonts in assets")
+        object : InstafelTask() {
+            override fun execute() {
+                val fontsDir = File(Env.PROJECT_DIR, "sources/assets/fonts")
+                if (fontsDir.exists()) {
+                    val sfProRegular = File(fontsDir, "sf_pro/SF-Pro-Text-Regular.otf")
+                    val sfProMedium = File(fontsDir, "sf_pro/SF-Pro-Text-Medium.otf")
+                    val sfProBold = File(fontsDir, "sf_pro/SF-Pro-Text-Bold.otf")
+                    val googleSansFlex = File(fontsDir, "GoogleSansFlex.ttf")
+
+                    fontsDir.listFiles()?.forEach { file ->
+                        if (file.isFile && (file.name.startsWith("InstagramSans") || file.name.startsWith("Instagram_Sans"))) {
+                            val replacement = when {
+                                file.name.contains("Bold", ignoreCase = true) && sfProBold.exists() -> sfProBold
+                                file.name.contains("Medium", ignoreCase = true) && sfProMedium.exists() -> sfProMedium
+                                sfProRegular.exists() -> sfProRegular
+                                googleSansFlex.exists() -> googleSansFlex
+                                else -> null
+                            }
+                            if (replacement != null) {
+                                Log.info("Aliasing native brand font: ${file.name} with ${replacement.name}")
+                                replacement.copyTo(file, overwrite = true)
+                            }
+                        }
+                    }
+                }
+                success("Native Instagram brand fonts aliased to custom typography.")
+            }
         }
     )
 }
