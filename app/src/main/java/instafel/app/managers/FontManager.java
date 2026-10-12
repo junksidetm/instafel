@@ -374,16 +374,20 @@ public class FontManager {
             return;
         } catch (Throwable ignored) {}
 
-        // Fallback using sun.misc.Unsafe to bypass static final constraints on ART
+        // Fallback using sun.misc.Unsafe via pure reflection to bypass static final constraints on ART
         try {
-            Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+            Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+            Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
             unsafeField.setAccessible(true);
-            sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+            Object unsafe = unsafeField.get(null);
+            Method staticFieldBase = unsafeClass.getMethod("staticFieldBase", Field.class);
+            Method staticFieldOffset = unsafeClass.getMethod("staticFieldOffset", Field.class);
+            Method putObject = unsafeClass.getMethod("putObject", Object.class, long.class, Object.class);
             Field f = clazz.getDeclaredField(fieldName);
             f.setAccessible(true);
-            Object base = unsafe.staticFieldBase(f);
-            long offset = unsafe.staticFieldOffset(f);
-            unsafe.putObject(base, offset, value);
+            Object base = staticFieldBase.invoke(unsafe, f);
+            long offset = (long) staticFieldOffset.invoke(unsafe, f);
+            putObject.invoke(unsafe, base, offset, value);
         } catch (Throwable ignored) {}
     }
 

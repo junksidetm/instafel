@@ -199,3 +199,12 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.github/workflows/generate_instafel.yml`
   - `Version.md`
 - **Status**: 100% (Completed & Synced)
+
+## [2026-10-12 15:32:00 IST] - Pure Reflection Unsafe Compatibility for Java 21 Compiler
+- **Action**: Resolved Java 21 compilation error (`error: package sun.misc does not exist`) in `FontManager.java` by converting direct `sun.misc.Unsafe` class references to pure runtime reflection.
+- **Root Cause & Architectural Remediation**:
+  - Direct import or reference to `sun.misc.Unsafe.class` fails on modern JDKs (Java 21) when compiled against modern Android SDK targets.
+  - Switched `setStaticField` to resolve `sun.misc.Unsafe` via `Class.forName("sun.misc.Unsafe")` and access `theUnsafe`, `staticFieldBase`, `staticFieldOffset`, and `putObject` via reflective `Method.invoke`, ensuring zero compile-time dependencies on `sun.misc` while preserving ART static final field mutation capability at runtime.
+- **Components Modified**:
+  - `app/src/main/java/instafel/app/managers/FontManager.java`
+- **Status**: 100% (Completed)
