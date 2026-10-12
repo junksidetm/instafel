@@ -182,3 +182,20 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `README.md`
   - `Version.md`
 - **Status**: 100% (Completed & Synced)
+
+## [2026-10-12 15:25:00 IST] - Global Typography & Emoji Engine Overhaul Across All Views & Direct Messages
+- **Action**: Resolved issue where custom fonts and emojis only functioned on isolated direct message text bubbles and bypassed feeds, reels, stories, comments, bios, and recycled list items.
+- **Root Cause & Architectural Remediation**:
+  - **Android Hidden API Restrictions:** Unsealed Android 9+ (API 28-36) runtime reflection constraints via `dalvik.system.VMRuntime.setHiddenApiExemptions(["L"])`, allowing unrestricted mutation of `Typeface.sSystemFontMap` and `sDefaults`.
+  - **ART Reflection Compatibility:** Replaced invalid `modifiers` field reflection with `sun.misc.Unsafe` and accessible field setters, guaranteeing static final field persistence for `DEFAULT`, `DEFAULT_BOLD`, `SANS_SERIF`, `SERIF`, and `Typeface.sDefaults` array (`[NORMAL, BOLD, ITALIC, BOLD_ITALIC]`).
+  - **Comprehensive Font Mapping:** Expanded `sSystemFontMap` overrides to comprehensively map all variants of `Instagram Sans` (`Instagram Sans Regular`, `Medium`, `Bold`, `Headline`, `Condensed`, `Script`, `UI`, `ig_sans`, `IGSans`).
+  - **Native Brand Font Aliasing:** Added APK assets patcher task and workflow bundling step that directly replaces Instagram's bundled `InstagramSans*.ttf`/`InstagramSans*.otf` files with SF Pro and Google Sans Flex in `sources/assets/fonts/` for complete native asset loader coverage.
+  - **Dynamic Hierarchy Interception:** Added `ViewGroup.OnHierarchyChangeListener` to capture dynamically attached views in `RecyclerView`s and DM conversation threads, ensuring all incoming and outgoing messages are styled instantly upon attachment.
+  - **Full Emoji Unicode Engine & EmojiCompat Integration:** Upgraded `EMOJI_PATTERN` to full Unicode specification (capturing flags, keycaps, skin-tone modifiers, presentation selectors, and multi-codepoint ZWJ sequences) and reflectively hooked `androidx.emoji2.text.EmojiCompat.mMetadataRepo.mTypeface` to render all app-wide emojis using the active custom emoji suite (Apple iOS 26.4 / Google 3D).
+- **Components Modified**:
+  - `app/src/main/java/instafel/app/managers/FontManager.java`
+  - `app/src/main/java/instafel/app/managers/EmojiManager.java`
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FontEmojiPatch.kt`
+  - `.github/workflows/generate_instafel.yml`
+  - `Version.md`
+- **Status**: 100% (Completed & Synced)
