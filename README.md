@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/junksidetm/instafel/releases"><img src="https://img.shields.io/github/v/release/junksidetm/instafel?style=flat-square&color=blue&label=Latest%20Release" alt="Latest Release"></a>
-  <a href="https://github.com/junksidetm/Alpha-Insta"><img src="https://img.shields.io/badge/Upstream%20Ingest-Alpha--Insta-orange?style=flat-square" alt="Alpha-Insta"></a>
+  <a href="https://gitlab.com/mrdarksidetm/Alpha-Insta"><img src="https://img.shields.io/badge/Upstream%20Ingest-Alpha--Insta-orange?style=flat-square" alt="Alpha-Insta"></a>
   <a href="https://gitlab.com/mrdarksidetm/instafel"><img src="https://img.shields.io/badge/Mirror-GitLab-fc6d26?style=flat-square&logo=gitlab" alt="GitLab Mirror"></a>
   <a href="https://codeberg.org/mrdarksidetm/instafel"><img src="https://img.shields.io/badge/Mirror-Codeberg-2185d0?style=flat-square&logo=codeberg" alt="Codeberg Mirror"></a>
   <img src="https://img.shields.io/badge/Architecture-arm64--v8a-success?style=flat-square" alt="Architecture">
@@ -44,7 +44,7 @@ Instafel dynamically replaces standard fonts across all UI elements with calibra
 
 ### 2. 🎨 Custom Emoji Suites
 - **Apple iOS Emojis (iOS 26.4)**: Render authentic Apple emojis across direct messages, comments, reels, and stories.
-- **Google 3D Emojis**: Crisp, modern fluent/3D vector emoji glyphs sourced directly from [junksidetm/Google-Emoji-3D](https://github.com/junksidetm/Google-Emoji-3D).
+- **Google 3D Emojis**: Crisp, modern fluent/3D vector emoji glyphs sourced directly from [junksidetm/Google-Emoji-3D](https://gitlab.com/mrdarksidetm/Google-Emoji-3D).
 
 ### 3. ⚙️ Dedicated Instafel Settings Menu
 Access all mod settings directly inside the app under **Instafel Settings → Typography & Emojis**:
@@ -79,11 +79,11 @@ flowchart LR
     F -->|"Production APK Signing"| G["GitHub Releases<br/>(Unclone + Clone APKs)"]
 ```
 
-1. **Upstream Ingest ([Alpha-Insta](https://github.com/junksidetm/Alpha-Insta))**:
+1. **Upstream Ingest ([Alpha-Insta](https://gitlab.com/mrdarksidetm/Alpha-Insta))**:
    - Monitored daily at `03:00 UTC` for new Instagram Alpha releases.
    - Bypasses Cloudflare anti-bot verification via authentic `APKUpdater-v0` token headers.
    - Extracts APKM bundles and merges multi-APK splits into a clean standalone base APK using `APKEditor`.
-2. **Downstream Modding ([Instafel](https://github.com/junksidetm/instafel))**:
+2. **Downstream Modding ([Instafel](https://gitlab.com/mrdarksidetm/instafel))**:
    - Gated check: Checks `Alpha-Insta` releases against already modded versions. If no new Alpha was published that day, the workflow terminates within 5 seconds to conserve resources.
    - Downloads the pre-merged standalone APK directly from `Alpha-Insta`.
    - Injects custom fonts and emoji smali hooks.
@@ -108,7 +108,7 @@ Every release on [GitHub Releases](https://github.com/junksidetm/instafel/releas
 
 Following our decentralized multi-platform policy, Instafel maintains active functional parity across all official hosts:
 
-- **GitHub (Primary)**: [`https://github.com/junksidetm/instafel`](https://github.com/junksidetm/instafel)
+- **GitHub (Primary)**: [`https://github.com/junksidetm/instafel`](https://gitlab.com/mrdarksidetm/instafel)
 - **GitLab (Mirror)**: [`https://gitlab.com/mrdarksidetm/instafel`](https://gitlab.com/mrdarksidetm/instafel)
 - **Codeberg (Mirror)**: [`https://codeberg.org/mrdarksidetm/instafel`](https://codeberg.org/mrdarksidetm/instafel)
 
@@ -125,7 +125,7 @@ Instafel is **not affiliated with, maintained by, or endorsed by Meta or Instagr
 ---
 
 <p align="center">
-  <i>Forked and extended with ❤️ by <a href="https://github.com/junksidetm">junksidetm</a></i><br/>
+  <i>Forked and extended with ❤️ by <a href="https://gitlab.com/mrdarksidetm">junksidetm</a></i><br/>
   <i>Original base created by <a href="https://github.com/mamiiblt">mamiiblt</a></i>
 </p>
 
@@ -133,7 +133,7 @@ Instafel is **not affiliated with, maintained by, or endorsed by Meta or Instagr
 ---
 
 <div align="center">
-<a href="https://github.com/junksidetm/junksidetm.github.io">
+<a href="https://gitlab.com/mrdarksidetm/mrdarksidetm.gitlab.io">
   <img src="https://raw.githubusercontent.com/junksidetm/assests/981a029b9f59b8ed581bbee9be318c86da52dcca/Images/Codium/Codium%20Banner/SVG/Codium%20-%20Banner%20Black.svg" width="360"></a>
 <br><br>
 <sub>
