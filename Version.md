@@ -1524,3 +1524,20 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.github/workflows/generate_instafel.yml` & `.forgejo/workflows/generate_instafel.yml`: Explicit sequencing of `font_emoji` and `fix_startup_touch_crash`.
   - `Version.md`: Appended tracking entry pursuant to strict append protocol.
 - **Status**: 100% (Completed & Verified)
+
+
+## [2026-10-28 21:30:00 IST] - Fix Layout Inflation Crash & Resolve CI Kotlin Patcher Compilation
+- **Action**: Resolved fatal runtime layout inflation crash (`android.view.InflateException: Binary XML file line #40: Binary XML file line #82: You must supply a layout_height attribute` on `InstagramMainActivity`), eliminated CI Kotlin compilation failure (`Unresolved reference 'getAllSmaliFiles'`), engineered an automated layout dimension audit and healing engine (`FixLayoutInflationPatch`), and deferred decor view traversal to prevent premature decor initialization during activity creation.
+- **Root Cause & Architectural Remediation**:
+  - **CI Compilation Resolution**: In `SmaliUtils.kt`, added `getAllSmaliFiles(): List<File>` with defensive folder existence checks. In `FixStartupTouchCrash.kt`, migrated delegate fallback search to `SearchUtils.getFileContainsAllCords` to guarantee coroutine safety and rapid bytecode discovery.
+  - **Layout Inflation Healing Engine (`FixLayoutInflationPatch`)**: Instagram Alpha `v454` (`453.0.0.55.79`) contains decompiled layouts (e.g. at line #40 / line #82) where Meta's build optimizations or Redex stripped `android:layout_height` or where `<include>` tags declared width/id without mandatory companion height attributes. On Android 15 (SDK 35), `ViewGroup.generateLayoutParams` strictly enforces that every view within a ViewGroup defines a valid layout height dimension. Engineered `FixLayoutInflationPatch` to traverse all decompiled layout XML files in `sources/res/layout*`, automatically injecting missing `android:layout_height="wrap_content"` and `android:layout_width="match_parent"` onto view and `<include>` tags before AAPT2 recompilation, guaranteeing complete binary XML schema compliance.
+  - **Premature Window Decor Safeguard**: In `InitializeInstafel.java`, removed eager `FontManager.applyToActivity(activity)` invocation from `onActivityCreated()`, deferring view hierarchy styling strictly to `onActivityResumed()`. This prevents premature `PhoneWindow.installDecor()` invocations before `InstagramMainActivity.onCreate()` has set its own theme and completed view inflation.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/SmaliUtils.kt`: Added `getAllSmaliFiles(): List<File>`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixStartupTouchCrash.kt`: Fixed compilation with `SearchUtils.getFileContainsAllCords` and imports.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixLayoutInflationPatch.kt`: Created automated layout dimension auditor and healing patch.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/InstafelStuffs.kt`: Registered `FixLayoutInflationPatch` into the `instafel` patch group.
+  - `app/src/main/java/instafel/app/utils/InitializeInstafel.java`: Deferred decor traversal from `onActivityCreated` to `onActivityResumed`.
+  - `.github/workflows/generate_instafel.yml` & `.forgejo/workflows/generate_instafel.yml`: Sequenced `fix_layout_inflation` in workflow patch execution pipelines.
+  - `Version.md`: Appended tracking entry pursuant to strict append protocol.
+- **Status**: 100% (Completed & Verified)

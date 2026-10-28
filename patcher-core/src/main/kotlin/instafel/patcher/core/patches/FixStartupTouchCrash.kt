@@ -13,6 +13,8 @@ import instafel.patcher.core.utils.SearchUtils
 import instafel.patcher.core.utils.patch.InstafelPatch
 import instafel.patcher.core.utils.patch.InstafelTask
 import instafel.patcher.core.utils.patch.PInfos
+import instafel.patcher.core.utils.modals.FileSearchResult
+import kotlinx.coroutines.runBlocking
 import org.apache.commons.io.FileUtils
 import java.io.File
 

@@ -52,9 +52,7 @@ public class InitializeInstafel {
             application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
                 @Override
                 public void onActivityCreated(Activity activity, android.os.Bundle savedInstanceState) {
-                    try {
-                        instafel.app.managers.FontManager.applyToActivity(activity);
-                    } catch (Throwable ignored) {}
+                    // Defer decor view traversal to onActivityResumed to ensure activity layout inflation completes cleanly
                 }
 
                 @Override

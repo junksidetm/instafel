@@ -31,6 +31,7 @@ class InstafelStuffs: InstafelPatchGroup() {
         ChangeHomeLongClick::class,
         AddAppTrigger::class,
         FontEmojiPatch::class,
-        FixStartupTouchCrash::class
+        FixStartupTouchCrash::class,
+        FixLayoutInflationPatch::class
     )
 }

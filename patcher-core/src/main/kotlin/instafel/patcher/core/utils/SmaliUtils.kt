@@ -136,6 +136,22 @@ class SmaliUtils(val projectDir: String) {
         return lineDataList
     }
 
+    fun getAllSmaliFiles(): List<File> {
+        return smaliFolders.flatMap { smaliFolder ->
+            val folder = File(smaliFolder.absolutePath)
+            if (folder.exists() && folder.isDirectory) {
+                val files: Collection<File> = FileUtils.listFiles(
+                    folder,
+                    TrueFileFilter.INSTANCE,
+                    TrueFileFilter.INSTANCE
+                )
+                files.toList()
+            } else {
+                emptyList()
+            }
+        }
+    }
+
     fun getSmaliFilesByName(fileNamePart: String): List<File> {
         return smaliFolders.flatMap { smaliFolder ->
             val folder = File(smaliFolder.absolutePath)

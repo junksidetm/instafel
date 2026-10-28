@@ -175,7 +175,7 @@ jobs:
           if [ -z "$PATCHER_JAR" ] || [ ! -f "$PATCHER_JAR" ]; then
             PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
           fi
-          java -jar "$PATCHER_JAR" run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel font_emoji fix_startup_touch_crash change_channel_name clone
+          java -jar "$PATCHER_JAR" run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel font_emoji fix_startup_touch_crash fix_layout_inflation change_channel_name clone
 
       - name: Build & Sign Final APK
         if: steps.prepare_apk.outputs.skip_build != 'true'
