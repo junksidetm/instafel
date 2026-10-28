@@ -30,6 +30,7 @@ class InstafelStuffs: InstafelPatchGroup() {
         AddInitInstafel::class,
         ChangeHomeLongClick::class,
         AddAppTrigger::class,
-        FontEmojiPatch::class
+        FontEmojiPatch::class,
+        FixStartupTouchCrash::class
     )
 }
