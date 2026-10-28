@@ -36,7 +36,7 @@ public class CrashManager {
         this.ctx = ctx;
     }
 
-    public void saveLog(Throwable throwable) {
+    public JSONObject saveLog(Throwable throwable) {
         try {
             JSONObject logObject = new JSONObject();
             JSONObject appData = new JSONObject();
@@ -68,9 +68,49 @@ public class CrashManager {
             logObject.put("date", sdf.format(new Date()));
 
             addLogIntoCrashFile(logObject);
+            return logObject;
         } catch (Exception e) {
-            Toast.makeText(ctx, "Error while creating crashlog object", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String formatCrashLog(JSONObject logObject) {
+        if (logObject == null) return "Unknown crash";
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("=== Instafel Crash Diagnostic Log ===\n");
+            sb.append("Date: ").append(logObject.optString("date", "N/A")).append("\n\n");
+
+            JSONObject appData = logObject.optJSONObject("appData");
+            if (appData != null) {
+                sb.append("[App Details]\n");
+                sb.append("Instafel Version: ").append(appData.optString("ifl_ver", "N/A")).append("\n");
+                sb.append("Instagram Version: ").append(appData.optString("ig_ver", "N/A")).append("\n");
+                sb.append("Instagram Version Code: ").append(appData.optString("ig_ver_code", "N/A")).append("\n");
+                sb.append("Variant Type: ").append(appData.optString("ig_itype", "N/A")).append("\n\n");
+            }
+
+            JSONObject dev = logObject.optJSONObject("deviceData");
+            if (dev != null) {
+                sb.append("[Device Details]\n");
+                sb.append("Android OS: ").append(dev.optString("aver", "N/A")).append(" (SDK ").append(dev.optString("sdk", "N/A")).append(")\n");
+                sb.append("Model: ").append(dev.optString("model", "N/A")).append("\n");
+                sb.append("Brand: ").append(dev.optString("brand", "N/A")).append("\n");
+                sb.append("Product: ").append(dev.optString("product", "N/A")).append("\n\n");
+            }
+
+            JSONObject crash = logObject.optJSONObject("crashData");
+            if (crash != null) {
+                sb.append("[Exception Details]\n");
+                sb.append("Class: ").append(crash.optString("class", "N/A")).append("\n");
+                sb.append("Message: ").append(crash.optString("msg", "N/A")).append("\n\n");
+                sb.append("[Stack Trace]\n");
+                sb.append(crash.optString("trace", "No stack trace available")).append("\n");
+            }
+            return sb.toString();
+        } catch (Throwable t) {
+            return logObject.toString();
         }
     }
 

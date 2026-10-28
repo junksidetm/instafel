@@ -1478,3 +1478,20 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.forgejo/workflows/generate_instafel.yml`: Synchronized Codeberg mirror workflow.
   - `Version.md`: Appended tracking entry.
 - **Status**: 100% (Completed & Verified)
+
+## [2026-10-28 14:38:00 IST] - Interactive Crash Log Displayer, Font Reflection Hardening & Deliverables Streamlining
+- **Action**: Resolved startup crash on launch ("Instafel crashed." white screen), engineered an interactive, auto-copying Error Log Displayer Activity running in a separate process (`:crash`), hardened typography lifecycle callbacks against reflection/type exceptions, and streamlined release deliverables to exactly two canonical APKs (`instafel-arm64-v8a-unclone.apk` and `instafel-arm64-v8a-clone.apk`).
+- **Root Cause & Architectural Remediation**:
+  - **Startup Crash Remediation**: In `FontManager.java`, when custom fonts were disabled, `setStaticField(Typeface.class, "sSystemFontMap", Collections.unmodifiableMap(...))` was inadvertently replacing the system font map with an unmodifiable map. When the OS font engine attempted internal font caching on Android 14/15, it triggered `UnsupportedOperationException` and crashed the app on early launch. Removed the fatal `sSystemFontMap` modification when custom fonts are disabled, and guarded all lifecycle typography callbacks in `FontManager.java` and `InitializeInstafel.java` with defensive `try/catch` and null safety.
+  - **Interactive Crash Log Displayer**: Upgraded `InstafelCrashHandler.java` to automatically format comprehensive diagnostics (IFL version, IG version, Android version, device model, exception class, and full stack trace) and instantly copy the entire text to the Android `ClipboardManager` so the user can immediately paste it. Configured `ifl_a_crash_viewer` with `android:process=":crash"` in `AndroidManifest.xml` and `ifl_data.xml` so the crash viewer UI launches in an independent OS process, complete with one-tap copy, share intents, and full stack trace inspection.
+  - **Streamlined Release Deliverables (Approach A)**: Updated `.github/workflows/generate_instafel.yml` and `.forgejo/workflows/generate_instafel.yml` to package exclusively the two canonical deliverables (`instafel-arm64-v8a-unclone.apk` and `instafel-arm64-v8a-clone.apk`), eliminating redundant version-stamped duplicates.
+- **Components Modified**:
+  - `app/src/main/java/instafel/app/managers/FontManager.java`: Eliminated unmodifiable map override when custom fonts disabled; added null safety and error guards in `applyToActivity`.
+  - `app/src/main/java/instafel/app/utils/InitializeInstafel.java`: Guarded application lifecycle callbacks and manager initialization against uncaught runtime exceptions.
+  - `app/src/main/java/instafel/app/managers/CrashManager.java`: Added `formatCrashLog` builder producing formatted diagnostic reports.
+  - `app/src/main/java/instafel/app/utils/InstafelCrashHandler.java`: Added auto-clipboard copy, main looper user toast, and independent process launch of `ifl_a_crash_viewer`.
+  - `app/src/main/java/instafel/app/activity/crash_manager/ifl_a_crash_viewer.java`: Added auto-copy on launch and user confirmation toast on copy.
+  - `app/src/main/AndroidManifest.xml` & `patcher-core/src/main/resources/ifl_sources/ifl_data.xml`: Assigned `android:process=":crash"` to `ifl_a_crash_viewer`.
+  - `.github/workflows/generate_instafel.yml` & `.forgejo/workflows/generate_instafel.yml`: Streamlined deliverables to 2 canonical APKs.
+  - `Version.md`: Appended tracking entry.
+- **Status**: 100% (Completed & Verified)

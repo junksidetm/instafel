@@ -19,7 +19,7 @@
             <activity android:exported="false" android:name="instafel.app.activity.devmode.ifl_a_devmode_import"/>
             <activity android:exported="false" android:name="instafel.app.activity.devmode.analyzer.ifl_a_devmode_backup_analyzer"/>
             <activity android:exported="false" android:name="instafel.app.activity.devmode.analyzer.ifl_a_devmode_backup_analyzer_menu"/>
-            <activity android:exported="false" android:name="instafel.app.activity.crash_manager.ifl_a_crash_viewer"/>
+            <activity android:exported="false" android:name="instafel.app.activity.crash_manager.ifl_a_crash_viewer" android:process=":crash"/>
             <activity android:exported="false" android:name="instafel.app.activity.crash_manager.ifl_a_crash_reports"/>
             <activity android:exported="false" android:name="instafel.app.activity.library.ifl_a_library_menu"/>
             <activity android:exported="false" android:name="instafel.app.activity.library.backup.ifl_a_library_backup"/>

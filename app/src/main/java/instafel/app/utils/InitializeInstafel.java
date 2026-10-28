@@ -28,39 +28,60 @@ public class InitializeInstafel {
 
     public static void setContext(Application application) {
         ctx = application;
-        Locale iflLocale = LocalizationUtils.getIflLocale(ctx);
-        InstafelEnv.IFL_LANG = iflLocale;
-        Log.v("IFL", "InstafelEnv.IFL_LANG is set to " + LocalizationUtils.convertToLangCode(iflLocale));
+        try {
+            Locale iflLocale = LocalizationUtils.getIflLocale(ctx);
+            InstafelEnv.IFL_LANG = iflLocale;
+            Log.v("IFL", "InstafelEnv.IFL_LANG is set to " + LocalizationUtils.convertToLangCode(iflLocale));
+        } catch (Throwable t) {
+            Log.e("IFL", "Failed to initialize locale", t);
+        }
 
-        instafel.app.managers.FontManager.init(application);
-        instafel.app.managers.EmojiManager.init(application);
+        try {
+            instafel.app.managers.FontManager.init(application);
+        } catch (Throwable t) {
+            Log.e("IFL", "Failed to initialize FontManager", t);
+        }
 
-        application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, android.os.Bundle savedInstanceState) {
-                instafel.app.managers.FontManager.applyToActivity(activity);
-            }
+        try {
+            instafel.app.managers.EmojiManager.init(application);
+        } catch (Throwable t) {
+            Log.e("IFL", "Failed to initialize EmojiManager", t);
+        }
 
-            @Override
-            public void onActivityStarted(Activity activity) {}
+        try {
+            application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+                @Override
+                public void onActivityCreated(Activity activity, android.os.Bundle savedInstanceState) {
+                    try {
+                        instafel.app.managers.FontManager.applyToActivity(activity);
+                    } catch (Throwable ignored) {}
+                }
 
-            @Override
-            public void onActivityResumed(Activity activity) {
-                instafel.app.managers.FontManager.applyToActivity(activity);
-            }
+                @Override
+                public void onActivityStarted(Activity activity) {}
 
-            @Override
-            public void onActivityPaused(Activity activity) {}
+                @Override
+                public void onActivityResumed(Activity activity) {
+                    try {
+                        instafel.app.managers.FontManager.applyToActivity(activity);
+                    } catch (Throwable ignored) {}
+                }
 
-            @Override
-            public void onActivityStopped(Activity activity) {}
+                @Override
+                public void onActivityPaused(Activity activity) {}
 
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, android.os.Bundle outState) {}
+                @Override
+                public void onActivityStopped(Activity activity) {}
 
-            @Override
-            public void onActivityDestroyed(Activity activity) {}
-        });
+                @Override
+                public void onActivitySaveInstanceState(Activity activity, android.os.Bundle outState) {}
+
+                @Override
+                public void onActivityDestroyed(Activity activity) {}
+            });
+        } catch (Throwable t) {
+            Log.e("IFL", "Failed to register activity lifecycle callbacks", t);
+        }
     }
 
     public static void triggerCheckUpdates(Activity activity) {

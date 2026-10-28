@@ -411,9 +411,6 @@ public class FontManager {
             }
 
             if (!isCustomFontEnabled()) {
-                if (originalSystemFontMap != null) {
-                    setStaticField(Typeface.class, "sSystemFontMap", Collections.unmodifiableMap(originalSystemFontMap));
-                }
                 return;
             }
 
@@ -591,28 +588,40 @@ public class FontManager {
      */
     public static void applyToActivity(Activity activity) {
         if (activity == null) return;
-        applySystemFontOverride(activity);
+        try {
+            applySystemFontOverride(activity);
 
-        if (!isCustomFontEnabled() && !EmojiManager.isCustomEmojiEnabled()) return;
+            if (!isCustomFontEnabled() && !EmojiManager.isCustomEmojiEnabled()) return;
 
-        View decor = activity.getWindow().getDecorView();
-        decor.post(() -> applyToViewHierarchy(decor));
-
-        // Attach listener for dynamic Instagram Litho / RecyclerView components
-        ViewTreeObserver observer = decor.getViewTreeObserver();
-        if (observer != null && observer.isAlive()) {
-            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                private long lastRun = 0;
-
-                @Override
-                public void onGlobalLayout() {
-                    long now = System.currentTimeMillis();
-                    if (now - lastRun > 150) { // Throttled to avoid unnecessary cycles
-                        lastRun = now;
-                        applyToViewHierarchy(decor);
-                    }
-                }
+            if (activity.getWindow() == null) return;
+            View decor = activity.getWindow().getDecorView();
+            if (decor == null) return;
+            decor.post(() -> {
+                try {
+                    applyToViewHierarchy(decor);
+                } catch (Throwable ignored) {}
             });
+
+            // Attach listener for dynamic Instagram Litho / RecyclerView components
+            ViewTreeObserver observer = decor.getViewTreeObserver();
+            if (observer != null && observer.isAlive()) {
+                observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    private long lastRun = 0;
+
+                    @Override
+                    public void onGlobalLayout() {
+                        try {
+                            long now = System.currentTimeMillis();
+                            if (now - lastRun > 150) {
+                                lastRun = now;
+                                applyToViewHierarchy(decor);
+                            }
+                        } catch (Throwable ignored) {}
+                    }
+                });
+            }
+        } catch (Throwable t) {
+            android.util.Log.e("FontManager", "Error in applyToActivity", t);
         }
     }
 }

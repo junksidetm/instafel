@@ -106,7 +106,11 @@ public class ifl_a_crash_viewer extends AppCompatActivity {
             this.tileStackTrace.setOnClickListener(view -> ((ClipboardManager) ifl_a_crash_viewer.this.getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("ifl_log_clip", ifl_a_crash_viewer.this.tileStackTrace.getSubtitle())));
             this.tileInfo.setOnClickListener(view -> ((ClipboardManager) ifl_a_crash_viewer.this.getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("ifl_log_clip", ifl_a_crash_viewer.this.tileInfo.getSubtitle())));
             String stringLog = createStringLog(crashlog);
-            tileCopy.setOnClickListener(v -> copyText(stringLog));
+            copyText(stringLog);
+            tileCopy.setOnClickListener(v -> {
+                copyText(stringLog);
+                android.widget.Toast.makeText(this, "Crash log copied to clipboard! Ready to paste.", android.widget.Toast.LENGTH_SHORT).show();
+            });
 
             tileShare.setOnClickListener(v -> {
                 Intent sendIntent = new Intent();
