@@ -1541,3 +1541,14 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.github/workflows/generate_instafel.yml` & `.forgejo/workflows/generate_instafel.yml`: Sequenced `fix_layout_inflation` in workflow patch execution pipelines.
   - `Version.md`: Appended tracking entry pursuant to strict append protocol.
 - **Status**: 100% (Completed & Verified)
+
+## [2026-10-28 21:45:00 IST] - Kotlin Invariant Return Type Resolution for Patcher Tasks
+- **Action**: Resolved Kotlin compiler error in `:patcher-core:compileKotlin` (`Return type of 'fun initializeTasks(): MutableList<out InstafelTask>' is not a subtype of the return type of the overridden member 'fun initializeTasks(): MutableList<InstafelTask>'`) by explicitly annotating the overridden method signature with `: MutableList<InstafelTask>`.
+- **Root Cause & Architectural Remediation**:
+  - In `FixLayoutInflationPatch.kt` and `FixStartupTouchCrash.kt`, returning single-element anonymous `InstafelTask` instances from `initializeTasks() = mutableListOf(...)` caused the Kotlin compiler to infer `MutableList<<anonymous object : InstafelTask>>`. Because `MutableList<T>` is invariant in Kotlin, `MutableList<<anonymous>>` cannot satisfy the base contract `abstract fun initializeTasks(): MutableList<InstafelTask>` defined in `InstafelPatch.kt`.
+  - Enforced explicit `: MutableList<InstafelTask>` return types on `initializeTasks()` across both patches, ensuring type covariance bounds are respected and compilation succeeds smoothly during the engine build phase.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixLayoutInflationPatch.kt`: Annotated explicit `MutableList<InstafelTask>` return type on `initializeTasks()`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixStartupTouchCrash.kt`: Annotated explicit `MutableList<InstafelTask>` return type on `initializeTasks()`.
+  - `Version.md`: Appended tracking entry pursuant to strict append protocol.
+- **Status**: 100% (Completed & Verified)

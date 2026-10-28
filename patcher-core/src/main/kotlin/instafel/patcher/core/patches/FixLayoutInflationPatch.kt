@@ -30,7 +30,7 @@ import javax.xml.transform.stream.StreamResult
 )
 class FixLayoutInflationPatch : InstafelPatch() {
 
-    override fun initializeTasks() = mutableListOf(
+    override fun initializeTasks(): MutableList<InstafelTask> = mutableListOf(
         @PInfos.TaskInfo("Audit and heal layout XML files across sources/res/layout*")
         object : InstafelTask() {
             override fun execute() {

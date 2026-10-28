@@ -28,7 +28,7 @@ class FixStartupTouchCrash : InstafelPatch() {
 
     private var delegateClassFile: File? = null
 
-    override fun initializeTasks() = mutableListOf(
+    override fun initializeTasks(): MutableList<InstafelTask> = mutableListOf(
 
         @PInfos.TaskInfo("Harden TabBarTouchDelegate against uninflated tab bar")
         object : InstafelTask() {
