@@ -1,34 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  ~ (c) 2026 Muhammed Ali Bulut & Antigravity, All rights reserved.
   ~
-  ~ See LICENSE file in repository root for copy file of license. For copyright
-  ~ notices, technical issues, feedback, or any other related to this code file or
-  ~ project, please contact me via mamii@mamii.dev or other ways.
+  ~ Material 3 Expressive Design System Color Tokens (https://m3.material.io/)
   -->
 
 <resources>
-    <color name="ifl_black">#212328</color>
-    <color name="ifl_white">#FFFFFFFF</color>
+    <!-- BASE PALETTE -->
+    <color name="ifl_black">#191C1E</color>
+    <color name="ifl_white">#F1F2F6</color>
     <color name="ifl_yellow">#FFEB3B</color>
 
-    <!-- IFL DARK THEME -->
-    <color name="ifl_sub_line">#949494</color>
+    <!-- M3 DARK THEME (AMOLED PITCH BLACK & SURFACE CONTAINER) -->
+    <color name="ifl_sub_line">#9DA1A8</color>
     <color name="ifl_background_color">#000000</color>
-    <color name="ifl_tile_color">#1A1C1F</color>
-    <!-- IFL LIGHT THEME -->
-    <color name="ifl_sub_line_light">#12151B</color>
-    <color name="ifl_background_color_light">#FFFFFF</color>
-    <color name="ifl_tile_color_light">#DFDFDF</color>
+    <color name="ifl_tile_color">#1E2025</color>
+    <color name="ifl_tile_color_elevated">#282A30</color>
 
-    <!-- IFL SHEET THEMES -->
-    <color name="ifl_sheet_background_dark">#222328</color>
-    <color name="ifl_sheet_text_main_dark">#fafbfd</color>
-    <color name="ifl_sheet_text_sub_dark">#a3abb2</color>
+    <!-- M3 LIGHT THEME (CLEAN SURFACE & SOFT TONAL CONTAINER) -->
+    <color name="ifl_sub_line_light">#44474E</color>
+    <color name="ifl_background_color_light">#F8F9FA</color>
+    <color name="ifl_tile_color_light">#EEF0F6</color>
+    <color name="ifl_tile_color_elevated_light">#E4E7ED</color>
 
-    <!-- IFL SHEET THEMES -->
-    <color name="ifl_sheet_background_light">#ffffff</color>
-    <color name="ifl_sheet_text_main_light">#05060a</color>
-    <color name="ifl_sheet_text_sub_light">#767980</color>
+    <!-- M3 BOTTOM SHEET QUICK MENU (DARK) -->
+    <color name="ifl_sheet_background_dark">#14161A</color>
+    <color name="ifl_sheet_text_main_dark">#F1F2F6</color>
+    <color name="ifl_sheet_text_sub_dark">#9DA1A8</color>
+    <color name="ifl_sheet_handle_dark">#49454F</color>
+    <color name="ifl_sheet_item_bg_dark">#1F2228</color>
 
+    <!-- M3 BOTTOM SHEET QUICK MENU (LIGHT) -->
+    <color name="ifl_sheet_background_light">#F3F4F9</color>
+    <color name="ifl_sheet_text_main_light">#191C1E</color>
+    <color name="ifl_sheet_text_sub_light">#44474E</color>
+    <color name="ifl_sheet_handle_light">#CAC4D0</color>
+    <color name="ifl_sheet_item_bg_light">#E4E7ED</color>
+
+    <!-- M3 EXPRESSIVE ACCENT & COMPONENT TOKENS -->
+    <color name="ifl_m3_primary_dark">#84CFFF</color>
+    <color name="ifl_m3_on_primary_dark">#00344F</color>
+    <color name="ifl_m3_primary_container_dark">#004B70</color>
+    <color name="ifl_m3_on_primary_container_dark">#C8E6FF</color>
+    <color name="ifl_m3_surface_container_highest_dark">#33353C</color>
+    <color name="ifl_m3_outline_dark">#8C9199</color>
+
+    <color name="ifl_m3_primary_light">#006492</color>
+    <color name="ifl_m3_on_primary_light">#FFFFFF</color>
+    <color name="ifl_m3_primary_container_light">#C8E6FF</color>
+    <color name="ifl_m3_on_primary_container_light">#001E2F</color>
+    <color name="ifl_m3_surface_container_highest_light">#D9DCE3</color>
+    <color name="ifl_m3_outline_light">#72777F</color>
 </resources>

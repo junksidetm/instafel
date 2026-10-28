@@ -1426,3 +1426,31 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `settings.gradle.kts`: Decoupled legacy `:updater` module from root build.
   - `Version.md`: Appended tracking entry.
 - **Status**: 100% (Completed & Verified)
+
+## [2026-10-28 12:20:00 IST] - Material 3 Expressive UI Overhaul & Switch Modernization
+- **Action**: Completely overhauled the color palette, switch/toggle components, tile containers, and quick menu bottom sheet in strict alignment with Google's Material 3 Expressive design specifications (`https://m3.material.io/`).
+- **Architectural Enhancements & Component Modifications**:
+  - `app/src/main/res/values/colors.xml`:
+    - Refactored dark theme to AMOLED pitch black background (`#000000`) paired with Material 3 Surface Container (`#1E2025`) and Surface Container High (`#282A30`).
+    - Added expressive primary tokens (`#84CFFF` dark, `#006492` light) and high-contrast on-surface typography tones (`#F1F2F6` dark, `#191C1E` light).
+    - Refactored quick menu bottom sheet color roles with dedicated drag handle and squircle container tokens (`#14161A` dark background, `#F3F4F9` light background).
+  - `app/src/main/res/values/attrs.xml` & `styles.xml`:
+    - Defined semantic M3 attributes (`ifl_attr_primary`, `ifl_attr_on_primary`, `ifl_attr_switch_track_checked`, `ifl_attr_switch_track_unchecked`, `ifl_attr_switch_thumb_checked`, `ifl_attr_switch_thumb_unchecked`).
+    - Configured dynamic theme mappings in `ifl_theme_light` and `ifl_theme_dark`.
+  - `app/src/main/res/color/ifl_switch_thumb_color.xml` & `ifl_switch_track_color.xml`:
+    - Created M3 Expressive state-list selectors dynamically tinting switch track to Primary (`#84CFFF` / `#006492`) when checked and Surface Container Highest when unchecked, and switch thumb to On-Primary when checked and Outline when unchecked.
+  - `app/src/main/res/layout/ifl_ui_tilelarge_switch.xml`:
+    - Unconstrained Switch dimensions from rigid 43dp x 43dp boxes to natural `wrap_content` with standard M3 `52dp` minimum track width and `splitTrack="false"`.
+    - Wired M3 thumb and track state-list color selectors.
+    - Upgraded CardView container corner radius from 17dp to 24dp (M3 Medium Shape Token).
+  - `app/src/main/java/instafel/app/ui/TileLargeSwitch.java`:
+    - Enabled whole-card tactile click interaction toggling the switch when tapping anywhere on the tile.
+  - `app/src/main/res/layout/ifl_ui_tilecompact.xml`, `ifl_ui_tilelarge.xml`, `ifl_ui_tilelarge_edittext.xml`, `ifl_at_typography.xml`:
+    - Standardized container CardView corner radii across all settings tiles to 24dp for a unified Material 3 aesthetic.
+  - `app/src/main/java/instafel/app/utils/InstafelHomeSheet.java`:
+    - Redesigned Instafel Quick Menu bottom sheet with a 28dp top corner radius (0dp bottom).
+    - Integrated a centered Material 3 drag handle indicator pill (32dp x 4dp with 100dp pill radius).
+    - Enhanced app icon and action rows with expressive squircle badge containers (12dp–14dp rounded corners, M3 container tint, primary accent icon tint).
+    - Added native ripple feedback (`?android:attr/selectableItemBackground`) and subtle divider between header and actions.
+  - `Version.md`: Appended tracking entry.
+- **Status**: 100% (Completed & Verified)

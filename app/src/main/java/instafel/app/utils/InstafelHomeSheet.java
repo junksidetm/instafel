@@ -1,5 +1,5 @@
 /*
- * (c) 2026 Muhammed Ali Bulut, All rights reserved.
+ * (c) 2026 Muhammed Ali Bulut & Antigravity, All rights reserved.
  *
  * See LICENSE file in repository root for copy file of license. For copyright
  * notices, technical issues, feedback, or any other related to this code file or
@@ -59,7 +59,7 @@ public class InstafelHomeSheet {
 
         LinearLayout root = new LinearLayout(act);
         root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(16), dp(16), dp(16), dp(16));
+        root.setPadding(dp(16), dp(8), dp(16), dp(24));
 
         GradientDrawable bg = new GradientDrawable();
         if (sheetThemeMode == 0 || sheetThemeMode == 1) {
@@ -68,13 +68,31 @@ public class InstafelHomeSheet {
             bg.setColor(act.getResources().getColor(R.color.ifl_sheet_background_light));
         }
         bg.setCornerRadii(new float[]{
-                dp(28), dp(28),
-                dp(28), dp(28),
-                dp(28), dp(28),
-                dp(28), dp(28)
+                dp(28), dp(28), // Top-left
+                dp(28), dp(28), // Top-right
+                0, 0,           // Bottom-right
+                0, 0            // Bottom-left
         });
         root.setBackground(bg);
-        root.addView(buildSheetContent());
+
+        // Material 3 Drag Handle Pill
+        View dragHandle = new View(act);
+        LinearLayout.LayoutParams handleLp = new LinearLayout.LayoutParams(dp(32), dp(4));
+        handleLp.gravity = Gravity.CENTER_HORIZONTAL;
+        handleLp.topMargin = dp(4);
+        handleLp.bottomMargin = dp(16);
+        dragHandle.setLayoutParams(handleLp);
+
+        GradientDrawable handleBg = new GradientDrawable();
+        int handleColor = (sheetThemeMode == 0 || sheetThemeMode == 1)
+                ? act.getResources().getColor(R.color.ifl_sheet_handle_dark)
+                : act.getResources().getColor(R.color.ifl_sheet_handle_light);
+        handleBg.setColor(handleColor);
+        handleBg.setCornerRadius(dp(100));
+        dragHandle.setBackground(handleBg);
+        root.addView(dragHandle);
+
+        buildSheetContent(root);
 
         dialog.setContentView(root);
         Window window = dialog.getWindow();
@@ -93,46 +111,52 @@ public class InstafelHomeSheet {
         this.sheetDialog = dialog;
     }
 
-    private LinearLayout buildSheetContent() {
-        int bgColor = 0;
-        int mainText = 0;
-        int subText = 0;
+    private void buildSheetContent(LinearLayout root) {
+        int mainText;
+        int subText;
+        int primaryAccent;
         if (sheetThemeMode == 0 || sheetThemeMode == 1) {
-            bgColor = act.getResources().getColor(R.color.ifl_sheet_background_dark);
             mainText = act.getResources().getColor(R.color.ifl_sheet_text_main_dark);
             subText = act.getResources().getColor(R.color.ifl_sheet_text_sub_dark);
+            primaryAccent = act.getResources().getColor(R.color.ifl_m3_primary_dark);
         } else {
-            bgColor = act.getResources().getColor(R.color.ifl_sheet_background_light);
             mainText = act.getResources().getColor(R.color.ifl_sheet_text_main_light);
             subText = act.getResources().getColor(R.color.ifl_sheet_text_sub_light);
+            primaryAccent = act.getResources().getColor(R.color.ifl_m3_primary_light);
         }
 
-        LinearLayout root = new LinearLayout(act);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
-        root.setBackgroundColor(bgColor);
-
+        // Header
         LinearLayout header = new LinearLayout(act);
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
-        header.setPadding(dp(15), dp(15), dp(15), dp(15));
+        header.setPadding(dp(8), dp(4), dp(8), dp(12));
         header.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         ));
 
+        // Expressive App Icon Squircle Container
+        LinearLayout iconContainer = new LinearLayout(act);
+        LinearLayout.LayoutParams icContainerLp = new LinearLayout.LayoutParams(dp(48), dp(48));
+        iconContainer.setLayoutParams(icContainerLp);
+        iconContainer.setGravity(Gravity.CENTER);
+        GradientDrawable icBg = new GradientDrawable();
+        icBg.setColor((sheetThemeMode == 0 || sheetThemeMode == 1)
+                ? act.getResources().getColor(R.color.ifl_sheet_item_bg_dark)
+                : act.getResources().getColor(R.color.ifl_sheet_item_bg_light));
+        icBg.setCornerRadius(dp(14));
+        iconContainer.setBackground(icBg);
+
         ImageView icon = new ImageView(act);
-        LinearLayout.LayoutParams iconLp = new LinearLayout.LayoutParams(dp(49), dp(49));
+        LinearLayout.LayoutParams iconLp = new LinearLayout.LayoutParams(dp(28), dp(28));
         icon.setLayoutParams(iconLp);
         icon.setImageResource(R.drawable.ifl_instafel);
-        icon.setColorFilter(mainText);
+        icon.setColorFilter(primaryAccent);
         icon.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        iconContainer.addView(icon);
 
         View space = new View(act);
-        space.setLayoutParams(new LinearLayout.LayoutParams(dp(15), 1));
+        space.setLayoutParams(new LinearLayout.LayoutParams(dp(14), 1));
 
         LinearLayout textBox = new LinearLayout(act);
         textBox.setOrientation(LinearLayout.VERTICAL);
@@ -159,15 +183,28 @@ public class InstafelHomeSheet {
                 )
         );
         sub.setTextColor(subText);
-        sub.setTextSize(14);
+        sub.setTextSize(13);
 
         textBox.addView(title);
         textBox.addView(sub);
-        header.addView(icon);
+        header.addView(iconContainer);
         header.addView(space);
         header.addView(textBox);
 
         root.addView(header);
+
+        // Subtle M3 Divider
+        View divider = new View(act);
+        LinearLayout.LayoutParams divLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                dp(1)
+        );
+        divLp.setMargins(dp(8), dp(6), dp(8), dp(10));
+        divider.setLayoutParams(divLp);
+        divider.setBackgroundColor((sheetThemeMode == 0 || sheetThemeMode == 1)
+                ? 0x1AFFFFFF
+                : 0x1A000000);
+        root.addView(divider);
 
         root.addView(menuItem(
                 R.drawable.ifl_menu,
@@ -191,8 +228,6 @@ public class InstafelHomeSheet {
                 R.drawable.ifl_sheet_reload,
                 LocalizedStringGetter.getDialogLocalizedString(act, iflLocale, "ifl_d5_06"),
                 mainText, v -> restartInstagram()));
-
-        return root;
     }
 
     public void restartInstagram() {
@@ -217,22 +252,47 @@ public class InstafelHomeSheet {
     }
 
     private View menuItem(int iconRes, String text, int color, View.OnClickListener onClickListener) {
-
         LinearLayout item = new LinearLayout(act);
         item.setOrientation(LinearLayout.HORIZONTAL);
         item.setGravity(Gravity.CENTER_VERTICAL);
-        item.setPadding(dp(15), dp(12), dp(15), dp(12));
+        LinearLayout.LayoutParams itemLp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        itemLp.setMargins(0, dp(2), 0, dp(2));
+        item.setLayoutParams(itemLp);
+        item.setPadding(dp(8), dp(8), dp(8), dp(8));
         item.setClickable(true);
         item.setFocusable(true);
+
+        TypedValue outValue = new TypedValue();
+        act.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+        item.setBackgroundResource(outValue.resourceId);
         item.setOnClickListener(onClickListener);
+
+        // Expressive Squircle Icon Container
+        LinearLayout iconContainer = new LinearLayout(act);
+        LinearLayout.LayoutParams icContainerLp = new LinearLayout.LayoutParams(dp(38), dp(38));
+        iconContainer.setLayoutParams(icContainerLp);
+        iconContainer.setGravity(Gravity.CENTER);
+        GradientDrawable icBg = new GradientDrawable();
+        icBg.setColor((sheetThemeMode == 0 || sheetThemeMode == 1)
+                ? act.getResources().getColor(R.color.ifl_sheet_item_bg_dark)
+                : act.getResources().getColor(R.color.ifl_sheet_item_bg_light));
+        icBg.setCornerRadius(dp(12));
+        iconContainer.setBackground(icBg);
 
         ImageView icon = new ImageView(act);
         icon.setImageResource(iconRes);
-        icon.setColorFilter(color);
-        icon.setLayoutParams(new LinearLayout.LayoutParams(dp(24), dp(24)));
+        int primaryAccent = (sheetThemeMode == 0 || sheetThemeMode == 1)
+                ? act.getResources().getColor(R.color.ifl_m3_primary_dark)
+                : act.getResources().getColor(R.color.ifl_m3_primary_light);
+        icon.setColorFilter(primaryAccent);
+        icon.setLayoutParams(new LinearLayout.LayoutParams(dp(20), dp(20)));
+        iconContainer.addView(icon);
 
         View spacer = new View(act);
-        spacer.setLayoutParams(new LinearLayout.LayoutParams(dp(12), 1));
+        spacer.setLayoutParams(new LinearLayout.LayoutParams(dp(14), 1));
 
         TextView tv = new TextView(act);
         tv.setText(text);
@@ -242,7 +302,7 @@ public class InstafelHomeSheet {
         tv.setEllipsize(TextUtils.TruncateAt.END);
         tv.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
-        item.addView(icon);
+        item.addView(iconContainer);
         item.addView(spacer);
         item.addView(tv);
 

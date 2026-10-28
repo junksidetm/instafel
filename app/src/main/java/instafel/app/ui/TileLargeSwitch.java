@@ -1,5 +1,5 @@
 /*
- * (c) 2026 Muhammed Ali Bulut, All rights reserved.
+ * (c) 2026 Muhammed Ali Bulut & Antigravity, All rights reserved.
  *
  * See LICENSE file in repository root for copy file of license. For copyright
  * notices, technical issues, feedback, or any other related to this code file or
@@ -57,6 +57,14 @@ public class TileLargeSwitch extends CardView {
             setIconPadding(attrManager.getInteger(AttributeManager.ifl_attr_ui_iconPadding, 4));
             attrManager.recycleTypedArray();
         }
+
+        setClickable(true);
+        setFocusable(true);
+        setOnClickListener(v -> {
+            if (switchView != null) {
+                switchView.toggle();
+            }
+        });
     }
 
     public Switch getSwitchView() {

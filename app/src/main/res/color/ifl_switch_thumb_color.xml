@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Material 3 Expressive Switch Thumb Color Selector -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:color="?attr/ifl_attr_switch_thumb_checked" />
+    <item android:color="?attr/ifl_attr_switch_thumb_unchecked" />
+</selector>

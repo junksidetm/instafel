@@ -16,6 +16,14 @@
     <attr name="ifl_attr_subtitle_color" format="color" />
     <attr name="ifl_attr_iview_tint" format="color" />
 
+    <!-- M3 EXPRESSIVE ATTRS -->
+    <attr name="ifl_attr_primary" format="color" />
+    <attr name="ifl_attr_on_primary" format="color" />
+    <attr name="ifl_attr_switch_track_checked" format="color" />
+    <attr name="ifl_attr_switch_track_unchecked" format="color" />
+    <attr name="ifl_attr_switch_thumb_checked" format="color" />
+    <attr name="ifl_attr_switch_thumb_unchecked" format="color" />
+
     <!-- UI ATTRS -->
     <attr name="ifl_attr_ui_titleText" format="string" />
     <attr name="ifl_attr_ui_subtitleText" format="string" />

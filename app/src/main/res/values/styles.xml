@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  ~ (c) 2026 Muhammed Ali Bulut & Antigravity, All rights reserved.
   ~
-  ~ See LICENSE file in repository root for copy file of license. For copyright
-  ~ notices, technical issues, feedback, or any other related to this code file or
-  ~ project, please contact me via mamii@mamii.dev or other ways.
+  ~ Material 3 Expressive Themes (https://m3.material.io/)
   -->
 
 <resources>
@@ -15,14 +13,26 @@
         <item name="ifl_attr_subtitle_color">@color/ifl_sub_line_light</item>
         <item name="ifl_attr_title_color">@color/ifl_black</item>
         <item name="ifl_attr_iview_tint">@color/ifl_black</item>
+        <item name="ifl_attr_primary">@color/ifl_m3_primary_light</item>
+        <item name="ifl_attr_on_primary">@color/ifl_m3_on_primary_light</item>
+        <item name="ifl_attr_switch_track_checked">@color/ifl_m3_primary_light</item>
+        <item name="ifl_attr_switch_track_unchecked">@color/ifl_m3_surface_container_highest_light</item>
+        <item name="ifl_attr_switch_thumb_checked">@color/ifl_m3_on_primary_light</item>
+        <item name="ifl_attr_switch_thumb_unchecked">@color/ifl_m3_outline_light</item>
     </style>
 
     <style name="ifl_theme_dark" parent="ifl_theme_light" >
         <item name="ifl_attr_background_color">@color/ifl_background_color</item>
-        <item name="ifl_attr_tile_color">#25282D</item>
-        <item name="ifl_attr_tile_background">#25282D</item>
+        <item name="ifl_attr_tile_color">@color/ifl_tile_color</item>
+        <item name="ifl_attr_tile_background">@color/ifl_tile_color</item>
         <item name="ifl_attr_subtitle_color">@color/ifl_sub_line</item>
         <item name="ifl_attr_title_color">@color/ifl_white</item>
         <item name="ifl_attr_iview_tint">@color/ifl_white</item>
+        <item name="ifl_attr_primary">@color/ifl_m3_primary_dark</item>
+        <item name="ifl_attr_on_primary">@color/ifl_m3_on_primary_dark</item>
+        <item name="ifl_attr_switch_track_checked">@color/ifl_m3_primary_dark</item>
+        <item name="ifl_attr_switch_track_unchecked">@color/ifl_m3_surface_container_highest_dark</item>
+        <item name="ifl_attr_switch_thumb_checked">@color/ifl_m3_on_primary_dark</item>
+        <item name="ifl_attr_switch_thumb_unchecked">@color/ifl_m3_outline_dark</item>
     </style>
 </resources>
