@@ -1464,3 +1464,17 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/CreateIflZip.kt`: Added `copyRawResource("color")` invocation and safety bounds.
   - `Version.md`: Appended tracking entry.
 - **Status**: 100% (Completed & Verified)
+
+## [2026-10-28 13:35:00 IST] - Standalone Monolithic APK Compatibility & Dynamic Release Asset Canonicalization
+- **Action**: Resolved installation failure (`INSTALL_FAILED_INCOMPATIBLE` / "App not installed as app isn't compatible with your phone" / Obtanium `failureIncompatible [INSTAFEL]`) across package managers by automatically stripping Google Play Split APK enforcements from `AndroidManifest.xml`, modernized `README.md` Direct Link to dynamically target the latest unclone release, and updated release pipelines to publish canonical unversioned APK assets.
+- **Root Cause & Architectural Remediation**:
+  - **Incompatibility Elimination**: Base Instagram Alpha APKs distributed through Google Play App Bundles contain `android:isSplitRequired="true"`, `android:requiredSplitTypes="base__density"`, and Google Play split metadata (`com.android.vending.splits.required`, `com.android.vending.splits`, `com.android.stamp.*`). Android's system `PackageManager` rejects installing standalone monolithic APKs when split requirements are declared. Added automated manifest sanitization in `CopyInstafelSources.kt` to strip all split attributes and split metadata before APK compilation.
+  - **Dynamic Direct Download**: Updated `README.md` to reference `https://github.com/junksidetm/instafel/releases/latest/download/instafel-arm64-v8a-unclone.apk` rather than pinned version tags (`v451.0.0.0.70`).
+  - **Canonical Asset Packaging**: Extended `.github/workflows/generate_instafel.yml` and `.forgejo/workflows/generate_instafel.yml` to package canonical deliverables (`instafel-arm64-v8a-unclone.apk` and `instafel-arm64-v8a-clone.apk`) alongside versioned files, ensuring GitHub's `/releases/latest/download/` endpoint consistently resolves.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/general/CopyInstafelSources.kt`: Integrated DOM sanitization removing `android:isSplitRequired`, `requiredSplitTypes`, `splitTypes`, and `com.android.vending.splits.*` / `com.android.stamp.*` metadata.
+  - `README.md`: Modernized direct link badge URL.
+  - `.github/workflows/generate_instafel.yml`: Added canonical APK asset packaging.
+  - `.forgejo/workflows/generate_instafel.yml`: Synchronized Codeberg mirror workflow.
+  - `Version.md`: Appended tracking entry.
+- **Status**: 100% (Completed & Verified)

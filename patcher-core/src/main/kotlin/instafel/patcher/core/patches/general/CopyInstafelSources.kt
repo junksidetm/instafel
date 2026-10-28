@@ -25,6 +25,8 @@ import instafel.patcher.core.utils.resources.Resources
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.PrefixFileFilter
 import org.apache.commons.io.filefilter.TrueFileFilter
+import org.w3c.dom.Element
+import org.w3c.dom.Node
 import java.io.File
 import java.util.Locale
 
@@ -98,6 +100,47 @@ class CopyInstafelSources: InstafelPatch() {
                     setAttribute("android:name", "android.permission.REQUEST_INSTALL_PACKAGES")
                 }
                 manifestElement.appendChild(requestPermEl)
+
+                // Strip split APK enforcement attributes for standalone monolithic APK installation
+                val splitAttrs = listOf(
+                    "android:isSplitRequired",
+                    "android:requiredSplitTypes",
+                    "android:splitTypes",
+                    "isSplitRequired",
+                    "requiredSplitTypes",
+                    "splitTypes"
+                )
+                splitAttrs.forEach { attr ->
+                    if (manifestElement.hasAttribute(attr)) {
+                        manifestElement.removeAttribute(attr)
+                    }
+                }
+
+                val attrsToRemove = mutableListOf<String>()
+                for (i in 0 until manifestElement.attributes.length) {
+                    val attr = manifestElement.attributes.item(i)
+                    val attrName = attr.localName ?: attr.nodeName
+                    if (attrName.contains("isSplitRequired", ignoreCase = true) || attrName.contains("SplitTypes", ignoreCase = true)) {
+                        attrsToRemove.add(attr.nodeName)
+                    }
+                }
+                attrsToRemove.forEach { manifestElement.removeAttribute(it) }
+
+                // Strip Google Play split & distribution stamp metadata
+                val metaDataNodes = manifestDoc.getElementsByTagName("meta-data")
+                val nodesToRemove = mutableListOf<Node>()
+                for (i in 0 until metaDataNodes.length) {
+                    val node = metaDataNodes.item(i)
+                    if (node is Element) {
+                        val name = node.getAttribute("android:name").ifEmpty { node.getAttribute("name") }
+                        if (name.startsWith("com.android.vending.splits") ||
+                            name.startsWith("com.android.vending.derived.apk.id") ||
+                            name.startsWith("com.android.stamp.")) {
+                            nodesToRemove.add(node)
+                        }
+                    }
+                }
+                nodesToRemove.forEach { it.parentNode?.removeChild(it) }
 
                 ResourceParser.buildXmlFile(manifestDoc, manifestFile) // build manifest xml file
                 success("Activities & providers added successfully from Instafel base")
