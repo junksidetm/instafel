@@ -100,6 +100,7 @@ fun copyRawSources() {
 
     copyRawResource("drawable")  
     copyRawResource("layout")  
+    copyRawResource("color")  
     parseResources()  
 
     Utils.zipDirectory(  
@@ -123,6 +124,10 @@ fun copyRawResource(folderName: String) {
     Log.info("Copying $folderName files...")  
 
     val source = File(Utils.mergePaths(Env.PROJECT_DIR, "sources", "res", folderName))  
+    if (!source.exists() || !source.isDirectory) {  
+        Log.info("Folder $folderName does not exist, skipping.")  
+        return  
+    }  
     val dest = File(Utils.mergePaths(Env.PROJECT_DIR, "res", folderName))  
 
     val files: Collection<File> = FileUtils.listFiles(  

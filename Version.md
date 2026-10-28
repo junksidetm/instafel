@@ -1454,3 +1454,13 @@ All notable changes to the `instafel` repository are documented in this file in 
     - Added native ripple feedback (`?android:attr/selectableItemBackground`) and subtle divider between header and actions.
   - `Version.md`: Appended tracking entry.
 - **Status**: 100% (Completed & Verified)
+
+## [2026-10-28 12:41:00 IST] - Resource Bundling Pipeline: Color State-List XML Extraction Resolution
+- **Action**: Resolved AAPT2 resource linking failure (`no definition for declared symbol 'com.instagram.android:color/ifl_switch_thumb_color'`) during final APK compilation by extending `CreateIflZip.kt` to extract and bundle `res/color/` directory assets.
+- **Root Cause & Architectural Remediation**:
+  - `CreateIflZip.kt` previously extracted only `res/drawable/` and `res/layout/` into `ifl_resources.zip`. Consequently, state-list color selectors placed in `app/src/main/res/color/` were omitted from the decompiled APK target directory, causing AAPT2 link failure during Apktool resource rebuilding.
+  - Added `copyRawResource("color")` and defensive existence checks in `CreateIflZip.kt` ensuring all M3 switch track and thumb state-list selectors are packaged into `ifl_resources.zip` and unpacked into Instagram's `/res/color/` folder.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/CreateIflZip.kt`: Added `copyRawResource("color")` invocation and safety bounds.
+  - `Version.md`: Appended tracking entry.
+- **Status**: 100% (Completed & Verified)
