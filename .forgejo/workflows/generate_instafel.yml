@@ -3,6 +3,8 @@ name: Generate Instafel (Full Online Pipeline)
 on:
   schedule:
     # Run automatically every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+    # Run daily at 03:30 UTC (30 minutes after Alpha-Insta 03:00 UTC crawler), plus 6-hour polling
+    - cron: '30 3 * * *'
     - cron: '0 */6 * * *'
   repository_dispatch:
     types: [generate_instafel]
