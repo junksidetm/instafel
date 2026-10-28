@@ -50,7 +50,7 @@
                     android:id="@+id/ifl_developer_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Developed with ❤️ by "
+                    android:text="Maintained with ❤️ by "
                     android:textColor="?ifl_attr_subtitle_color"
                     android:textSize="15.0sp"/>
 
@@ -58,7 +58,7 @@
                     android:id="@+id/ifl_developer_title_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="mamiiblt"
+                    android:text="junksidetm"
                     android:textColor="?ifl_attr_subtitle_color"
                     android:textSize="15.0sp"
                     android:textStyle="bold"/>
@@ -86,7 +86,7 @@
                                      app:ifl_attr_ui_iconRes="@drawable/ifl_approve_backup"
                                      app:ifl_attr_ui_spaceBottom="visible"
                                      app:ifl_attr_ui_titleText="@string/ifl_a0_02"/>
-        <instafel.app.ui.TileCompact android:visibility="gone" android:id="@+id/ifl_tile_menu_lang"
+        <instafel.app.ui.TileCompact android:visibility="visible" android:id="@+id/ifl_tile_menu_lang"
                                      android:layout_width="fill_parent" android:layout_height="wrap_content"
                                      app:ifl_attr_ui_iconPadding="2" app:ifl_attr_ui_iconRes="@drawable/ifl_language"
                                      app:ifl_attr_ui_spaceBottom="visible"
@@ -115,12 +115,12 @@
                                      app:ifl_attr_ui_iconPadding="2" app:ifl_attr_ui_iconRes="@drawable/ifl_language"
                                      app:ifl_attr_ui_spaceBottom="visible"
                                      app:ifl_attr_ui_titleText="@string/ifl_typography_title"/>
-        <instafel.app.ui.TileCompact android:visibility="gone" android:id="@+id/ifl_tile_menu_about"
+        <instafel.app.ui.TileCompact android:visibility="visible" android:id="@+id/ifl_tile_menu_about"
                                      android:layout_width="fill_parent" android:layout_height="wrap_content"
                                      app:ifl_attr_ui_iconPadding="2" app:ifl_attr_ui_iconRes="@drawable/ifl_about"
                                      app:ifl_attr_ui_spaceBottom="visible"
                                      app:ifl_attr_ui_titleText="@string/ifl_a1_01"/>
-        <instafel.app.ui.TileSocials android:id="@+id/ifl_tile_menu_sections" android:layout_width="fill_parent"
+        <instafel.app.ui.TileSocials android:visibility="gone" android:id="@+id/ifl_tile_menu_sections" android:layout_width="fill_parent"
                                      android:layout_height="wrap_content" app:ifl_attr_ui_iconPadding="2"
                                      app:ifl_attr_ui_iconRes="@drawable/ifl_about" app:ifl_attr_ui_spaceBottom="visible"
                                      app:ifl_attr_ui_titleText="@string/ifl_a1_01"/>

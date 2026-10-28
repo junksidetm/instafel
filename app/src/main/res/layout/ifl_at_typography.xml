@@ -27,6 +27,7 @@
 
         <!-- FONT SECTION -->
         <instafel.app.ui.TileLargeSwitch
+            android:visibility="gone"
             android:id="@+id/ifl_switch_custom_font"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,6 +37,7 @@
             app:ifl_attr_ui_subtitleText="@string/ifl_custom_font_switch_subtitle" />
 
         <instafel.app.ui.TileLarge
+            android:visibility="gone"
             android:id="@+id/ifl_tile_select_font"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,6 +48,7 @@
 
         <!-- TYPOGRAPHY PREVIEW -->
         <androidx.cardview.widget.CardView
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -131,6 +134,7 @@
 
         <!-- EMOJI PREVIEW -->
         <androidx.cardview.widget.CardView
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"

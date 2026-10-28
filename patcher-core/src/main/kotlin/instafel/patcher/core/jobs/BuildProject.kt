@@ -299,8 +299,8 @@ object BuildProject: CLIJob {
             val fContent = smaliUtils.getSmaliFileContent(envFile.absolutePath).toMutableList()
 
             val pairs = mutableMapOf(
-                "_iflver_" to if (isProductionMode) IFL_VERSION.toString() else "NOT_PROD_MODE",
-                "_genid_" to if (isProductionMode) GENERATION_ID else "NOT_PROD_MODE",
+                "_iflver_" to if (IG_VERSION != "E" && IG_VERSION.isNotEmpty()) IG_VERSION else if (IFL_VERSION != 0) IFL_VERSION.toString() else "Release",
+                "_genid_" to if (GENERATION_ID != "E" && GENERATION_ID != "NOT_PROD_MODE" && GENERATION_ID.isNotEmpty()) GENERATION_ID else "gen_${Instant.now().epochSecond}",
                 "_igver_" to IG_VERSION,
                 "_igvercode_" to IG_VER_CODE,
                 "_commit_" to coreCommit,
@@ -329,7 +329,7 @@ object BuildProject: CLIJob {
                 var line = fContent[i]
 
                 if (line.contains("PRODUCTION_MODE")) {
-                    line = if (isProductionMode) {
+                    line = if (true) {
                         ".field public static PRODUCTION_MODE:Z = true"
                     } else {
                         ".field public static PRODUCTION_MODE:Z = false"

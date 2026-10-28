@@ -21,9 +21,9 @@
     <string name="ifl_a0_16">Use Instafel Updater for automatic updates with Root and Shizuku</string>
 
     <!-- me.mamiiblt.instafel.ifl_a_menu -->
-    <string name="ifl_a0_02">Update Settings</string>
+    <string name="ifl_a0_02">Check for Updates</string>
     <string name="ifl_a0_03">Language</string>
-    <string name="ifl_a0_04">Library</string>
+    <string name="ifl_a0_04">Backup Library</string>
     <string name="ifl_a0_05">About</string>
     <string name="ifl_a0_06">This feature has not been added yet</string>
     <string name="ifl_a0_07">Crash Reports</string>
@@ -41,10 +41,10 @@
     <string name="ifl_a1_13">Patcher Version</string>
     <string name="ifl_a1_14">Applied Patches</string>
     <string name="ifl_a1_15">See build info details</string>
-    <string name="ifl_a1_18">About Developer</string>
-    <string name="ifl_a1_19">Website</string>
-    <string name="ifl_a1_20">Join Community</string>
-    <string name="ifl_a1_21">Contributors</string>
+    <string name="ifl_a1_18">GitHub Repository</string>
+    <string name="ifl_a1_19">Releases &amp; Changelogs</string>
+    <string name="ifl_a1_20">Maintainer (@junksidetm)</string>
+    <string name="ifl_a1_21">Report an Issue</string>
     <string name="ifl_a1_22">Information about applied patches</string>
     <string name="ifl_a1_23">Core Commit</string>
 
@@ -269,14 +269,14 @@
     <string name="ifl_d5_02">IFL Version v%1$s (Base: v%2$s)</string>
     <string name="ifl_d5_03">Open Instafel Menu</string>
     <string name="ifl_d5_04">Open IG Experiment Options</string>
-    <string name="ifl_d5_05">Join Instafel Community</string>
+    <string name="ifl_d5_05">GitHub Repository</string>
     <string name="ifl_d5_06">Restart Instagram</string>
 
     <!-- CRASH TOAST -->
     <string name="ifl_crash_toast" translatable="false">Instafel crashed, visit Crash Reports for more details.</string>
 
     <!-- TYPOGRAPHY & EMOJIS -->
-    <string name="ifl_typography_title">Typography &amp; Emojis</string>
+    <string name="ifl_typography_title">Custom Emojis</string>
     <string name="ifl_custom_font_switch_title">Custom Font Hierarchy</string>
     <string name="ifl_custom_font_switch_subtitle">Apply multi-weight font family or variable font app-wide</string>
     <string name="ifl_font_family_picker_title">Select Font Family</string>

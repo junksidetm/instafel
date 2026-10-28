@@ -23,6 +23,7 @@ import instafel.app.activity.admin.ifl_a_admin_dashboard;
 import instafel.app.activity.admin.ifl_a_admin_login;
 import instafel.app.activity.crash_manager.ifl_a_crash_reports;
 import instafel.app.activity.devmode.ifl_a_devmode;
+import instafel.app.activity.library.backup.ifl_a_library_backup;
 import instafel.app.activity.library.ifl_a_library_menu;
 import instafel.app.InstafelEnv;
 import instafel.app.managers.PreferenceManager;
@@ -67,11 +68,19 @@ public class ifl_a_menu extends AppCompatActivity {
         }
 
         findViewById(R.id.ifl_tile_menu_crashlogs).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_crash_reports.class));
-        findViewById(R.id.ifl_tile_menu_library).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_library_menu.class));
+        findViewById(R.id.ifl_tile_menu_library).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_library_backup.class));
         findViewById(R.id.ifl_tile_menu_misc).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_misc.class));
         findViewById(R.id.ifl_tile_menu_typography).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_typography.class));
         findViewById(R.id.ifl_tile_menu_devopt).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_devmode.class));
-        findViewById(R.id.ifl_tile_menu_ota).setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_ota.class));
+        findViewById(R.id.ifl_tile_menu_ota).setOnClickListener(v -> GeneralFn.openInWebBrowser(ifl_a_menu.this, "https://github.com/junksidetm/instafel/releases/latest"));
+        View tileAbout = findViewById(R.id.ifl_tile_menu_about);
+        if (tileAbout != null) {
+            tileAbout.setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_about.class));
+        }
+        View tileLang = findViewById(R.id.ifl_tile_menu_lang);
+        if (tileLang != null) {
+            tileLang.setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_language.class));
+        }
 
         TileSocials tileSocials = findViewById(R.id.ifl_tile_menu_sections);
         tileSocials.getTileLanguage().setOnClickListener(v -> {
@@ -83,9 +92,9 @@ public class ifl_a_menu extends AppCompatActivity {
             return false;
         });
         tileSocials.getTileInfo().setOnClickListener(v -> GeneralFn.startIntent(ifl_a_menu.this, ifl_a_about.class));
-        tileSocials.getTileChat().setOnClickListener(view -> GeneralFn.openInWebBrowser(ifl_a_menu.this, "https://t.me/instafel"));
-        tileSocials.getTileGuide().setOnClickListener(view -> GeneralFn.openInWebBrowser(ifl_a_menu.this, "https://instafel.mamii.dev/wiki"));
-        tileSocials.getTileGithub().setOnClickListener(view -> GeneralFn.openInWebBrowser(ifl_a_menu.this, "https://github.com/mamiiblt/instafel"));
+        tileSocials.getTileChat().setVisibility(View.GONE);
+        tileSocials.getTileGuide().setVisibility(View.GONE);
+        tileSocials.getTileGithub().setOnClickListener(view -> GeneralFn.openInWebBrowser(ifl_a_menu.this, "https://github.com/junksidetm/instafel"));
         tileSocials.getTileInfo().setOnLongClickListener(view -> {
             if (InstafelEnv.PRODUCTION_MODE) {
                 openAdminDashboard();

@@ -42,10 +42,10 @@ public class ifl_a_about extends AppCompatActivity {
         });
 
         findViewById(R.id.ifl_tile_build_info).setOnClickListener(view -> GeneralFn.startIntent(ifl_a_about.this, ifl_a_build_info.class));
-        findViewById(R.id.ifl_tile_contributors).setOnClickListener(v -> openUrlInWeb("https://instafel.mamii.dev/contributors"));
-        findViewById(R.id.ifl_tile_website).setOnClickListener(v -> openUrlInWeb("https://instafel.mamii.dev"));
-        findViewById(R.id.ifl_tile_about_dev).setOnClickListener(v -> openUrlInWeb("https://mamii.dev/about"));
-        findViewById(R.id.ifl_tile_join_community).setOnClickListener(v -> openUrlInWeb("https://t.me/instafel"));
+        findViewById(R.id.ifl_tile_contributors).setOnClickListener(v -> openUrlInWeb("https://github.com/junksidetm/instafel/issues"));
+        findViewById(R.id.ifl_tile_website).setOnClickListener(v -> openUrlInWeb("https://github.com/junksidetm/instafel/releases"));
+        findViewById(R.id.ifl_tile_about_dev).setOnClickListener(v -> openUrlInWeb("https://github.com/junksidetm/instafel"));
+        findViewById(R.id.ifl_tile_join_community).setVisibility(android.view.View.GONE);
     }
 
     public void openUrlInWeb(String url) {

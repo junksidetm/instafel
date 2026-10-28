@@ -185,7 +185,7 @@ public class InstafelHomeSheet {
         root.addView(menuItem(
                 R.drawable.ifl_community_icon,
                 LocalizedStringGetter.getDialogLocalizedString(act, iflLocale, "ifl_d5_05"),
-                mainText, v -> GeneralFn.openInWebBrowser(act, "https://t.me/instafel")));
+                mainText, v -> GeneralFn.openInWebBrowser(act, "https://github.com/junksidetm/instafel")));
 
         root.addView(menuItem(
                 R.drawable.ifl_sheet_reload,

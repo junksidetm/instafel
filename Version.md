@@ -1412,3 +1412,17 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.forgejo/workflows/generate_instafel.yml`: Synchronized Codeberg mirror workflow schedule.
   - `Version.md`: Appended tracking entry.
 - **Status**: 100% (Completed & Verified in Production CI)
+
+## [2026-10-28 11:55:00 IST] - UI De-legacy Modernization, Dynamic Versioning & Upstream Decoupling
+- **Action**: Fully removed dead legacy endpoints, decoupled version injection from defunct proprietary upstream servers, streamlined settings navigation, and rebranded UI attribution to `junksidetm`.
+- **Architectural Enhancements & Component Modifications**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/BuildProject.kt`: Implemented autonomous dynamic injection replacing `_iflver_` with real decompiled `IG_VERSION` (e.g. `454.0.0.0.55`) and `_genid_` with timestamped generation ID, enforcing `PRODUCTION_MODE:Z = true` in smali bytecode.
+  - `app/src/main/res/layout/ifl_at_menu.xml`: Updated developer attribution to "Maintained with ❤️ by junksidetm", hid bottom squircle `TileSocials` row, and exposed standard native tiles for Language and About.
+  - `app/src/main/java/instafel/app/activity/ifl_a_menu.java`: Re-routed Library tile directly to `ifl_a_library_backup.class` (bypassing dead flag library web link), re-routed OTA tile directly to GitHub latest releases, and removed legacy social intents.
+  - `app/src/main/res/layout/ifl_at_typography.xml`: Focused typography activity exclusively on Custom Emojis (Apple iOS & Google 3D), hiding non-functional global font selectors.
+  - `app/src/main/java/instafel/app/activity/about/ifl_a_about.java` & `ifl_a_build_info.java`: Replaced legacy `mamii.dev` URLs with official `junksidetm/instafel` GitHub repository, releases, and issue links.
+  - `app/src/main/utils/InstafelHomeSheet.java`: Replaced legacy community Telegram item with GitHub repository link.
+  - `app/src/main/res/values/strings.xml`: Updated strings for Check for Updates, Backup Library, Custom Emojis, and repository links.
+  - `settings.gradle.kts`: Decoupled legacy `:updater` module from root build.
+  - `Version.md`: Appended tracking entry.
+- **Status**: 100% (Completed & Verified)
