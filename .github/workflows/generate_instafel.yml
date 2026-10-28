@@ -245,7 +245,7 @@ jobs:
         run: |
           VERSION="${{ steps.prepare_apk.outputs.version }}"
           TAG_NAME="v${VERSION}"
-          RELEASE_TITLE="Instafel v${VERSION} (Alpha arm64-v8a)"
+          RELEASE_TITLE="v${VERSION}"
 
           NOTES="### Instafel Alpha Release v${VERSION}
           - **Architecture:** \`arm64-v8a\`

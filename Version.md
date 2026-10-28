@@ -214,3 +214,1188 @@ All notable changes to the `instafel` repository are documented in this file in 
 - **Components Modified**:
   - `app/src/main/java/instafel/app/managers/FontManager.java`
 - **Status**: 100% (Completed)
+
+## [2026-10-21 00:30:00 IST] - Comprehensive Repository Directory & File System Index
+- **Action**: Fully indexed all repository directories (222) and files (949), mapping structural hierarchy and defining the functional responsibility of each component.
+- **Directory Structure & Purpose**:
+  - `.config/`: Repository directory component: `.config`.
+  - `.forgejo/`: Forgejo / Codeberg platform repository configuration.
+  - `.forgejo/workflows/`: Forgejo Actions workflows automating CI/CD on Codeberg mirror.
+  - `.github/`: GitHub platform repository configuration and community templates.
+  - `.github/workflows/`: GitHub Actions CI/CD workflows for builds, releases, and tests.
+  - `app/`: Primary Android application module housing manifests, source code, and resources.
+  - `app/src/`: Application source code root divided into main and test variants.
+  - `app/src/main/`: Production source set containing Kotlin/Java application code and resources.
+  - `app/src/main/java/`: Android Kotlin/Java source root directory.
+  - `app/src/main/java/instafel/`: Android Kotlin/Java package: `instafel`.
+  - `app/src/main/java/instafel/app/`: Android Kotlin/Java package: `instafel/app`.
+  - `app/src/main/java/instafel/app/activity/`: Android Kotlin/Java package: `instafel/app/activity`.
+  - `app/src/main/java/instafel/app/activity/about/`: Android Kotlin/Java package: `instafel/app/activity/about`.
+  - `app/src/main/java/instafel/app/activity/admin/`: Android Kotlin/Java package: `instafel/app/activity/admin`.
+  - `app/src/main/java/instafel/app/activity/crash_manager/`: Android Kotlin/Java package: `instafel/app/activity/crash_manager`.
+  - `app/src/main/java/instafel/app/activity/devmode/`: Android Kotlin/Java package: `instafel/app/activity/devmode`.
+  - `app/src/main/java/instafel/app/activity/devmode/analyzer/`: Android Kotlin/Java package: `instafel/app/activity/devmode/analyzer`.
+  - `app/src/main/java/instafel/app/activity/devmode/backup/`: Android Kotlin/Java package: `instafel/app/activity/devmode/backup`.
+  - `app/src/main/java/instafel/app/activity/devmode/comparator/`: Android Kotlin/Java package: `instafel/app/activity/devmode/comparator`.
+  - `app/src/main/java/instafel/app/activity/library/`: Android Kotlin/Java package: `instafel/app/activity/library`.
+  - `app/src/main/java/instafel/app/activity/library/backup/`: Android Kotlin/Java package: `instafel/app/activity/library/backup`.
+  - `app/src/main/java/instafel/app/api/`: Android Kotlin/Java package: `instafel/app/api`.
+  - `app/src/main/java/instafel/app/api/models/`: Android Kotlin/Java package: `instafel/app/api/models`.
+  - `app/src/main/java/instafel/app/api/requests/`: Android Kotlin/Java package: `instafel/app/api/requests`.
+  - `app/src/main/java/instafel/app/api/requests/admin/`: Android Kotlin/Java package: `instafel/app/api/requests/admin`.
+  - `app/src/main/java/instafel/app/api/tasks/`: Android Kotlin/Java package: `instafel/app/api/tasks`.
+  - `app/src/main/java/instafel/app/managers/`: Android Kotlin/Java package: `instafel/app/managers`.
+  - `app/src/main/java/instafel/app/managers/modals/`: Android Kotlin/Java package: `instafel/app/managers/modals`.
+  - `app/src/main/java/instafel/app/ota/`: Android Kotlin/Java package: `instafel/app/ota`.
+  - `app/src/main/java/instafel/app/ota/tasks/`: Android Kotlin/Java package: `instafel/app/ota/tasks`.
+  - `app/src/main/java/instafel/app/ui/`: Android Kotlin/Java package: `instafel/app/ui`.
+  - `app/src/main/java/instafel/app/utils/`: Android Kotlin/Java package: `instafel/app/utils`.
+  - `app/src/main/java/instafel/app/utils/crashlog/`: Android Kotlin/Java package: `instafel/app/utils/crashlog`.
+  - `app/src/main/java/instafel/app/utils/dialog/`: Android Kotlin/Java package: `instafel/app/utils/dialog`.
+  - `app/src/main/java/instafel/app/utils/localization/`: Android Kotlin/Java package: `instafel/app/utils/localization`.
+  - `app/src/main/java/instafel/app/utils/types/`: Android Kotlin/Java package: `instafel/app/utils/types`.
+  - `app/src/main/res/`: Android application UI resources root.
+  - `app/src/main/res/drawable/`: Android vector and raster drawable assets.
+  - `app/src/main/res/layout/`: Android XML layout interface definitions.
+  - `app/src/main/res/mipmap-anydpi/`: Android application launcher icons for various device densities.
+  - `app/src/main/res/mipmap-hdpi/`: Android application launcher icons for various device densities.
+  - `app/src/main/res/mipmap-mdpi/`: Android application launcher icons for various device densities.
+  - `app/src/main/res/mipmap-xhdpi/`: Android application launcher icons for various device densities.
+  - `app/src/main/res/mipmap-xxhdpi/`: Android application launcher icons for various device densities.
+  - `app/src/main/res/mipmap-xxxhdpi/`: Android application launcher icons for various device densities.
+  - `app/src/main/res/values/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-ar-rSA/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-az-rAZ/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-de-rDE/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-el-rGR/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-es-rES/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-fr-rFR/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-hi-rIN/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-hu-rHU/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-in-rID/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-it-rIT/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-night/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-pl-rPL/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-pt-rBR/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-sr-rCS/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-th-rTH/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-tr-rTR/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-zh-rCN/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-zh-rHK/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/values-zh-rTW/`: Android XML resource values (colors, themes, strings, dimensions).
+  - `app/src/main/res/xml/`: Android system XML configuration specifications.
+  - `assets_bundle/`: Repository directory component: `assets_bundle`.
+  - `assets_bundle/emojis/`: Repository directory component: `assets_bundle/emojis`.
+  - `assets_bundle/fonts/`: Repository directory component: `assets_bundle/fonts`.
+  - `assets_bundle/fonts/sf_pro/`: Repository directory component: `assets_bundle/fonts/sf_pro`.
+  - `assets_bundle/images/`: Repository directory component: `assets_bundle/images`.
+  - `buildSrc/`: Repository directory component: `buildSrc`.
+  - `buildSrc/.kotlin/`: Repository directory component: `buildSrc/.kotlin`.
+  - `buildSrc/.kotlin/errors/`: Repository directory component: `buildSrc/.kotlin/errors`.
+  - `buildSrc/src/`: Repository directory component: `buildSrc/src`.
+  - `buildSrc/src/main/`: Repository directory component: `buildSrc/src/main`.
+  - `buildSrc/src/main/kotlin/`: Repository directory component: `buildSrc/src/main/kotlin`.
+  - `buildSrc/src/main/kotlin/modals/`: Repository directory component: `buildSrc/src/main/kotlin/modals`.
+  - `gplayapi/`: Repository directory component: `gplayapi`.
+  - `gplayapi/src/`: Repository directory component: `gplayapi/src`.
+  - `gplayapi/src/main/`: Repository directory component: `gplayapi/src/main`.
+  - `gplayapi/src/main/kotlin/`: Repository directory component: `gplayapi/src/main/kotlin`.
+  - `gplayapi/src/main/kotlin/instafel/`: Repository directory component: `gplayapi/src/main/kotlin/instafel`.
+  - `gplayapi/src/main/kotlin/instafel/gplayapi/`: Repository directory component: `gplayapi/src/main/kotlin/instafel/gplayapi`.
+  - `gplayapi/src/main/kotlin/instafel/gplayapi/utils/`: Repository directory component: `gplayapi/src/main/kotlin/instafel/gplayapi/utils`.
+  - `gplayapi/src/main/resources/`: Repository directory component: `gplayapi/src/main/resources`.
+  - `gplayapi/src/main/resources/device_props/`: Repository directory component: `gplayapi/src/main/resources/device_props`.
+  - `gradle/`: Gradle wrapper distribution configurations and wrapper JAR binary.
+  - `gradle/wrapper/`: Gradle wrapper bootstrapping properties and executable JAR.
+  - `patcher/`: Repository directory component: `patcher`.
+  - `patcher/src/`: Repository directory component: `patcher/src`.
+  - `patcher/src/main/`: Repository directory component: `patcher/src/main`.
+  - `patcher/src/main/kotlin/`: Repository directory component: `patcher/src/main/kotlin`.
+  - `patcher/src/main/kotlin/instafel/`: Repository directory component: `patcher/src/main/kotlin/instafel`.
+  - `patcher/src/main/kotlin/instafel/patcher/`: Repository directory component: `patcher/src/main/kotlin/instafel/patcher`.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/`: Repository directory component: `patcher/src/main/kotlin/instafel/patcher/commands`.
+  - `patcher/src/main/kotlin/instafel/patcher/handlers/`: Repository directory component: `patcher/src/main/kotlin/instafel/patcher/handlers`.
+  - `patcher/src/main/kotlin/instafel/patcher/utils/`: Repository directory component: `patcher/src/main/kotlin/instafel/patcher/utils`.
+  - `patcher/src/main/kotlin/instafel/patcher/utils/modals/`: Repository directory component: `patcher/src/main/kotlin/instafel/patcher/utils/modals`.
+  - `patcher-core/`: Repository directory component: `patcher-core`.
+  - `patcher-core/src/`: Repository directory component: `patcher-core/src`.
+  - `patcher-core/src/main/`: Repository directory component: `patcher-core/src/main`.
+  - `patcher-core/src/main/kotlin/`: Repository directory component: `patcher-core/src/main/kotlin`.
+  - `patcher-core/src/main/kotlin/instafel/`: Repository directory component: `patcher-core/src/main/kotlin/instafel`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/jobs`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/patches`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/clone/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/patches/clone`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/general/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/patches/general`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/source/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/source`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/utils`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/pojo/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/pojo`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/patch/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/utils/patch`.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/resources/`: Repository directory component: `patcher-core/src/main/kotlin/instafel/patcher/core/utils/resources`.
+  - `patcher-core/src/main/resources/`: Repository directory component: `patcher-core/src/main/resources`.
+  - `patcher-core/src/main/resources/clone_assets/`: Repository directory component: `patcher-core/src/main/resources/clone_assets`.
+  - `patcher-core/src/main/resources/ifl_sources/`: Repository directory component: `patcher-core/src/main/resources/ifl_sources`.
+  - `patcher-core/src/main/resources/patch_exts/`: Repository directory component: `patcher-core/src/main/resources/patch_exts`.
+  - `patcher-core/src/main/resources/signing/`: Repository directory component: `patcher-core/src/main/resources/signing`.
+  - `scripts/`: Operational scripts, automation workflows, build hooks, and utility tooling.
+  - `updater/`: Repository directory component: `updater`.
+  - `updater/src/`: Repository directory component: `updater/src`.
+  - `updater/src/main/`: Repository directory component: `updater/src/main`.
+  - `updater/src/main/aidl/`: Repository directory component: `updater/src/main/aidl`.
+  - `updater/src/main/aidl/dev/`: Repository directory component: `updater/src/main/aidl/dev`.
+  - `updater/src/main/aidl/dev/mamii/`: Repository directory component: `updater/src/main/aidl/dev/mamii`.
+  - `updater/src/main/aidl/dev/mamii/instafel/`: Repository directory component: `updater/src/main/aidl/dev/mamii/instafel`.
+  - `updater/src/main/aidl/dev/mamii/instafel/updater/`: Repository directory component: `updater/src/main/aidl/dev/mamii/instafel/updater`.
+  - `updater/src/main/java/`: Repository directory component: `updater/src/main/java`.
+  - `updater/src/main/java/dev/`: Repository directory component: `updater/src/main/java/dev`.
+  - `updater/src/main/java/dev/mamii/`: Repository directory component: `updater/src/main/java/dev/mamii`.
+  - `updater/src/main/java/dev/mamii/instafel/`: Repository directory component: `updater/src/main/java/dev/mamii/instafel`.
+  - `updater/src/main/java/dev/mamii/instafel/updater/`: Repository directory component: `updater/src/main/java/dev/mamii/instafel/updater`.
+  - `updater/src/main/java/dev/mamii/instafel/updater/fragments/`: Repository directory component: `updater/src/main/java/dev/mamii/instafel/updater/fragments`.
+  - `updater/src/main/java/dev/mamii/instafel/updater/services/`: Repository directory component: `updater/src/main/java/dev/mamii/instafel/updater/services`.
+  - `updater/src/main/java/dev/mamii/instafel/updater/update/`: Repository directory component: `updater/src/main/java/dev/mamii/instafel/updater/update`.
+  - `updater/src/main/java/dev/mamii/instafel/updater/utils/`: Repository directory component: `updater/src/main/java/dev/mamii/instafel/updater/utils`.
+  - `updater/src/main/res/`: Repository directory component: `updater/src/main/res`.
+  - `updater/src/main/res/drawable/`: Repository directory component: `updater/src/main/res/drawable`.
+  - `updater/src/main/res/layout/`: Repository directory component: `updater/src/main/res/layout`.
+  - `updater/src/main/res/menu/`: Repository directory component: `updater/src/main/res/menu`.
+  - `updater/src/main/res/mipmap-anydpi-v26/`: Repository directory component: `updater/src/main/res/mipmap-anydpi-v26`.
+  - `updater/src/main/res/mipmap-hdpi/`: Repository directory component: `updater/src/main/res/mipmap-hdpi`.
+  - `updater/src/main/res/mipmap-mdpi/`: Repository directory component: `updater/src/main/res/mipmap-mdpi`.
+  - `updater/src/main/res/mipmap-xhdpi/`: Repository directory component: `updater/src/main/res/mipmap-xhdpi`.
+  - `updater/src/main/res/mipmap-xxhdpi/`: Repository directory component: `updater/src/main/res/mipmap-xxhdpi`.
+  - `updater/src/main/res/mipmap-xxxhdpi/`: Repository directory component: `updater/src/main/res/mipmap-xxxhdpi`.
+  - `updater/src/main/res/navigation/`: Repository directory component: `updater/src/main/res/navigation`.
+  - `updater/src/main/res/values/`: Repository directory component: `updater/src/main/res/values`.
+  - `updater/src/main/res/values-ar-rSA/`: Repository directory component: `updater/src/main/res/values-ar-rSA`.
+  - `updater/src/main/res/values-az-rAZ/`: Repository directory component: `updater/src/main/res/values-az-rAZ`.
+  - `updater/src/main/res/values-de-rDE/`: Repository directory component: `updater/src/main/res/values-de-rDE`.
+  - `updater/src/main/res/values-el-rGR/`: Repository directory component: `updater/src/main/res/values-el-rGR`.
+  - `updater/src/main/res/values-es-rES/`: Repository directory component: `updater/src/main/res/values-es-rES`.
+  - `updater/src/main/res/values-fr-rFR/`: Repository directory component: `updater/src/main/res/values-fr-rFR`.
+  - `updater/src/main/res/values-hi-rIN/`: Repository directory component: `updater/src/main/res/values-hi-rIN`.
+  - `updater/src/main/res/values-hu-rHU/`: Repository directory component: `updater/src/main/res/values-hu-rHU`.
+  - `updater/src/main/res/values-in-rID/`: Repository directory component: `updater/src/main/res/values-in-rID`.
+  - `updater/src/main/res/values-it-rIT/`: Repository directory component: `updater/src/main/res/values-it-rIT`.
+  - `updater/src/main/res/values-night/`: Repository directory component: `updater/src/main/res/values-night`.
+  - `updater/src/main/res/values-pl-rPL/`: Repository directory component: `updater/src/main/res/values-pl-rPL`.
+  - `updater/src/main/res/values-pt-rBR/`: Repository directory component: `updater/src/main/res/values-pt-rBR`.
+  - `updater/src/main/res/values-sr-rCS/`: Repository directory component: `updater/src/main/res/values-sr-rCS`.
+  - `updater/src/main/res/values-th-rTH/`: Repository directory component: `updater/src/main/res/values-th-rTH`.
+  - `updater/src/main/res/values-tr-rTR/`: Repository directory component: `updater/src/main/res/values-tr-rTR`.
+  - `updater/src/main/res/values-zh-rCN/`: Repository directory component: `updater/src/main/res/values-zh-rCN`.
+  - `updater/src/main/res/values-zh-rHK/`: Repository directory component: `updater/src/main/res/values-zh-rHK`.
+  - `updater/src/main/res/values-zh-rTW/`: Repository directory component: `updater/src/main/res/values-zh-rTW`.
+  - `updater/src/main/res/xml/`: Repository directory component: `updater/src/main/res/xml`.
+  - `website/`: Repository directory component: `website`.
+  - `website/public/`: Repository directory component: `website/public`.
+  - `website/public/cpictures/`: Repository directory component: `website/public/cpictures`.
+  - `website/public/cpictures/crowdin/`: Repository directory component: `website/public/cpictures/crowdin`.
+  - `website/public/mockups/`: Repository directory component: `website/public/mockups`.
+  - `website/public/wiki/`: Repository directory component: `website/public/wiki`.
+  - `website/public/wiki-imgs/`: Repository directory component: `website/public/wiki-imgs`.
+  - `website/src/`: Repository directory component: `website/src`.
+  - `website/src/app/`: Repository directory component: `website/src/app`.
+  - `website/src/app/about_updater/`: Repository directory component: `website/src/app/about_updater`.
+  - `website/src/app/contributors/`: Repository directory component: `website/src/app/contributors`.
+  - `website/src/app/library/`: Repository directory component: `website/src/app/library`.
+  - `website/src/app/library/backup/`: Repository directory component: `website/src/app/library/backup`.
+  - `website/src/app/library/backup/release/`: Repository directory component: `website/src/app/library/backup/release`.
+  - `website/src/app/library/flib_moved/`: Repository directory component: `website/src/app/library/flib_moved`.
+  - `website/src/app/releases/`: Repository directory component: `website/src/app/releases`.
+  - `website/src/app/releases/list/`: Repository directory component: `website/src/app/releases/list`.
+  - `website/src/app/releases/view/`: Repository directory component: `website/src/app/releases/view`.
+  - `website/src/app/wiki/`: Repository directory component: `website/src/app/wiki`.
+  - `website/src/app/wiki/[slug]/`: Repository directory component: `website/src/app/wiki/[slug]`.
+  - `website/src/components/`: Repository directory component: `website/src/components`.
+  - `website/src/components/loading/`: Repository directory component: `website/src/components/loading`.
+  - `website/src/components/providers/`: Repository directory component: `website/src/components/providers`.
+  - `website/src/components/release/`: Repository directory component: `website/src/components/release`.
+  - `website/src/components/ui/`: Repository directory component: `website/src/components/ui`.
+  - `website/src/components/wiki/`: Repository directory component: `website/src/components/wiki`.
+  - `website/src/config/`: Repository directory component: `website/src/config`.
+  - `website/src/hooks/`: Repository directory component: `website/src/hooks`.
+  - `website/src/i18n/`: Repository directory component: `website/src/i18n`.
+  - `website/src/lib/`: Repository directory component: `website/src/lib`.
+  - `website/src/locales/`: Repository directory component: `website/src/locales`.
+  - `website/src/locales/ar-SA/`: Repository directory component: `website/src/locales/ar-SA`.
+  - `website/src/locales/az-AZ/`: Repository directory component: `website/src/locales/az-AZ`.
+  - `website/src/locales/de-DE/`: Repository directory component: `website/src/locales/de-DE`.
+  - `website/src/locales/el-GR/`: Repository directory component: `website/src/locales/el-GR`.
+  - `website/src/locales/en-EN/`: Repository directory component: `website/src/locales/en-EN`.
+  - `website/src/locales/es-ES/`: Repository directory component: `website/src/locales/es-ES`.
+  - `website/src/locales/fr-FR/`: Repository directory component: `website/src/locales/fr-FR`.
+  - `website/src/locales/hi-IN/`: Repository directory component: `website/src/locales/hi-IN`.
+  - `website/src/locales/hu-HU/`: Repository directory component: `website/src/locales/hu-HU`.
+  - `website/src/locales/id-ID/`: Repository directory component: `website/src/locales/id-ID`.
+  - `website/src/locales/it-IT/`: Repository directory component: `website/src/locales/it-IT`.
+  - `website/src/locales/pl-PL/`: Repository directory component: `website/src/locales/pl-PL`.
+  - `website/src/locales/pt-BR/`: Repository directory component: `website/src/locales/pt-BR`.
+  - `website/src/locales/sr-CS/`: Repository directory component: `website/src/locales/sr-CS`.
+  - `website/src/locales/th-TH/`: Repository directory component: `website/src/locales/th-TH`.
+  - `website/src/locales/tr-TR/`: Repository directory component: `website/src/locales/tr-TR`.
+  - `website/src/locales/zh-CN/`: Repository directory component: `website/src/locales/zh-CN`.
+  - `website/src/locales/zh-HK/`: Repository directory component: `website/src/locales/zh-HK`.
+  - `website/src/locales/zh-TW/`: Repository directory component: `website/src/locales/zh-TW`.
+  - `website/src/wdata/`: Repository directory component: `website/src/wdata`.
+- **File System Manifest & Functional Roles**:
+  - `.config/ifl_config.json`: JSON data configuration or metadata dictionary.
+  - `.config/testkey.keystore`: Cryptographic signing keystore binary.
+  - `.forgejo/workflows/generate_instafel.yml`: Automated CI/CD workflow (`Generate Instafel (Full Online Pipeline)`) managing pipeline stages, builds, tests, or releases.
+  - `.gitattributes`: Git configuration enforcing line-ending normalization and repository attribute definitions.
+  - `.github/dependabot.yml`: Repository asset file: `dependabot.yml`.
+  - `.github/FUNDING.yml`: Repository asset file: `FUNDING.yml`.
+  - `.github/workflows/generate_instafel.yml`: Automated CI/CD workflow (`Generate Instafel (Full Online Pipeline)`) managing pipeline stages, builds, tests, or releases.
+  - `.github/workflows/merge_translations.yml`: Automated CI/CD workflow (`Merge Translations from Crowdin`) managing pipeline stages, builds, tests, or releases.
+  - `.github/workflows/update_pcore.yml`: Automated CI/CD workflow (`Update PCore with Latest Changes`) managing pipeline stages, builds, tests, or releases.
+  - `.gitignore`: Git exclusion specifications ignoring build artifacts, local secrets, and IDE temporary caches.
+  - `.gitlab-ci.yml`: GitLab CI/CD automated pipeline specification for test execution and mirror synchronization.
+  - `app/build.gradle.kts`: Gradle build script defining compiler plugins, dependencies, and build configurations.
+  - `app/src/main/AndroidManifest.xml`: Android application manifest defining package identity, permissions, services, and activities.
+  - `app/src/main/java/instafel/app/activity/about/ifl_a_about.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/about/ifl_a_build_info.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/about/ifl_a_patches_info.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/admin/ifl_a_admin_action_approvepreview.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/admin/ifl_a_admin_action_updatebackup.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/admin/ifl_a_admin_dashboard.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/admin/ifl_a_admin_login.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/admin/ifl_a_admin_pref_manager.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/crash_manager/ifl_a_crash_reports.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/crash_manager/ifl_a_crash_viewer.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/devmode/analyzer/ifl_a_devmode_backup_analyzer_menu.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/devmode/analyzer/ifl_a_devmode_backup_analyzer.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/devmode/backup/ifl_a_export_backup.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/devmode/comparator/ifl_a_devmode_backup_comparator_menu.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/devmode/comparator/ifl_a_devmode_backup_comparator.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/devmode/ifl_a_devmode_import.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/devmode/ifl_a_devmode.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/ifl_a_language.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/ifl_a_menu.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/ifl_a_misc.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/ifl_a_ota.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/ifl_a_typography.java`: (c) 2026 Muhammed Ali Bulut & Antigravity, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/library/backup/ifl_a_library_backup_info_author.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/library/backup/ifl_a_library_backup_info.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/library/backup/ifl_a_library_backup.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/activity/library/ifl_a_library_menu.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/models/AutoUpdateInfo.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/models/Backup.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/models/BackupListItem.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/models/InstafelResponse.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/requests/admin/AdminLogin.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/requests/admin/AdminUploadMapping.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/requests/ApiCallbackInterface.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/requests/ApiGet.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/requests/ApiGetAdmin.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/requests/ApiGetString.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/requests/ApiPostAdmin.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/tasks/BackupUpdateDownloadTask.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/api/tasks/BackupUpdateTask.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ExampleAppClass.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/InstafelEnv.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/AttributeManager.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/CrashManager.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/EmojiManager.java`: (c) 2026 Muhammed Ali Bulut & Antigravity, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/FontManager.java`: (c) 2026 Muhammed Ali Bulut & Antigravity, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/FrequencyManager.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/modals/FlagItem.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/modals/ParseResult.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/NotificationOtaManager.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/OverridesManager.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/PermissionManager.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/managers/PreferenceManager.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ota/CheckUpdates.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ota/IflEnvironment.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ota/LastCheck.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ota/tasks/BuildInfoTask.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ota/tasks/ChangelogContentTask.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ota/tasks/ChangelogTask.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ota/tasks/DownloadUpdateTask.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ota/tasks/VersionTask.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/LoadingBar.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/Page.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/PageContentArea.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/PageTitle.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/TileCompact.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/TileLarge.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/TileLargeEditText.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/TileLargeSwitch.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/TileSocials.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/ui/TileTitle.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/crashlog/CLogDataTypes.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/crashlog/Crashlog.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/dialog/InstafelDialog.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/dialog/InstafelDialogItem.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/dialog/InstafelDialogMargins.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/dialog/InstafelDialogTextType.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/dialog/StringInputViews.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/GeneralFn.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/HomeSheetHandler.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/InitializeInstafel.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/InstafelAdminUser.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/InstafelCrashHandler.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/InstafelFileProvider.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/InstafelHomeSheet.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/localization/LocaleInfoTile.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/localization/LocalizationUtils.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/localization/LocalizedStringGetter.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/types/PreferenceKeys.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/types/Types.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/java/instafel/app/utils/UploadMapping.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `app/src/main/res/drawable/ic_launcher_background.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ic_launcher_foreground.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_about.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_action.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_admin.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_android.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_applied_patches.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_approve_backup.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_arch.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_author.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_backup_analyzer.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_backup_comp.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_backup_export.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_backup_import.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_backup.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_base.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_build_info.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_button_background.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_button_primary_background_dark.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_button_primary_background_light.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_button_primary_background.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_button_secondary_background_dark.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_button_secondary_background_light.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_button_secondary_background.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_changelog.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_chat.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_check_frequency.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_community_icon.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_contributors.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_copy.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_crashlog.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_deletelog.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_deleteov.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_dev_circle.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_developer.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_device.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_dg_ota_background.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_edittext_background.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_enable_updates.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_export_devfile.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_export_path.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_filename.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_generation_id.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_genid.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_github.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_guide.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_handbook.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_heart.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_import_devopt.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_instafel.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_instagram.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_installation_type.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_language.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_libraries.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_library_backup.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_library_flags.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_menu.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_metaoverrides.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_misc.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_notifications.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_open_in_browser.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_ota_expand.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_ota_refresh_2.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_ota_refresh.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_ota.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_patch.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_patcher_commit.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_progress_background_dark.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_progress_background_light.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_progress_circle_drawable.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_remove_ads.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_share.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_sheet_devopts.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_sheet_reload.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_social_github.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_social_instagram.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_social_medium.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_social_x.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_tag.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_telegram.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_tick.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_translate.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_version.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/drawable/ifl_website.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_about.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_admin_action_approvepreview.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_admin_action_pref_manager.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_admin_action_updatebackup.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_admin_dashboard.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_admin_login.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_applied_patches_info.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_build_info.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_crash_reports.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_crash_viewer.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_devmode_backup_analyzer_menu.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_devmode_backup_analyzer.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_devmode_backup_comparator_menu.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_devmode_backup_comparator.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_devmode_import.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_devmode.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_export_backup.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_language.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_library_backup_info_author.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_library_backup_info.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_library_backup.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_library_menu.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_menu.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_misc.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_ota.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_at_typography.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_dg_ota_set_freq.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_dg_ota_uptodate.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_ui_page.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_ui_pagecontentarea.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_ui_pagetitle.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_ui_tilecompact.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_ui_tilelarge_edittext.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_ui_tilelarge_switch.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_ui_tilelarge.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_ui_tilesocials.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/layout/ifl_ui_tiletitle.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/mipmap-anydpi/ifl_ic_launcher_round.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/mipmap-anydpi/ifl_ic_launcher.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/mipmap-hdpi/ifl_ic_launcher_round.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-hdpi/ifl_ic_launcher.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-mdpi/ifl_ic_launcher_round.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-mdpi/ifl_ic_launcher.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-xhdpi/ifl_ic_launcher_round.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-xhdpi/ifl_ic_launcher.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-xxhdpi/ifl_ic_launcher_round.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-xxhdpi/ifl_ic_launcher.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-xxxhdpi/ifl_ic_launcher_round.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-xxxhdpi/ifl_ic_launcher.webp`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/mipmap-xxxhdpi/ig_launcher_background.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `app/src/main/res/values/attrs.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values/colors.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values/styles.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values/themes.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-ar-rSA/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-az-rAZ/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-de-rDE/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-el-rGR/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-es-rES/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-fr-rFR/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-hi-rIN/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-hu-rHU/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-in-rID/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-it-rIT/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-night/themes.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-pl-rPL/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-pt-rBR/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-sr-rCS/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-th-rTH/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-tr-rTR/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-zh-rCN/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-zh-rHK/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/values-zh-rTW/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/xml/backup_rules.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `app/src/main/res/xml/data_extraction_rules.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `assets_bundle/emojis/GoogleEmoji3D.ttf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/emojis/iOS_26.4.ttf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/GoogleSansFlex.ttf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-Black.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-BlackItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-Bold.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-BoldItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-Heavy.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-HeavyItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-Light.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-LightItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-Medium.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-MediumItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-Regular.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-RegularItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-Semibold.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-SemiboldItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-Thin.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-ThinItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-Ultralight.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Display-UltralightItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-Bold.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-BoldItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-Heavy.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-HeavyItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-Light.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-LightItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-Medium.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-MediumItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-Regular.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-RegularItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-Semibold.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/fonts/sf_pro/SF-Pro-Text-SemiboldItalic.otf`: Typography font asset utilized for application text rendering.
+  - `assets_bundle/images/instagram-logo.svg`: Scalable vector graphic resource for UI iconography and branding.
+  - `build.gradle.kts`: Gradle build script defining compiler plugins, dependencies, and build configurations.
+  - `buildSrc/.kotlin/errors/errors-1761074038482.log`: Repository asset file: `errors-1761074038482.log`.
+  - `buildSrc/.kotlin/errors/errors-1770860187849.log`: Repository asset file: `errors-1770860187849.log`.
+  - `buildSrc/.kotlin/errors/errors-1775797744762.log`: Repository asset file: `errors-1775797744762.log`.
+  - `buildSrc/.kotlin/errors/errors-1775821580267.log`: Repository asset file: `errors-1775821580267.log`.
+  - `buildSrc/.kotlin/errors/errors-1781582182791.log`: Repository asset file: `errors-1781582182791.log`.
+  - `buildSrc/build.gradle.kts`: Gradle build script defining compiler plugins, dependencies, and build configurations.
+  - `buildSrc/settings.gradle.kts`: Gradle settings script defining repository sources and module inclusion.
+  - `buildSrc/src/main/kotlin/CrowdinMergeUtils.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `buildSrc/src/main/kotlin/GeneratePatchesJSON.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `buildSrc/src/main/kotlin/IFLProjectManager.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `buildSrc/src/main/kotlin/modals/ConfigFile.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `buildSrc/src/main/kotlin/modals/PatchesInfo.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `buildSrc/src/main/kotlin/PatcherCoreUpdaterUtils.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `buildSrc/src/main/kotlin/ProjectEnv.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `buildSrc/src/main/kotlin/ReleaseUtils.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `buildSrc/src/main/kotlin/UpdatePatcherSources.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `download_patcher.sh`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `gplayapi/build.gradle.kts`: Gradle build script defining compiler plugins, dependencies, and build configurations.
+  - `gplayapi/README.md`: Repository documentation, architectural overview, usage instructions, and downstream integration guidelines.
+  - `gplayapi/src/main/kotlin/instafel/gplayapi/Env.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `gplayapi/src/main/kotlin/instafel/gplayapi/InstafelGplayapiInstance.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `gplayapi/src/main/kotlin/instafel/gplayapi/Main.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `gplayapi/src/main/kotlin/instafel/gplayapi/utils/AppInfo.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `gplayapi/src/main/kotlin/instafel/gplayapi/utils/EnvConfig.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `gplayapi/src/main/kotlin/instafel/gplayapi/utils/Log.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `gplayapi/src/main/resources/device_props/gplayapi_px_3a.properties`: This program is free software: you can redistribute it and/or modify.
+  - `gradle/libs.versions.toml`: Repository asset file: `libs.versions.toml`.
+  - `gradle/wrapper/gradle-wrapper.jar`: Gradle wrapper Java runtime binary used to bootstrap Gradle.
+  - `gradle/wrapper/gradle-wrapper.properties`: Configures the pinned Gradle distribution version and download URL for the wrapper.
+  - `gradle.properties`: Gradle daemon runtime flags, JVM memory allocation limits, and AndroidX enablement.
+  - `gradlew`: Unix shell executable for the Gradle build wrapper.
+  - `gradlew.bat`: Windows batch script executable for the Gradle build wrapper.
+  - `LICENSE`: Open-source software license defining terms of use, distribution, and attribution.
+  - `patcher/build.gradle.kts`: Gradle build script defining compiler plugins, dependencies, and build configurations.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/AboutCmd.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/BuildCmd.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/ClearPatcherCache.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/CreateIflSourceZip.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/ForceUpdateCore.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/HelpCmd.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/InitProject.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/ListPatches.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/RunPatch.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/commands/UploadPreview.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/handlers/Command.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/handlers/CommandHandler.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/handlers/CoreHandler.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/Main.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/utils/Log.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/utils/modals/PatchesPOJO.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/utils/modals/UpdateInfo.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher/src/main/kotlin/instafel/patcher/utils/Utils.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/build.gradle.kts`: Gradle build script defining compiler plugins, dependencies, and build configurations.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/BuildProject.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/CreateIflZip.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/InitProject.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/RunPatches.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/jobs/UploadPreview.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/AmoledThemePatch.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/ChangeVisibleChannelName.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/clone/CloneGeneral.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/clone/ClonePackageReplacer.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/Clone.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FontEmojiPatch.kt`: (c) 2026 Muhammed Ali Bulut & Antigravity, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/general/AddAppTrigger.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/general/AddInitInstafel.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/general/ChangeHomeLongClick.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/general/CopyInstafelSources.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/general/GetGenerationInfo.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/InstafelStuffs.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/RemoveAds.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/RemoveSnoozeWarning.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/UnlockDeveloperOptions.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/PatchInfoLoader.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/source/APKSigner.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/source/SmaliParser.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/source/SourceManager.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/source/SourceUtils.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/source/WorkingDir.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/Env.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/LocaleUtils.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/Log.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/CLIJob.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/FileSearchResult.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/LastResourceIDs.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/LineData.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/MethodContent.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/PatchGroupInfoVar.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/PatchInfoVar.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/pojo/BuildInfo.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/pojo/Env.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/pojo/Patches.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/ProviderData.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/modals/SmaliInstruction.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/OSDetector.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/patch/InstafelPatch.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/patch/InstafelPatchGroup.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/patch/InstafelTask.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/patch/PInfos.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/resources/IFLResData.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/resources/ResourceHelper.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/resources/ResourceParser.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/resources/Resources.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/resources/ResourceType.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/resources/RTypes.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/SearchUtils.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/SmaliUtils.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/utils/Utils.kt`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `patcher-core/src/main/resources/blacklisted_perms.json`: JSON data configuration or metadata dictionary.
+  - `patcher-core/src/main/resources/clone_assets/ifl_clone_background.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `patcher-core/src/main/resources/clone_assets/ifl_clone_foreground.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `patcher-core/src/main/resources/ifl_sources/ifl_data.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `patcher-core/src/main/resources/ifl_sources/ifl_resources.zip`: Compressed archive artifact.
+  - `patcher-core/src/main/resources/ifl_sources/ifl_sources.zip`: Compressed archive artifact.
+  - `patcher-core/src/main/resources/patch_exts/DevHolder.smali`: Repository asset file: `DevHolder.smali`.
+  - `patcher-core/src/main/resources/signing/testkey.keystore`: Cryptographic signing keystore binary.
+  - `patcher-core/src/main/resources/signing/uber-apk-signer.zip`: Compressed archive artifact.
+  - `patcher-core/src/main/resources/styling.xslt`: Repository asset file: `styling.xslt`.
+  - `patcher-core/src/main/resources/supported_locales.json`: JSON data configuration or metadata dictionary.
+  - `README.md`: Repository documentation, architectural overview, usage instructions, and downstream integration guidelines.
+  - `scripts/download-instagram-alpha.mjs`: Instafel Autonomous Alpha Crawler & Downloader.
+  - `settings.gradle.kts`: Gradle settings script defining repository sources and module inclusion.
+  - `updater/build.gradle.kts`: Gradle build script defining compiler plugins, dependencies, and build configurations.
+  - `updater/src/main/aidl/dev/mamii/instafel/updater/IUserService.aidl`: Repository asset file: `IUserService.aidl`.
+  - `updater/src/main/AndroidManifest.xml`: Android application manifest defining package identity, permissions, services, and activities.
+  - `updater/src/main/java/dev/mamii/instafel/updater/App.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/fragments/InfoFragment.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/fragments/LogsFragment.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/fragments/SettingsFragment.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/MainActivity.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/services/UserService.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/SetupActivity.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/update/InstafelUpdateService.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/update/UpdateWork.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/update/UpdateWorkHelper.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/utils/AppPreferences.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/utils/CommandOutput.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/utils/LocalizationUtils.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/utils/LogUtils.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/utils/MaterialListPreference.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/utils/RootManager.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/utils/ShizukuInstaller.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/java/dev/mamii/instafel/updater/utils/Utils.java`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `updater/src/main/res/drawable/alert.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/app_info.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/baseline_battery_alert_24.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/battery_status.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/bell_off.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/check_interval.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/clear_logs.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/clock_alert.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/create_issue.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/help_translation.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/hour_12_rule.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/ifl_installation_method.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/iflu_icon_foreground.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/iflu_updater_icon.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/info.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/installation_type.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/installing.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/language.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/log.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/logs.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/mobile_data.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/restart.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/root.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/send_notification.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/settings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/shizuku.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/show_crash_logs.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/source_code_1.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/source_code_2.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/start.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/status.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/stop.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/update_success.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/updater_guide.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/drawable/use_instafel_api.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/layout/activity_main.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/layout/activity_setup.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/layout/fragment_info.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/layout/fragment_logs.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/layout/m3_switch.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/menu/bottom_nav_menu.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/mipmap-anydpi-v26/iflu_icon.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/mipmap-hdpi/iflu_icon_background.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-hdpi/iflu_icon_foreground.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-hdpi/iflu_icon_monochrome.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-mdpi/iflu_icon_background.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-mdpi/iflu_icon_foreground.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-mdpi/iflu_icon_monochrome.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-xhdpi/iflu_icon_background.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-xhdpi/iflu_icon_foreground.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-xhdpi/iflu_icon_monochrome.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-xxhdpi/iflu_icon_background.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-xxhdpi/iflu_icon_foreground.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-xxhdpi/iflu_icon_monochrome.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-xxxhdpi/iflu_icon_background.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-xxxhdpi/iflu_icon_foreground.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/mipmap-xxxhdpi/iflu_icon_monochrome.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `updater/src/main/res/navigation/nav_graph.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values/arrays.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values/colors.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values/iflu_icon_background.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values/themes.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-ar-rSA/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-az-rAZ/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-de-rDE/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-el-rGR/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-es-rES/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-fr-rFR/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-hi-rIN/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-hu-rHU/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-in-rID/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-it-rIT/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-night/themes.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-pl-rPL/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-pt-rBR/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-sr-rCS/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-th-rTH/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-tr-rTR/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-zh-rCN/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-zh-rHK/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/values-zh-rTW/strings.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/xml/app_options.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/xml/backup_rules.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/xml/data_extraction_rules.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `updater/src/main/res/xml/iflu_file_provider.xml`: Android XML layout, value dictionary, or system configuration definition.
+  - `Version.md`: Permanent, immutable project ledger tracking historical changelogs, architecture evolution, and component manifests.
+  - `website/.eslintrc.json`: JSON data configuration or metadata dictionary.
+  - `website/.gitignore`: Git exclusion specifications ignoring build artifacts, local secrets, and IDE temporary caches.
+  - `website/build.gradle.kts`: Gradle build script defining compiler plugins, dependencies, and build configurations.
+  - `website/components.json`: JSON data configuration or metadata dictionary.
+  - `website/Dockerfile`: Repository asset file: `Dockerfile`.
+  - `website/next.config.ts`: Next.js framework configuration for bundling, image optimization, and headers.
+  - `website/package-lock.json`: Deterministic dependency lockfile for Node.js package resolutions.
+  - `website/package.json`: Node.js package manifest defining dependencies, build scripts, and engine compatibility.
+  - `website/postcss.config.mjs`: PostCSS processor configuration enabling Tailwind CSS and autoprefixer.
+  - `website/public/community_logo.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/andrea.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/burak.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/crowdin/crw_dark.svg`: Scalable vector graphic resource for UI iconography and branding.
+  - `website/public/cpictures/crowdin/crw_light.svg`: Scalable vector graphic resource for UI iconography and branding.
+  - `website/public/cpictures/dani.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/hempal.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/john.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/krvstek.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/muhbintangx.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/night-x.jpeg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/sahil.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/varma.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/vinicius.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/votsz.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/cpictures/zain.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/mockups/mockup_dark_t.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/mockups/mockup_light_t.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/robots.txt`: Repository asset file: `robots.txt`.
+  - `website/public/web-app-manifest-192x192.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/web-app-manifest-512x512.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/wiki/building-sources.md`: Markdown documentation article.
+  - `website/public/wiki/common-misconceptions-what-instafel-is-and-is-not.md`: # ❌ Common Misconceptions: What Instafel Is and Is Not.
+  - `website/public/wiki/community-rules.md`: # 📜 Community Rules.
+  - `website/public/wiki/contributing.md`: # 📚 Contributing to the Backup Library.
+  - `website/public/wiki/crash-reporting-and-troubleshooting.md`: # 🛠️ Crash Reporting & Troubleshooting: How to Handle Issues in Instafel.
+  - `website/public/wiki/developer-options.md`: # 🧪 Developer Options: Unlocking Internal Instagram Experiments.
+  - `website/public/wiki/disclaimer.md`: ## ⚠️ Disclaimer.
+  - `website/public/wiki/exporting-backups.md`: # 💾 Exporting Backup Files: Save and Share Your Flag Configurations.
+  - `website/public/wiki/flags-and-backups.md`: # 🚩 Flags and Backups.
+  - `website/public/wiki/general-info.md`: # 📌 Before You Start.
+  - `website/public/wiki/instafel-patcher.md`: ## 🔧 What Is the Instafel Patcher?.
+  - `website/public/wiki/instafel-updater.md`: # 📲 Instafel Updater (Standalone App).
+  - `website/public/wiki/limitations-and-warnings.md`: # ⚠️ Limitations & Warnings: Understanding the Risks of Using Instafel.
+  - `website/public/wiki/official-platforms.md`: # 🌐 Community & Support Channels.
+  - `website/public/wiki/ota-updates.md`: ## 🚀 What Are OTA Updates?.
+  - `website/public/wiki/unclone-and-clone-versions.md`: ## 📦 What Does “Clone” Mean?.
+  - `website/public/wiki/what-is-instafel.md`: *Instafel** is a project that aims to deliver the **latest alpha builds of Instagram** with **developer options enabled** — allowing users to explore Instagram's alpha features which is not released publicly yet.
+  - `website/public/wiki/what-is-instagram-alpha.md`: # 📱 What Is Instagram Alpha — And How Instafel Connects.
+  - `website/public/wiki/what-makes-instafel-unique.md`: # ✨ What Makes Instafel Unique?.
+  - `website/public/wiki-imgs/backup-options.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/wiki-imgs/export-backup.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/wiki-imgs/flag-analyzer.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/wiki-imgs/hamburger-button.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/wiki-imgs/instafel-menu.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/wiki-imgs/menu-access.jpg`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/public/wiki-imgs/test.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/src/app/about_updater/layout.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/about_updater/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/apple-icon.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/src/app/contributors/layout.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/contributors/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/error.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/favicon-16x16.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/src/app/favicon-32x32.png`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/src/app/favicon.ico`: Raster graphic image or icon asset used in application UI or documentation.
+  - `website/src/app/globals.css`: Cascading Style Sheet defining presentation rules and visual styling.
+  - `website/src/app/layout.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/library/backup/layout.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/library/backup/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/library/backup/release/layout.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/library/backup/release/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/library/flib_moved/layout.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/library/flib_moved/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/not-found.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/releases/list/layout.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/releases/list/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/releases/view/layout.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/releases/view/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/site.webmanifest`: Repository asset file: `site.webmanifest`.
+  - `website/src/app/sitemap.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/wiki/[slug]/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/wiki/layout.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/app/wiki/page.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/AdminLoginProvider.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/Carousel.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/CrowdinSuggestCard.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/Footer.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/HomeMockup.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/Icons.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/LanguageSwitcher.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/loading/footer-loading.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/loading/index.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/loading/navbar-loading.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/LoadingBars.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/MarkdownRenderer.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/Navbar.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/NavigationItem.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/PageUtils.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/providers/theme-provider.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/release/ReleaseListComps.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ScreenshotViewer.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/SnowEffect.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/TagInput.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ThemeSwitcher.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/accordion.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/alert-dialog.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/alert.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/avatar.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/badge.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/button.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/calendar.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/card.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/checkbox.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/collapsible.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/dialog.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/dropdown-menu.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/input.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/label.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/loading-spinner.tsx`: Exports `LoadingSpinner` providing functional logic or interactive component behavior.
+  - `website/src/components/ui/navigation-menu.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/pagination.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/popover.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/radio-group.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/scroll-area.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/select.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/separator.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/sheet.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/sidebar.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/skeleton.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/sonner.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/spinner.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/switch.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/table.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/tabs.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/textarea.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/ui/toast.tsx`: TypeScript application module or UI component.
+  - `website/src/components/ui/tooltip.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/wiki/SidebarCategoryList.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/wiki/WikiContent.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/wiki/WikiSidebar.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/components/WikiLanguageWarning.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/config/config.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/config/metadata.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/hooks/use-mobile.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/hooks/use-toast.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/hooks/useMediaQuery.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/i18n/i18n.js`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/i18n/LocaleProvider.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/i18n/settings.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/lib/utils.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/locales/ar-SA/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/ar-SA/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/az-AZ/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/de-DE/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/el-GR/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/en-EN/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/es-ES/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/fr-FR/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hi-IN/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/hu-HU/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/id-ID/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/it-IT/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pl-PL/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/pt-BR/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/sr-CS/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/th-TH/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/tr-TR/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-CN/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-HK/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/common.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/cont_abouts.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/contributors.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/fcategories.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/flib_moved.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/home.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/library_backup.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/library_flag.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/misc.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/release.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/releases.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/switchlang.json`: JSON data configuration or metadata dictionary.
+  - `website/src/locales/zh-TW/updater.json`: JSON data configuration or metadata dictionary.
+  - `website/src/wdata/flag_sdata.tsx`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/wdata/list.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/src/wdata/wiki.ts`: (c) 2026 Muhammed Ali Bulut, All rights reserved.
+  - `website/tsconfig.json`: TypeScript compiler configuration defining language target, module resolution, and path aliases.
+- **Status**: 100% (Completed & Verified across repository)
+
+## [2026-10-28 09:43:00 IST] - Release Title Semantic Alignment & Automated Upstream Ingestion Synchronization
+- **Action**: Aligned release title strictly to semantic version tag `v<Version>` across GitHub Actions and Forgejo CI/CD release generation workflows pursuant to foundational mandates in GEMINI.md, and synchronized workflow dispatch handling with upstream `Alpha-Insta` daily release triggers.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`: Aligned `RELEASE_TITLE="v${VERSION}"` to match tag format strictly and eliminate redundant prefixing.
+  - `.forgejo/workflows/generate_instafel.yml`: Synchronized Codeberg mirror release title format.
+  - `Version.md`: Appended tracking entry.
+- **Status**: 100% (Completed & Synced)
