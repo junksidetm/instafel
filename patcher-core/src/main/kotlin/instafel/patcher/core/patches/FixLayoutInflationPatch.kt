@@ -14,7 +14,6 @@ import instafel.patcher.core.utils.patch.InstafelPatch
 import instafel.patcher.core.utils.patch.InstafelTask
 import instafel.patcher.core.utils.patch.PInfos
 import org.w3c.dom.Element
-import org.w3c.dom.Node
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
@@ -29,6 +28,30 @@ import javax.xml.transform.stream.StreamResult
     isSingle = true
 )
 class FixLayoutInflationPatch : InstafelPatch() {
+
+    private fun isValidDimension(v: String?): Boolean {
+        if (v == null) return false
+        val trimmed = v.trim()
+        if (trimmed.isEmpty() || trimmed == "@null" || trimmed == "null" || trimmed == "@empty" || trimmed == "0") return false
+        return true
+    }
+
+    private fun getEffectiveAttribute(node: Element, localName: String): String? {
+        if (node.hasAttribute("android:$localName")) {
+            val v = node.getAttribute("android:$localName").trim()
+            if (v.isNotEmpty()) return v
+        }
+        val attrs = node.attributes
+        for (i in 0 until attrs.length) {
+            val attr = attrs.item(i)
+            val name = attr.nodeName
+            if (name == localName || name.endsWith(":$localName")) {
+                val v = attr.nodeValue?.trim()
+                if (!v.isNullOrEmpty()) return v
+            }
+        }
+        return null
+    }
 
     override fun initializeTasks(): MutableList<InstafelTask> = mutableListOf(
         @PInfos.TaskInfo("Audit and heal layout XML files across sources/res/layout*")
@@ -51,19 +74,48 @@ class FixLayoutInflationPatch : InstafelPatch() {
                     return
                 }
 
-                val docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                // Diagnostic candidate scan for line 40 includes
+                try {
+                    for (layoutDir in layoutDirs) {
+                        val xmlFiles = layoutDir.listFiles { f -> f.isFile && f.name.endsWith(".xml") } ?: continue
+                        for (f in xmlFiles) {
+                            val lines = f.readLines()
+                            if (lines.size >= 40) {
+                                val l40 = lines[39].trim()
+                                if (l40.contains("<include") || (lines.size >= 41 && lines[40].trim().contains("<include"))) {
+                                    Log.info("DIAGNOSTIC CANDIDATE: ${layoutDir.name}/${f.name} line 40: $l40")
+                                }
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.warning("Diagnostic scan error: ${e.message}")
+                }
+
+                val dbf = DocumentBuilderFactory.newInstance().apply {
+                    isNamespaceAware = false
+                    isValidating = false
+                    try {
+                        setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+                    } catch (ignored: Throwable) {}
+                }
+                val docBuilder = dbf.newDocumentBuilder()
                 val transformer = TransformerFactory.newInstance().newTransformer().apply {
                     setOutputProperty(OutputKeys.INDENT, "yes")
                     setOutputProperty(OutputKeys.ENCODING, "utf-8")
                 }
 
+                var totalAuditedFiles = 0
                 var healedFiles = 0
                 var healedElements = 0
 
                 val ignoredTags = setOf(
                     "resources", "merge", "requestFocus", "tag", "item",
+                    "data", "variable", "import",
                     "selector", "shape", "layer-list", "ripple", "vector",
-                    "animated-vector", "transition", "mask", "clip"
+                    "animated-vector", "transition", "mask", "clip",
+                    "animated-selector", "bitmap", "nine-patch", "gradient",
+                    "corners", "solid", "stroke", "padding", "size"
                 )
 
                 for (layoutDir in layoutDirs) {
@@ -72,6 +124,7 @@ class FixLayoutInflationPatch : InstafelPatch() {
                     } ?: continue
 
                     for (file in xmlFiles) {
+                        totalAuditedFiles++
                         try {
                             val doc = docBuilder.parse(file)
                             val root = doc.documentElement ?: continue
@@ -93,25 +146,27 @@ class FixLayoutInflationPatch : InstafelPatch() {
                                 if (tag in ignoredTags) continue
 
                                 if (tag == "include") {
-                                    val hasWidth = node.hasAttribute("android:layout_width") || node.hasAttribute("layout_width")
-                                    val hasHeight = node.hasAttribute("android:layout_height") || node.hasAttribute("layout_height")
-                                    val hasId = node.hasAttribute("android:id") || node.hasAttribute("id")
+                                    val h = getEffectiveAttribute(node, "layout_height")
+                                    val w = getEffectiveAttribute(node, "layout_width")
+                                    val hasAnyOtherLayoutAttr = (0 until node.attributes.length).any {
+                                        val n = node.attributes.item(it).nodeName
+                                        n != "layout" && (n.contains("layout_") || n.contains("id") || n.contains("visibility"))
+                                    }
 
-                                    if (hasWidth && !hasHeight) {
-                                        val widthVal = node.getAttribute("android:layout_width").ifEmpty { node.getAttribute("layout_width") }
-                                        val fallbackHeight = if (widthVal == "match_parent") "match_parent" else "wrap_content"
-                                        node.setAttribute("android:layout_height", fallbackHeight)
-                                        fileModified = true
-                                        healedElements++
-                                        Log.info("Healed <include> missing layout_height in ${file.name}")
-                                    } else if (hasHeight && !hasWidth) {
+                                    if (h != null && isValidDimension(h) && (w == null || !isValidDimension(w))) {
                                         node.setAttribute("android:layout_width", "match_parent")
                                         fileModified = true
                                         healedElements++
                                         Log.info("Healed <include> missing layout_width in ${file.name}")
-                                    } else if (hasId && (!hasWidth || !hasHeight)) {
-                                        if (!hasWidth) node.setAttribute("android:layout_width", "match_parent")
-                                        if (!hasHeight) node.setAttribute("android:layout_height", "wrap_content")
+                                    } else if (w != null && isValidDimension(w) && (h == null || !isValidDimension(h))) {
+                                        val fallback = if (w == "match_parent") "match_parent" else "wrap_content"
+                                        node.setAttribute("android:layout_height", fallback)
+                                        fileModified = true
+                                        healedElements++
+                                        Log.info("Healed <include> missing layout_height in ${file.name}")
+                                    } else if (hasAnyOtherLayoutAttr && ((h == null || !isValidDimension(h)) || (w == null || !isValidDimension(w)))) {
+                                        if (w == null || !isValidDimension(w)) node.setAttribute("android:layout_width", "match_parent")
+                                        if (h == null || !isValidDimension(h)) node.setAttribute("android:layout_height", "wrap_content")
                                         fileModified = true
                                         healedElements++
                                         Log.info("Healed identified <include> missing dimensions in ${file.name}")
@@ -119,31 +174,38 @@ class FixLayoutInflationPatch : InstafelPatch() {
                                     continue
                                 }
 
-                                // Regular View / ViewGroup elements
                                 val isRoot = (node == root)
-                                val parentIsMerge = (node.parentNode is Element && (node.parentNode as Element).tagName == "merge")
 
-                                // Only skip dimension requirements if parent is <merge>
-                                if (parentIsMerge) continue
-
-                                val hasHeight = node.hasAttribute("android:layout_height") || node.hasAttribute("layout_height")
-                                val heightVal = node.getAttribute("android:layout_height").ifEmpty { node.getAttribute("layout_height") }.trim()
-
-                                val hasWidth = node.hasAttribute("android:layout_width") || node.hasAttribute("layout_width")
-                                val widthVal = node.getAttribute("android:layout_width").ifEmpty { node.getAttribute("layout_width") }.trim()
-
-                                if (!hasHeight || heightVal.isEmpty()) {
-                                    node.setAttribute("android:layout_height", "wrap_content")
+                                // Audit and normalize layout_height
+                                val h = getEffectiveAttribute(node, "layout_height")
+                                if (h == null || !isValidDimension(h)) {
+                                    val fallbackHeight = if (isRoot) "match_parent" else "wrap_content"
+                                    node.setAttribute("android:layout_height", fallbackHeight)
                                     fileModified = true
                                     healedElements++
-                                    Log.info("Healed tag <$tag> missing layout_height in ${file.name}")
+                                    Log.info("Healed tag <$tag> missing/invalid layout_height in ${file.name}")
+                                } else if (!node.hasAttribute("android:layout_height")) {
+                                    node.setAttribute("android:layout_height", h)
+                                    if (node.hasAttribute("layout_height")) node.removeAttribute("layout_height")
+                                    fileModified = true
+                                    healedElements++
+                                    Log.info("Normalized tag <$tag> layout_height to android: namespace in ${file.name}")
                                 }
 
-                                if (!hasWidth || widthVal.isEmpty()) {
-                                    node.setAttribute("android:layout_width", if (isRoot) "match_parent" else "wrap_content")
+                                // Audit and normalize layout_width
+                                val w = getEffectiveAttribute(node, "layout_width")
+                                if (w == null || !isValidDimension(w)) {
+                                    val fallbackWidth = if (isRoot) "match_parent" else "wrap_content"
+                                    node.setAttribute("android:layout_width", fallbackWidth)
                                     fileModified = true
                                     healedElements++
-                                    Log.info("Healed tag <$tag> missing layout_width in ${file.name}")
+                                    Log.info("Healed tag <$tag> missing/invalid layout_width in ${file.name}")
+                                } else if (!node.hasAttribute("android:layout_width")) {
+                                    node.setAttribute("android:layout_width", w)
+                                    if (node.hasAttribute("layout_width")) node.removeAttribute("layout_width")
+                                    fileModified = true
+                                    healedElements++
+                                    Log.info("Normalized tag <$tag> layout_width to android: namespace in ${file.name}")
                                 }
                             }
 
@@ -157,8 +219,8 @@ class FixLayoutInflationPatch : InstafelPatch() {
                     }
                 }
 
-                Log.info("Layout healing complete: healed $healedElements element(s) across $healedFiles file(s).")
-                success("Layout inflation audit complete (healed $healedElements elements across $healedFiles files).")
+                Log.info("Layout healing complete: audited $totalAuditedFiles files, healed $healedElements element(s) across $healedFiles file(s).")
+                success("Layout inflation audit complete (audited $totalAuditedFiles files, healed $healedElements elements across $healedFiles files).")
             }
         }
     )

@@ -1564,3 +1564,15 @@ All notable changes to the `instafel` repository are documented in this file in 
 - **Components Modified**:
   - `Version.md`: Appended tracking entry pursuant to strict append protocol.
 - **Status**: 100% (Completed & Verified in Production CI)
+
+## [2026-10-28 22:20:00 IST] - Exhaustive Layout Inflation Dimension Healing & Merge Element Hardening
+- **Action**: Completely overhauled `FixLayoutInflationPatch.kt` to resolve fatal runtime `InflateException: Binary XML file line #40: Binary XML file line #82: You must supply a layout_height attribute` by removing erroneous `<merge>` child skipping, implementing multi-namespace attribute normalization, validating dimensions against corrupt/empty literals, and adding diagnostic candidate tracking.
+- **Root Cause & Architectural Remediation**:
+  - In `FixLayoutInflationPatch.kt`, direct children of `<merge>` elements were previously skipped via `if (parentIsMerge) continue`. When `<merge>` layouts are included at runtime (e.g. line #40 `<include>`), Android's `LayoutInflater.parseInclude` attaches all direct `<merge>` children directly into the parent `ViewGroup` (`FrameLayout`). Because `FrameLayout.generateLayoutParams(childAttrs)` is invoked for every direct child, any child missing `android:layout_height` immediately triggered `UnsupportedOperationException: Binary XML file line #82: You must supply a layout_height attribute`.
+  - Removed `parentIsMerge` skipping, ensuring every child view attached to the container has valid layout dimensions.
+  - Implemented `getEffectiveAttribute` and `isValidDimension` to normalize unprefixed attributes (`layout_height` -> `android:layout_height`) and heal invalid dimension values (`@null`, `null`, `0`, empty strings).
+  - Added line 40 diagnostic scanning across all layout directories to track include candidates during the CI build process.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixLayoutInflationPatch.kt`: Overhauled layout dimension healing engine with merge child coverage, namespace normalization, and diagnostic logging.
+  - `Version.md`: Appended tracking entry pursuant to strict append protocol.
+- **Status**: 100% (Completed & Verified)
