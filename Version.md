@@ -1672,3 +1672,13 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.github/workflows/generate_instafel.yml`: Configured `on.push` branch paths and updated duplicate mod gating condition.
   - `Version.md`: Appended tracking entry per strict append protocol.
 - **Status**: 100% (Completed & Verified)
+
+
+## [2026-10-29 15:26:00 IST] - Pipeline Optimization & Include Dimension Sanitization Hardening
+- **Action**: Hardened `<include>` dimension sanitization in `FixLayoutInflationPatch.kt` to strip unqualified layout attributes, normalize namespaces, and defensively sanitize any `@dimen/` references within `layout_activity_main*` hierarchies. Synchronized push triggers and duplicate-mod bypass logic across `.github/workflows/generate_instafel.yml` and `.forgejo/workflows/generate_instafel.yml` to trigger automated rebuilding and release clobbering upon engine commits.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixLayoutInflationPatch.kt`: Enhanced `<include>` auditing to normalize unqualified attributes and inject fallback dimensions for `@dimen/` references in main layouts.
+  - `.github/workflows/generate_instafel.yml`: Removed restrictive `paths` filter on push trigger and fixed `schedule` indentation to restore automated continuous integration.
+  - `.forgejo/workflows/generate_instafel.yml`: Enabled push event trigger on `main` and added duplicate mod bypass check on push.
+  - `version.md`: Appended tracking entry pursuant to strict append protocol.
+- **Status**: 100% (Completed, Signed & Ready for Multi-Platform Push)

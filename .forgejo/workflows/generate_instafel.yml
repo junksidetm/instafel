@@ -1,6 +1,9 @@
 name: Generate Instafel (Full Online Pipeline)
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     # Run automatically every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
     # Run daily at 03:30 UTC (30 minutes after Alpha-Insta 03:00 UTC crawler), plus 6-hour polling
@@ -73,7 +76,7 @@ jobs:
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
           # Duplicate Mod Check: skip if Instafel has already modded and published this version
-          if [ "${{ inputs.force_build }}" != "true" ]; then
+          if [ "${{ inputs.force_build }}" != "true" ] && [ "${{ github.event_name }}" != "push" ]; then
             if gh release view "v${VERSION}" --repo "${{ github.repository }}" >/dev/null 2>&1; then
               echo "Release v${VERSION} has already been modded and published by Instafel!"
               echo "No new Instagram Alpha release was published by Alpha-Insta today. Skipping build to avoid redundant modding."

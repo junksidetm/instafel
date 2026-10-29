@@ -334,18 +334,31 @@ class FixLayoutInflationPatch : InstafelPatch() {
                                 if (tag == "include") {
                                     val h = getEffectiveAttribute(node, "layout_height")
                                     val w = getEffectiveAttribute(node, "layout_width")
-                                    val needHeight = (h == null || !isValidDimension(h))
-                                    val needWidth = (w == null || !isValidDimension(w))
+                                    val needHeight = (h == null || !isValidDimension(h) || (isMainActivityLayout && h.startsWith("@dimen/")))
+                                    val needWidth = (w == null || !isValidDimension(w) || (isMainActivityLayout && w.startsWith("@dimen/")))
 
                                     if (needHeight || needWidth) {
                                         val fallbackW = if (!needWidth) w!! else "match_parent"
                                         val fallbackH = if (!needHeight) h!! else "wrap_content"
                                         node.setAttribute("android:layout_width", fallbackW)
                                         node.setAttribute("android:layout_height", fallbackH)
+                                        if (node.hasAttribute("layout_width")) node.removeAttribute("layout_width")
+                                        if (node.hasAttribute("layout_height")) node.removeAttribute("layout_height")
                                         fileModified = true
                                         healedElements++
                                         healedDetails.add(HealedDetail(file.name, "include", "Guaranteed layout dimensions (w=$fallbackW, h=$fallbackH)"))
                                         Log.info("Guaranteed <include> dimensions (w=$fallbackW, h=$fallbackH) in ${file.name}")
+                                    } else {
+                                        if (node.hasAttribute("layout_width")) {
+                                            node.removeAttribute("layout_width")
+                                            node.setAttribute("android:layout_width", w!!)
+                                            fileModified = true
+                                        }
+                                        if (node.hasAttribute("layout_height")) {
+                                            node.removeAttribute("layout_height")
+                                            node.setAttribute("android:layout_height", h!!)
+                                            fileModified = true
+                                        }
                                     }
                                     continue
                                 }
