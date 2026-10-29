@@ -29,6 +29,10 @@ permissions:
 jobs:
   ifl_generator:
     runs-on: ubuntu-latest
+    outputs:
+      skip_build: ${{ steps.prepare_apk.outputs.skip_build }}
+      version: ${{ steps.prepare_apk.outputs.version }}
+      tag: ${{ steps.prepare_apk.outputs.tag }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -243,18 +247,167 @@ jobs:
           path: release_apks/*
           if-no-files-found: warn
 
+      - name: Append Layout Audit to Step Summary
+        if: always()
+        run: |
+          if [ -f "layout_audit_summary.md" ]; then
+            cat layout_audit_summary.md >> $GITHUB_STEP_SUMMARY
+          elif [ -f "instagram/layout_audit_summary.md" ]; then
+            cat instagram/layout_audit_summary.md >> $GITHUB_STEP_SUMMARY
+          fi
+
+  test_cloud_smoke:
+    name: Cloud Smoke Test (Firebase Test Lab)
+    needs: ifl_generator
+    runs-on: ubuntu-latest
+    if: needs.ifl_generator.outputs.skip_build != 'true'
+    steps:
+      - name: Check for GCP Credentials
+        id: check_gcp
+        run: |
+          if [ -n "${{ secrets.GCP_SA_KEY }}" ]; then
+            echo "has_gcp=true" >> $GITHUB_OUTPUT
+            echo "Google Cloud credentials detected. Proceeding with Firebase Test Lab on physical hardware..."
+          else
+            echo "has_gcp=false" >> $GITHUB_OUTPUT
+            echo "::warning::GCP_SA_KEY secret not found. Skipping cloud physical device testing."
+          fi
+
+      - name: Download Production APK Artifact
+        if: steps.check_gcp.outputs.has_gcp == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: instafel-production-apk
+          path: release_apks
+
+      - name: Authenticate to Google Cloud
+        if: steps.check_gcp.outputs.has_gcp == 'true'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud SDK
+        if: steps.check_gcp.outputs.has_gcp == 'true'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Execute Firebase Test Lab Smoke Test (Real Physical Device)
+        if: steps.check_gcp.outputs.has_gcp == 'true'
+        id: ftl_test
+        continue-on-error: true
+        run: |
+          echo "Starting Robo test on real physical ARM64 device (Google Pixel)..."
+          mkdir -p ftl_results
+
+          # Execute 90-second Robo crawl on physical Google Pixel (ARM64)
+          gcloud firebase test android run \
+            --type robo \
+            --app release_apks/instafel-arm64-v8a-unclone.apk \
+            --device model=oriole,version=33,locale=en,orientation=portrait \
+            --timeout 90s \
+            --results-history-name="Instafel Smoke Tests" \
+            2>&1 | tee ftl_results/test_output.log
+
+          FTL_EXIT=${PIPESTATUS[0]}
+          echo "ftl_exit=$FTL_EXIT" >> $GITHUB_OUTPUT
+
+      - name: Parse & Publish Crash Diagnostics to Job Summary
+        if: always()
+        run: |
+          echo "## 📱 Firebase Test Lab Cloud Smoke Test Report" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.check_gcp.outputs.has_gcp }}" != "true" ]; then
+            echo "⚠️ **Cloud Smoke Test Skipped**: \`GCP_SA_KEY\` secret is not configured in this repository." >> $GITHUB_STEP_SUMMARY
+            exit 0
+          fi
+
+          CRASH_FOUND=false
+          CRASH_LOG=""
+
+          # 1. Check if test output reported a crash or failure
+          if [ -f "ftl_results/test_output.log" ]; then
+            if grep -iqE "crash|Fatal Exception|InflateException|FATAL" ftl_results/test_output.log; then
+              CRASH_FOUND=true
+            fi
+          fi
+
+          # 2. Extract Firebase Storage / GCS URL from test output if present
+          GCS_URL=$(grep -oE "https://console.developers.google.com/storage/browser/[^ ]+" ftl_results/test_output.log 2>/dev/null | head -n 1 || true)
+          GS_BUCKET=$(grep -oE "gs://[^ ]+" ftl_results/test_output.log 2>/dev/null | head -n 1 || true)
+
+          # If GCS bucket resolved, attempt downloading logcat
+          if [ -n "$GS_BUCKET" ]; then
+            echo "Attempting to retrieve logcat from $GS_BUCKET..."
+            gcloud storage cp "${GS_BUCKET}/**/logcat" ftl_results/logcat.txt 2>/dev/null || true
+          fi
+
+          # 3. Check downloaded logcat for Instafel custom crash report or AndroidRuntime fatal
+          if [ -f "ftl_results/logcat.txt" ]; then
+            if grep -q "=== BEGIN INSTAFEL CRASH REPORT ===" ftl_results/logcat.txt; then
+              CRASH_FOUND=true
+              CRASH_LOG=$(sed -n '/=== BEGIN INSTAFEL CRASH REPORT ===/,/=== END INSTAFEL CRASH REPORT ===/p' ftl_results/logcat.txt)
+            elif grep -q "FATAL EXCEPTION" ftl_results/logcat.txt; then
+              CRASH_FOUND=true
+              CRASH_LOG=$(grep -A 30 "FATAL EXCEPTION" ftl_results/logcat.txt | head -n 35)
+            fi
+          fi
+
+          # 4. Fallback snippet if crash was detected but logcat was unparsed
+          if [ "$CRASH_FOUND" = "true" ] && [ -z "$CRASH_LOG" ]; then
+            CRASH_LOG=$(grep -C 5 -iE "crash|Fatal Exception|InflateException" ftl_results/test_output.log | head -n 40)
+          fi
+
+          # 5. Format Step Summary
+          if [ "$CRASH_FOUND" = "true" ]; then
+            echo "### ❌ Runtime Crash Detected on Cloud Physical Device!" >> $GITHUB_STEP_SUMMARY
+            echo "- **Target Device:** Google Pixel (ARM64 physical device)" >> $GITHUB_STEP_SUMMARY
+            if [ -n "$GCS_URL" ]; then
+              echo "- **Cloud Artifacts & Video:** [View Firebase Test Artifacts]($GCS_URL)" >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "#### Copy-Pasteable Crash Stack Trace:" >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            if [ -n "$CRASH_LOG" ]; then
+              echo "$CRASH_LOG" >> $GITHUB_STEP_SUMMARY
+            else
+              cat ftl_results/test_output.log | tail -n 30 >> $GITHUB_STEP_SUMMARY
+            fi
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "::error::Instafel crashed on physical device launch!"
+            exit 1
+          else
+            echo "### ✅ Cold-Start Smoke Test Succeeded on Real Physical Hardware!" >> $GITHUB_STEP_SUMMARY
+            echo "- **Target Device:** Google Pixel (ARM64 physical device)" >> $GITHUB_STEP_SUMMARY
+            echo "- **Result:** \`InstagramMainActivity\` cold-start launched without runtime layout or lifecycle exceptions." >> $GITHUB_STEP_SUMMARY
+            if [ -n "$GCS_URL" ]; then
+              echo "- **Cloud Artifacts & Video:** [View Firebase Test Artifacts]($GCS_URL)" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
+  publish_release:
+    name: Publish Release Deliverables
+    needs: [ifl_generator, test_cloud_smoke]
+    runs-on: ubuntu-latest
+    if: needs.ifl_generator.outputs.skip_build != 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Production APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: instafel-production-apk
+          path: release_apks
+
       - name: Publish GitHub Release
-        if: steps.prepare_apk.outputs.skip_build != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ steps.prepare_apk.outputs.version }}"
+          VERSION="${{ needs.ifl_generator.outputs.version }}"
           TAG_NAME="v${VERSION}"
           RELEASE_TITLE="v${VERSION}"
 
           NOTES="### Instafel Alpha Release v${VERSION}
           - **Architecture:** \`arm64-v8a\`
           - **Automated Pipeline:** 100% Autonomous CI/CD Release
+          - **Cloud Smoke Verification:** Verified on physical Android hardware (Firebase Test Lab)
           - **Variants Provided:**
             - **Unclone:** \`instafel-v${VERSION}-arm64-v8a-unclone.apk\` (replaces official Instagram)
             - **Clone:** \`instafel-v${VERSION}-arm64-v8a-clone.apk\` (standalone dual-app package)

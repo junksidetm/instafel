@@ -49,6 +49,26 @@ public class InstafelCrashHandler implements Thread.UncaughtExceptionHandler {
                 ClipData clip = ClipData.newPlainText("Instafel Crash Log", formattedLog);
                 clipboard.setPrimaryClip(clip);
             }
+
+            // Dump formatted crash report to disk and logcat for automated CI / ADB extraction
+            if (formattedLog != null) {
+                Log.e("InstafelCrashReport", "\n=== BEGIN INSTAFEL CRASH REPORT ===\n" + formattedLog + "\n=== END INSTAFEL CRASH REPORT ===");
+                try {
+                    java.io.File downloadDir = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS);
+                    if (downloadDir != null && (downloadDir.exists() || downloadDir.mkdirs())) {
+                        java.io.File crashFile = new java.io.File(downloadDir, "instafel_crash.log");
+                        java.io.FileOutputStream fos = new java.io.FileOutputStream(crashFile);
+                        fos.write(formattedLog.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                        fos.close();
+                    }
+                } catch (Throwable ignored) {}
+                try {
+                    java.io.File tmpCrash = new java.io.File("/data/local/tmp/instafel_crash.log");
+                    java.io.FileOutputStream fos = new java.io.FileOutputStream(tmpCrash);
+                    fos.write(formattedLog.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                    fos.close();
+                } catch (Throwable ignored) {}
+            }
         } catch (Throwable ex) {
             ex.printStackTrace();
         }

@@ -237,6 +237,15 @@ jobs:
           path: release_apks/*
           if-no-files-found: warn
 
+      - name: Append Layout Audit to Step Summary
+        if: always()
+        run: |
+          if [ -f "layout_audit_summary.md" ]; then
+            cat layout_audit_summary.md >> $GITHUB_STEP_SUMMARY
+          elif [ -f "instagram/layout_audit_summary.md" ]; then
+            cat instagram/layout_audit_summary.md >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Publish GitHub Release
         if: steps.prepare_apk.outputs.skip_build != 'true'
         env:

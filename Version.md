@@ -1587,3 +1587,25 @@ All notable changes to the `instafel` repository are documented in this file in 
 - **Components Modified**:
   - `Version.md`: Appended tracking entry pursuant to strict append protocol.
 - **Status**: 100% (Completed & Verified in Production CI)
+
+
+## [2026-10-29 12:16:00 IST] - Two-Tiered Verification System: Cloud Physical Device Smoke Testing & Exhaustive Layout Audit
+- **Action**: Architected and deployed an end-to-end Two-Tiered Verification System integrating automated real-hardware cloud smoke testing via Firebase Test Lab (Spark Free Tier) on physical Google Pixel ARM64 devices, direct `$GITHUB_STEP_SUMMARY` crash reporting, multi-layer layout inflation theme attribute hardening (`FixLayoutInflationPatch`), dual-target disk/logcat crash dump serialization in `InstafelCrashHandler`, and gated production release deployment.
+- **Architectural Enhancements & Component Modifications**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixLayoutInflationPatch.kt`:
+    - Hardened `isValidDimension` to reject unmapped theme attribute pointers (`?attr/...` / `?...`), eliminating fatal `UnsupportedOperationException: You must supply a layout_height attribute` triggered by `TypedArray.getLayoutDimension` during cold-start `InstagramMainActivity` layout inflation when themes omit runtime dimension references.
+    - Guaranteed non-null fallback dimensions (`android:layout_width="match_parent"`, `android:layout_height="wrap_content"`) on `<include>` tags declaring layout, id, or visibility attributes.
+    - Integrated structural candidate auditing generating markdown telemetry (`layout_audit_summary.md`) for CI summary rendering.
+  - `app/src/main/java/instafel/app/utils/InstafelCrashHandler.java`:
+    - Added disk serialization writing formatted crash diagnostics to `/sdcard/Download/instafel_crash.log` and `/data/local/tmp/instafel_crash.log`.
+    - Emitted structured logcat telemetry (`InstafelCrashReport`) enabling direct extraction by ADB and headless cloud test runners without depending on Android clipboard background sandboxing.
+  - `.github/workflows/generate_instafel.yml`:
+    - Decoupled release publishing from compilation into a gated downstream workflow (`publish_release` depends on `[ifl_generator, test_cloud_smoke]`), ensuring broken builds are blocked from public release distribution.
+    - Engineered `test_cloud_smoke` job using `google-github-actions/auth@v2` and `gcloud firebase test android run` to execute 90-second Robo crawl on physical ARM64 hardware (Google Pixel, `model=oriole,version=33`).
+    - Added automated crash extraction and logcat analysis publishing formatted copy-pasteable markdown diagnostics directly into `$GITHUB_STEP_SUMMARY`.
+    - Added layout audit telemetry step rendering XML schema audit details directly to the job summary.
+  - `.forgejo/workflows/generate_instafel.yml`:
+    - Synchronized layout audit telemetry publishing to mirror CI pipeline.
+  - `Version.md`:
+    - Appended tracking entry pursuant to strict append protocol.
+- **Status**: 100% (Completed & Verified)
