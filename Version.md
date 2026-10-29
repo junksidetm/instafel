@@ -1609,3 +1609,11 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `Version.md`:
     - Appended tracking entry pursuant to strict append protocol.
 - **Status**: 100% (Completed & Verified)
+
+
+## [2026-10-29 12:40:00 IST] - Unconditional Layout Include Dimension Enforcement & Automated CI Dispatch
+- **Action**: Hardened `FixLayoutInflationPatch.kt` with unconditional dimension guarantees across all `<include>` tags (removing restrictive attribute gating) to permanently eliminate `android.view.InflateException: Binary XML file line #40: Binary XML file line #82: You must supply a layout_height attribute` on `InstagramMainActivity`, and initiated automated GitHub Actions execution with physical cloud device testing.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixLayoutInflationPatch.kt`: Applied unconditional `layout_width="match_parent"` and `layout_height="wrap_content"` fallback enforcement across any `<include>` element lacking explicit dimensions.
+  - `Version.md`: Appended tracking entry pursuant to strict append protocol.
+- **Status**: 100% (Completed & Dispatched to CI)

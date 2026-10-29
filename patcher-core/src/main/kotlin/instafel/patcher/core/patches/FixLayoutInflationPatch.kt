@@ -153,25 +153,18 @@ class FixLayoutInflationPatch : InstafelPatch() {
                                 if (tag == "include") {
                                     val h = getEffectiveAttribute(node, "layout_height")
                                     val w = getEffectiveAttribute(node, "layout_width")
-                                    val hasAnyOtherLayoutAttr = (0 until node.attributes.length).any {
-                                        val n = node.attributes.item(it).nodeName
-                                        n != "layout" && (n.contains("layout_") || n.contains("id") || n.contains("visibility"))
-                                    }
-
                                     val needHeight = (h == null || !isValidDimension(h))
                                     val needWidth = (w == null || !isValidDimension(w))
 
-                                    if (hasAnyOtherLayoutAttr || !needHeight || !needWidth) {
-                                        if (needHeight || needWidth) {
-                                            val fallbackW = if (!needWidth) w!! else "match_parent"
-                                            val fallbackH = if (!needHeight) h!! else "wrap_content"
-                                            node.setAttribute("android:layout_width", fallbackW)
-                                            node.setAttribute("android:layout_height", fallbackH)
-                                            fileModified = true
-                                            healedElements++
-                                            healedDetails.add(HealedDetail(file.name, "include", "Guaranteed layout dimensions (w=$fallbackW, h=$fallbackH)"))
-                                            Log.info("Guaranteed <include> dimensions (w=$fallbackW, h=$fallbackH) in ${file.name}")
-                                        }
+                                    if (needHeight || needWidth) {
+                                        val fallbackW = if (!needWidth) w!! else "match_parent"
+                                        val fallbackH = if (!needHeight) h!! else "wrap_content"
+                                        node.setAttribute("android:layout_width", fallbackW)
+                                        node.setAttribute("android:layout_height", fallbackH)
+                                        fileModified = true
+                                        healedElements++
+                                        healedDetails.add(HealedDetail(file.name, "include", "Guaranteed layout dimensions (w=$fallbackW, h=$fallbackH)"))
+                                        Log.info("Guaranteed <include> dimensions (w=$fallbackW, h=$fallbackH) in ${file.name}")
                                     }
                                     continue
                                 }
