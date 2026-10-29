@@ -1758,3 +1758,18 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.github/workflows/generate_instafel.yml`: Enabled `test_cloud_smoke` on feature branches.
   - `Version.md`: Appended tracking entry pursuant to strict append protocol.
 - **Status**: 100% (Completed & Pushed to Staging)
+
+
+## [2026-10-29 22:00:00 IST] - Decouple Artifact Deliverables & Eliminate Bloat (Split Unclone/Clone)
+- **Action**: Optimized CI/CD workflow deliverable packaging across GitHub Actions and Forgejo pipelines on experiment branch `feature/alpha-453-theme-fix`. Decoupled monolithic 955 MB multi-APK archive into dedicated, lightweight single-variant artifacts (`instafel-unclone` and `instafel-clone`) and eliminated redundant duplicate file copies.
+- **Root Cause & Architectural Alignment**:
+  - The previous packaging logic duplicated APKs on disk (`instafel-arm64-v8a-unclone.apk` alongside `instafel-v${VERSION}-arm64-v8a-unclone.apk`) and bundled all unclone and clone builds into a single `instafel-production-apk` artifact (~955 MB), forcing developers and testers to download nearly a gigabyte when only the ~250 MB unclone variant was needed.
+  - Eliminated disk duplication, keeping only the canonical versioned APKs (`instafel-v${VERSION}-arm64-v8a-unclone.apk` and `instafel-v${VERSION}-arm64-v8a-clone.apk`).
+  - Separated artifact uploads into `instafel-unclone` (~250 MB) and `instafel-clone` (~250 MB), allowing single-click retrieval of individual variants directly from GitHub Actions.
+  - Updated `test_cloud_smoke` to download only `instafel-unclone`, slashing runner network transfer and storage overhead.
+  - User configured `Storage Object Admin` on GCP service account `github-ci-tester@instafel-test.iam.gserviceaccount.com`, unblocking Firebase Test Lab physical device Robo crawl execution.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`: Split artifact uploads to `instafel-unclone` and `instafel-clone`, eliminated duplicate APK copies, and pointed smoke test to `instafel-unclone`.
+  - `.forgejo/workflows/generate_instafel.yml`: Synchronized artifact upload split and eliminated duplicate disk copies for Forgejo / Codeberg mirror parity.
+  - `Version.md`: Appended tracking entry pursuant to strict append protocol.
+- **Status**: 100% (Completed & Pushed to Staging)

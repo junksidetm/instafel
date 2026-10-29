@@ -206,7 +206,6 @@ jobs:
           UNCLONE_SRC=$(find instagram/build -type f \( -name "*unclone*.apk" -o -name "*_uc_*.apk" \) | head -n 1)
           if [ -n "$UNCLONE_SRC" ] && [ -f "$UNCLONE_SRC" ]; then
             echo "Found unclone APK: $UNCLONE_SRC"
-            cp "$UNCLONE_SRC" "release_apks/instafel-arm64-v8a-unclone.apk"
             cp "$UNCLONE_SRC" "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk"
           fi
 
@@ -214,16 +213,14 @@ jobs:
           CLONE_SRC=$(find instagram/build -type f \( -name "*clone*.apk" ! -name "*unclone*" -o -name "*_c_*.apk" ! -name "*_uc_*" \) | head -n 1)
           if [ -n "$CLONE_SRC" ] && [ -f "$CLONE_SRC" ]; then
             echo "Found clone APK: $CLONE_SRC"
-            cp "$CLONE_SRC" "release_apks/instafel-arm64-v8a-clone.apk"
             cp "$CLONE_SRC" "release_apks/instafel-v${VERSION}-arm64-v8a-clone.apk"
           fi
 
           # Fallback if specific names not matched but any APK exists in instagram/
-          if [ ! -f "release_apks/instafel-arm64-v8a-unclone.apk" ]; then
+          if [ ! -f "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk" ]; then
             ANY_APK=$(find instagram -type f -name "*.apk" | grep -v "instagram.apk" | head -n 1)
             if [ -n "$ANY_APK" ]; then
               echo "Fallback APK found: $ANY_APK"
-              cp "$ANY_APK" "release_apks/instafel-arm64-v8a-unclone.apk"
               cp "$ANY_APK" "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk"
             fi
           fi
@@ -236,18 +233,26 @@ jobs:
           echo "Prepared Deliverables in release_apks:"
           ls -lh release_apks/
 
-          if [ ! -f "release_apks/instafel-arm64-v8a-unclone.apk" ]; then
-            echo "::error::Build failed! instafel-arm64-v8a-unclone.apk was not generated."
+          if [ ! -f "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk" ]; then
+            echo "::error::Build failed! instafel-v${VERSION}-arm64-v8a-unclone.apk was not generated."
             exit 1
           fi
 
-      - name: Upload Production APK Artifact
+      - name: Upload Unclone APK Artifact
         if: steps.prepare_apk.outputs.skip_build != 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: instafel-production-apk
-          path: release_apks/*
+          name: instafel-unclone
+          path: release_apks/*unclone*.apk
           if-no-files-found: error
+
+      - name: Upload Clone APK Artifact
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: instafel-clone
+          path: release_apks/*clone*.apk
+          if-no-files-found: warn
 
   test_cloud_smoke:
     name: Cloud Smoke Test (Firebase Test Lab)
@@ -268,11 +273,11 @@ jobs:
             echo "::warning::GCP_SA_KEY secret not found. Skipping cloud physical device testing."
           fi
 
-      - name: Download Production APK Artifact
+      - name: Download Unclone APK Artifact
         if: steps.check_gcp.outputs.has_gcp == 'true'
         uses: actions/download-artifact@v4
         with:
-          name: instafel-production-apk
+          name: instafel-unclone
           path: release_apks
 
       - name: Authenticate to Google Cloud
@@ -293,10 +298,13 @@ jobs:
           echo "Starting Robo test on real physical ARM64 device (Google Pixel)..."
           mkdir -p ftl_results
 
+          UNCLONE_APK=$(find release_apks -type f -name "*unclone*.apk" | head -n 1)
+          echo "Testing unclone APK: $UNCLONE_APK"
+
           # Execute 90-second Robo crawl on physical Google Pixel (ARM64)
           gcloud firebase test android run \
             --type robo \
-            --app release_apks/instafel-arm64-v8a-unclone.apk \
+            --app "$UNCLONE_APK" \
             --device model=oriole,version=33,locale=en,orientation=portrait \
             --timeout 90s \
             --results-history-name="Instafel Smoke Tests" \
@@ -392,10 +400,16 @@ jobs:
     if: needs.ifl_generator.outputs.skip_build != 'true' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
-      - name: Download Production APK Artifact
+      - name: Download Unclone APK Artifact
         uses: actions/download-artifact@v4
         with:
-          name: instafel-production-apk
+          name: instafel-unclone
+          path: release_apks
+
+      - name: Download Clone APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: instafel-clone
           path: release_apks
 
       - name: Publish GitHub Release
