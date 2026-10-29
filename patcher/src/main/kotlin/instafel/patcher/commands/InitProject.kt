@@ -29,18 +29,24 @@ class InitProject: Command {
                         return;
                     }
 
+                    var error: Throwable? = null
                     val thread = Thread {
-                        CoreHandler.invokeKotlinObjectWithParams(
-                            "jobs.InitProject",
-                            "runJob",
-                            arrayOf(
-                                File(Utils.USER_DIR),
-                                apkFile
+                        try {
+                            CoreHandler.invokeKotlinObjectWithParams(
+                                "jobs.InitProject",
+                                "runJob",
+                                arrayOf(
+                                    File(Utils.USER_DIR),
+                                    apkFile
+                                )
                             )
-                        )
+                        } catch (t: Throwable) {
+                            error = t
+                        }
                     }
                     thread.start()
                     thread.join()
+                    error?.let { throw it }
                 } else {
                     Log.warning("Please select an .apk file")
                 }

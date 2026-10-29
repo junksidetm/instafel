@@ -32,20 +32,26 @@ class BuildCmd: Command {
                 return
             }
 
+            var error: Throwable? = null
             val thread = Thread {
-                CoreHandler.invokeKotlinObjectWithParams(
-                    "jobs.BuildProject",
-                    "runJob",
-                    arrayOf(
-                        srcFolder,
-                        Utils.PROP_CORE_COMMIT,
-                        Utils.PROP_CLI_PROJECT_TAG,
-                        Utils.PROP_CLI_VERSION
+                try {
+                    CoreHandler.invokeKotlinObjectWithParams(
+                        "jobs.BuildProject",
+                        "runJob",
+                        arrayOf(
+                            srcFolder,
+                            Utils.PROP_CORE_COMMIT,
+                            Utils.PROP_CLI_PROJECT_TAG,
+                            Utils.PROP_CLI_VERSION
+                        )
                     )
-                )
+                } catch (t: Throwable) {
+                    error = t
+                }
             }
             thread.start()
             thread.join()
+            error?.let { throw it }
         } catch (e: Exception) {
             e.printStackTrace()
             Log.severe("Error while running command")

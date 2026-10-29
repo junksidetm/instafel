@@ -140,7 +140,47 @@ class FixLayoutInflationPatch : InstafelPatch() {
                     }
                 }
 
-                success("Layout fallbacks guaranteed (action_bar.xml verified, $stubCount stub layout(s) generated).")
+                // 3. Remove conflicting duplicate layout declarations in res/values*/layouts.xml
+                val finalLayoutFiles = resDir.listFiles { f -> f.isDirectory && f.name.startsWith("layout") }
+                    ?.flatMap { it.listFiles { f -> f.isFile && f.name.endsWith(".xml") }?.toList() ?: emptyList() }
+                    ?: emptyList()
+                val allExistingLayoutNames = finalLayoutFiles.map { it.name.removeSuffix(".xml") }.toSet()
+
+                var removedConflictingCount = 0
+                val valuesDirs = resDir.listFiles { f -> f.isDirectory && f.name.startsWith("values") } ?: emptyArray()
+                val transformer = newTransformer()
+
+                for (vDir in valuesDirs) {
+                    val xmlFiles = vDir.listFiles { f -> f.isFile && f.name.endsWith(".xml") } ?: continue
+                    for (xmlFile in xmlFiles) {
+                        try {
+                            val doc = docBuilder.parse(xmlFile)
+                            val items = doc.getElementsByTagName("item")
+                            val toRemove = mutableListOf<Element>()
+                            for (i in 0 until items.length) {
+                                val el = items.item(i) as? Element ?: continue
+                                val type = el.getAttribute("type")
+                                val name = el.getAttribute("name")
+                                if (type == "layout" && allExistingLayoutNames.contains(name)) {
+                                    toRemove.add(el)
+                                }
+                            }
+
+                            if (toRemove.isNotEmpty()) {
+                                for (el in toRemove) {
+                                    el.parentNode?.removeChild(el)
+                                    removedConflictingCount++
+                                }
+                                transformer.transform(DOMSource(doc), StreamResult(xmlFile))
+                                Log.info("Removed ${toRemove.size} conflicting <item type=\"layout\"> entries from ${vDir.name}/${xmlFile.name}")
+                            }
+                        } catch (t: Throwable) {
+                            Log.warning("Error removing conflicting layout items from ${xmlFile.name}: ${t.message}")
+                        }
+                    }
+                }
+
+                success("Layout fallbacks guaranteed (action_bar.xml verified, $stubCount stub layout(s) generated, $removedConflictingCount duplicate value(s) purged).")
             }
         },
 

@@ -1691,3 +1691,20 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.forgejo/workflows/generate_instafel.yml`: Replaced unindented heredoc fallback with formatted `printf` sequence.
   - `Version.md`: Appended tracking entry per strict append protocol.
 - **Status**: 100% (Completed, Signed & Synchronized)
+
+
+## [2026-10-29 15:52:00 IST] - AAPT2 Conflicting Layout Resource Elimination & CLI Exception Propagation
+- **Action**: Resolved AAPT2 resource conflict error (`error: resource 'layout/action_bar' has a conflicting value for configuration ()`) and CLI background thread exit code swallowing. When apktool decompiled Meta's Superpack assets, it generated placeholder `<item type="layout">` entries in `res/values/layouts.xml`. When `FixLayoutInflationPatch` generated `res/layout/action_bar.xml` and stubs, AAPT2 detected duplicate definitions and failed to merge the resource table. Simultaneously hardened CLI command threads to propagate exceptions, preventing silent ghost passes.
+- **Architectural Deliverables & Root-Cause Elimination**:
+  - **Duplicate Layout Declaration Purging**: Added Step 3 to Task 1 in `FixLayoutInflationPatch.kt` to dynamically inspect `res/values*/layouts.xml` and excise all `<item type="layout" name="...">` elements whose concrete `.xml` counterparts exist in `res/layout*/`, eliminating AAPT2 resource table collisions.
+  - **Patcher CLI Thread Exception Propagation**: Updated `BuildCmd.kt`, `InitProject.kt`, and `RunPatch.kt` to catch background worker thread exceptions and rethrow them on the main thread, ensuring `exitProcess(-1)` terminates the process cleanly on any internal build failure.
+  - **CI Deliverables Verification Gating**: Hardened `.github/workflows/generate_instafel.yml` and `.forgejo/workflows/generate_instafel.yml` with automated `layouts.xml` deduplication loops, enforced concrete APK existence checks (`if [ ! -f release_apks/instafel-arm64-v8a-unclone.apk ]; then exit 1; fi`), and set `if-no-files-found: error` on artifact upload.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixLayoutInflationPatch.kt`
+  - `patcher/src/main/kotlin/instafel/patcher/commands/BuildCmd.kt`
+  - `patcher/src/main/kotlin/instafel/patcher/commands/InitProject.kt`
+  - `patcher/src/main/kotlin/instafel/patcher/commands/RunPatch.kt`
+  - `.github/workflows/generate_instafel.yml`
+  - `.forgejo/workflows/generate_instafel.yml`
+  - `Version.md`
+- **Status**: 100% (Completed, Signed & Ready for Multi-Platform Push)

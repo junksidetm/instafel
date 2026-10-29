@@ -31,18 +31,24 @@ class RunPatch: Command {
                 return;
             }
 
+            var error: Throwable? = null
             val thread = Thread {
-                CoreHandler.invokeKotlinObjectWithParams(
-                    "jobs.RunPatches",
-                    "runJob",
-                    arrayOf(
-                        projectDir,
-                        args.copyOf()
+                try {
+                    CoreHandler.invokeKotlinObjectWithParams(
+                        "jobs.RunPatches",
+                        "runJob",
+                        arrayOf(
+                            projectDir,
+                            args.copyOf()
+                        )
                     )
-                )
+                } catch (t: Throwable) {
+                    error = t
+                }
             }
             thread.start()
             thread.join()
+            error?.let { throw it }
         } catch (e: Exception) {
             e.printStackTrace()
             Log.severe("Error while running patches")

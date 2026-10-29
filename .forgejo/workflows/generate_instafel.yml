@@ -203,6 +203,15 @@ jobs:
               '</FrameLayout>' > "instagram/sources/res/layout/action_bar.xml"
           fi
 
+          # Safeguard against AAPT2 conflicting duplicate layout declarations
+          if [ -d "instagram/sources/res/layout" ] && [ -d "instagram/sources/res/values" ]; then
+            for layout_file in instagram/sources/res/layout/*.xml; do
+              [ -f "$layout_file" ] || continue
+              layout_name=$(basename "$layout_file" .xml)
+              find instagram/sources/res/ -name "layouts.xml" -exec sed -i "/name=\"$layout_name\"/d" {} + 2>/dev/null || true
+            done
+          fi
+
       - name: Build & Sign Final APK
         if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
@@ -255,13 +264,18 @@ jobs:
           echo "Prepared Deliverables in release_apks:"
           ls -lh release_apks/
 
+          if [ ! -f "release_apks/instafel-arm64-v8a-unclone.apk" ]; then
+            echo "::error::Build failed! instafel-arm64-v8a-unclone.apk was not generated."
+            exit 1
+          fi
+
       - name: Upload Production APK Artifact
         if: steps.prepare_apk.outputs.skip_build != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: instafel-production-apk
           path: release_apks/*
-          if-no-files-found: warn
+          if-no-files-found: error
 
       - name: Append Layout Audit to Step Summary
         if: always()
