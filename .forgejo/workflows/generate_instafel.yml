@@ -14,9 +14,9 @@ on:
   workflow_dispatch:
     inputs:
       target_version:
-        description: 'Specific Instagram Alpha version (leave empty for latest from junksidetm/Alpha-Insta)'
+        description: 'Specific Instagram Alpha version (leave empty for stable v452.0.0.0.7)'
         required: false
-        default: ''
+        default: '452.0.0.0.7'
       base_apk_url:
         description: 'Direct URL override for Base Instagram APK (optional)'
         required: false
@@ -58,18 +58,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TARGET_VER="${{ inputs.target_version }}"
-          if [ -n "$TARGET_VER" ]; then
-            TAG="v${TARGET_VER}"
-            VERSION="${TARGET_VER}"
-          else
-            echo "Querying junksidetm/Alpha-Insta for latest released Instagram Alpha APK..."
-            TAG=$(gh release view --repo junksidetm/Alpha-Insta --json tagName --jq '.tagName' 2>/dev/null || echo "")
-            if [ -z "$TAG" ]; then
-              echo "::error::No releases found in junksidetm/Alpha-Insta yet."
-              exit 1
-            fi
-            VERSION="${TAG#v}"
+          if [ -z "$TARGET_VER" ]; then
+            TARGET_VER="452.0.0.0.7"
           fi
+          TAG="v${TARGET_VER}"
+          VERSION="${TARGET_VER}"
 
           echo "Resolved Target Instagram Alpha Version: v${VERSION} (Tag: ${TAG})"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -178,39 +171,7 @@ jobs:
           if [ -z "$PATCHER_JAR" ] || [ ! -f "$PATCHER_JAR" ]; then
             PATCHER_JAR=$(find .output -name "ifl-patcher-*.jar" ! -name "*-core*" | head -n 1)
           fi
-          java -jar "$PATCHER_JAR" run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel font_emoji fix_startup_touch_crash fix_layout_inflation change_channel_name clone
-
-      - name: Verify Layout Integrity & Fallbacks
-        if: steps.prepare_apk.outputs.skip_build != 'true'
-        run: |
-          echo "Verifying layout inflation fallbacks in sources/res/layout/..."
-          if [ -f "instagram/sources/res/layout/action_bar.xml" ]; then
-            echo "✅ action_bar.xml verified in sources/res/layout/:"
-            cat "instagram/sources/res/layout/action_bar.xml"
-          else
-            echo "::warning::action_bar.xml not found in sources/res/layout/ - generating fallback now"
-            mkdir -p "instagram/sources/res/layout"
-            printf '%s\n' \
-              '<?xml version="1.0" encoding="utf-8"?>' \
-              '<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"' \
-              '    android:id="@id/action_bar"' \
-              '    android:layout_width="match_parent"' \
-              '    android:layout_height="wrap_content">' \
-              '    <View' \
-              '        android:id="@id/action_bar_container"' \
-              '        android:layout_width="match_parent"' \
-              '        android:layout_height="wrap_content" />' \
-              '</FrameLayout>' > "instagram/sources/res/layout/action_bar.xml"
-          fi
-
-          # Safeguard against AAPT2 conflicting duplicate layout declarations
-          if [ -d "instagram/sources/res/layout" ] && [ -d "instagram/sources/res/values" ]; then
-            for layout_file in instagram/sources/res/layout/*.xml; do
-              [ -f "$layout_file" ] || continue
-              layout_name=$(basename "$layout_file" .xml)
-              find instagram/sources/res/ -name "layouts.xml" -exec sed -i "/name=\"$layout_name\"/d" {} + 2>/dev/null || true
-            done
-          fi
+          java -jar "$PATCHER_JAR" run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel font_emoji change_channel_name clone
 
       - name: Build & Sign Final APK
         if: steps.prepare_apk.outputs.skip_build != 'true'
@@ -234,16 +195,16 @@ jobs:
           UNCLONE_SRC=$(find instagram/build -type f \( -name "*unclone*.apk" -o -name "*_uc_*.apk" \) | head -n 1)
           if [ -n "$UNCLONE_SRC" ] && [ -f "$UNCLONE_SRC" ]; then
             echo "Found unclone APK: $UNCLONE_SRC"
-
             cp "$UNCLONE_SRC" "release_apks/instafel-arm64-v8a-unclone.apk"
+            cp "$UNCLONE_SRC" "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk"
           fi
 
           # 2. Clone APK
           CLONE_SRC=$(find instagram/build -type f \( -name "*clone*.apk" ! -name "*unclone*" -o -name "*_c_*.apk" ! -name "*_uc_*" \) | head -n 1)
           if [ -n "$CLONE_SRC" ] && [ -f "$CLONE_SRC" ]; then
             echo "Found clone APK: $CLONE_SRC"
-
             cp "$CLONE_SRC" "release_apks/instafel-arm64-v8a-clone.apk"
+            cp "$CLONE_SRC" "release_apks/instafel-v${VERSION}-arm64-v8a-clone.apk"
           fi
 
           # Fallback if specific names not matched but any APK exists in instagram/
@@ -251,8 +212,8 @@ jobs:
             ANY_APK=$(find instagram -type f -name "*.apk" | grep -v "instagram.apk" | head -n 1)
             if [ -n "$ANY_APK" ]; then
               echo "Fallback APK found: $ANY_APK"
-
               cp "$ANY_APK" "release_apks/instafel-arm64-v8a-unclone.apk"
+              cp "$ANY_APK" "release_apks/instafel-v${VERSION}-arm64-v8a-unclone.apk"
             fi
           fi
 
@@ -276,15 +237,6 @@ jobs:
           name: instafel-production-apk
           path: release_apks/*
           if-no-files-found: error
-
-      - name: Append Layout Audit to Step Summary
-        if: always()
-        run: |
-          if [ -f "layout_audit_summary.md" ]; then
-            cat layout_audit_summary.md >> $GITHUB_STEP_SUMMARY
-          elif [ -f "instagram/layout_audit_summary.md" ]; then
-            cat instagram/layout_audit_summary.md >> $GITHUB_STEP_SUMMARY
-          fi
 
       - name: Publish GitHub Release
         if: steps.prepare_apk.outputs.skip_build != 'true'
