@@ -24,7 +24,7 @@ import javax.xml.transform.stream.StreamResult
 @PInfos.PatchInfo(
     name = "Fix Layout Inflation Exceptions",
     shortname = "fix_layout_inflation",
-    desc = "Prevents android.view.InflateException: You must supply a layout_height attribute by enforcing valid layout dimensions across all layout resources",
+    desc = "Prevents android.view.InflateException: You must supply a layout_height attribute by enforcing valid layout dimensions and generating Superpack include fallbacks",
     isSingle = true
 )
 class FixLayoutInflationPatch : InstafelPatch() {
@@ -57,7 +57,214 @@ class FixLayoutInflationPatch : InstafelPatch() {
         return null
     }
 
+    private fun newDocBuilder() = DocumentBuilderFactory.newInstance().apply {
+        isNamespaceAware = false
+        isValidating = false
+        try {
+            setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+        } catch (ignored: Throwable) {}
+    }.newDocumentBuilder()
+
+    private fun newTransformer() = TransformerFactory.newInstance().newTransformer().apply {
+        setOutputProperty(OutputKeys.INDENT, "yes")
+        setOutputProperty(OutputKeys.ENCODING, "utf-8")
+    }
+
     override fun initializeTasks(): MutableList<InstafelTask> = mutableListOf(
+        @PInfos.TaskInfo("Guarantee layout stubs for Superpack includes (action_bar.xml)")
+        object : InstafelTask() {
+            override fun execute() {
+                val resDir = File(Env.PROJECT_DIR, "sources/res")
+                if (!resDir.exists() || !resDir.isDirectory) {
+                    success("Skipped (res folder not present).")
+                    return
+                }
+
+                val layoutDir = File(resDir, "layout")
+                if (!layoutDir.exists()) layoutDir.mkdirs()
+
+                // 1. Ensure action_bar.xml exists with valid FrameLayout and child action_bar_container
+                val actionBarFile = File(layoutDir, "action_bar.xml")
+                if (!actionBarFile.exists() || actionBarFile.length() < 20L) {
+                    val content = """
+                        <?xml version="1.0" encoding="utf-8"?>
+                        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:id="@id/action_bar"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <View
+                                android:id="@id/action_bar_container"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </FrameLayout>
+                    """.trimIndent()
+                    actionBarFile.writeText(content)
+                    Log.info("Generated fallback layout: ${actionBarFile.absolutePath}")
+                }
+
+                // 2. Scan all layouts for any unresolved @layout/ references inside <include>
+                val allLayoutFiles = resDir.listFiles { f -> f.isDirectory && f.name.startsWith("layout") }
+                    ?.flatMap { it.listFiles { f -> f.isFile && f.name.endsWith(".xml") }?.toList() ?: emptyList() }
+                    ?: emptyList()
+
+                val existingLayoutNames = allLayoutFiles.map { it.name.removeSuffix(".xml") }.toSet()
+                val docBuilder = newDocBuilder()
+
+                var stubCount = 0
+                for (file in allLayoutFiles) {
+                    try {
+                        val doc = docBuilder.parse(file)
+                        val includes = doc.getElementsByTagName("include")
+                        for (i in 0 until includes.length) {
+                            val inc = includes.item(i) as? Element ?: continue
+                            val layoutRef = inc.getAttribute("layout").trim()
+                            if (layoutRef.startsWith("@layout/")) {
+                                val targetName = layoutRef.removePrefix("@layout/")
+                                if (!existingLayoutNames.contains(targetName)) {
+                                    val stubFile = File(layoutDir, "$targetName.xml")
+                                    if (!stubFile.exists()) {
+                                        stubFile.writeText("""
+                                            <?xml version="1.0" encoding="utf-8"?>
+                                            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content" />
+                                        """.trimIndent())
+                                        Log.info("Generated stub layout for missing include: ${stubFile.name}")
+                                        stubCount++
+                                    }
+                                }
+                            }
+                        }
+                    } catch (t: Throwable) {
+                        Log.warning("Error scanning includes in ${file.name}: ${t.message}")
+                    }
+                }
+
+                success("Layout fallbacks guaranteed (action_bar.xml verified, $stubCount stub layout(s) generated).")
+            }
+        },
+
+        @PInfos.TaskInfo("Harden theme attributes and fallback dimensions in styles.xml & dimens.xml")
+        object : InstafelTask() {
+            override fun execute() {
+                val resDir = File(Env.PROJECT_DIR, "sources/res")
+                if (!resDir.exists() || !resDir.isDirectory) {
+                    success("Skipped (res folder not present).")
+                    return
+                }
+
+                val docBuilder = newDocBuilder()
+                val transformer = newTransformer()
+
+                // 1. Harden styles.xml & themes.xml
+                val valuesDir = File(resDir, "values")
+                val stylesFiles = listOf(File(valuesDir, "styles.xml"), File(valuesDir, "themes.xml"))
+                    .filter { it.exists() && it.isFile }
+
+                var stylesModified = 0
+                val targetStyles = setOf(
+                    "IgPanorama", "IgPanoramaBase", "Theme.Instagram", "Base.Theme",
+                    "Base.Theme.Instagram", "Base.Theme.Launcher", "Theme.AppCompat.Light.NoActionBar",
+                    "Theme.AppCompat.DayNight.NoActionBar"
+                )
+
+                val requiredItems = mapOf(
+                    "actionBarSize" to "56.0dip",
+                    "actionBarHeight" to "56.0dip",
+                    "actionBarHeightWithShadow" to "56.0dip",
+                    "actionBarNameAndTimestampHeight" to "56.0dip",
+                    "actionBarShadowHeight" to "0.0dip",
+                    "android:actionBarSize" to "56.0dip"
+                )
+
+                for (sf in stylesFiles) {
+                    try {
+                        val doc = docBuilder.parse(sf)
+                        val styleNodes = doc.getElementsByTagName("style")
+                        var fileChanged = false
+
+                        for (i in 0 until styleNodes.length) {
+                            val styleEl = styleNodes.item(i) as? Element ?: continue
+                            val styleName = styleEl.getAttribute("name")
+                            if (targetStyles.any { styleName.equals(it, ignoreCase = true) || styleName.endsWith(".$it") }) {
+                                val existingItems = mutableSetOf<String>()
+                                val children = styleEl.childNodes
+                                for (j in 0 until children.length) {
+                                    val item = children.item(j) as? Element ?: continue
+                                    if (item.tagName == "item") {
+                                        existingItems.add(item.getAttribute("name"))
+                                    }
+                                }
+
+                                for ((itemName, itemVal) in requiredItems) {
+                                    if (!existingItems.contains(itemName)) {
+                                        val newEl = doc.createElement("item").apply {
+                                            setAttribute("name", itemName)
+                                            textContent = itemVal
+                                        }
+                                        styleEl.appendChild(newEl)
+                                        fileChanged = true
+                                        stylesModified++
+                                    }
+                                }
+                            }
+                        }
+
+                        if (fileChanged) {
+                            transformer.transform(DOMSource(doc), StreamResult(sf))
+                            Log.info("Injected action bar fallback attributes into ${sf.name}")
+                        }
+                    } catch (t: Throwable) {
+                        Log.warning("Error hardening styles in ${sf.name}: ${t.message}")
+                    }
+                }
+
+                // 2. Harden dimens.xml
+                val dimensFile = File(valuesDir, "dimens.xml")
+                if (dimensFile.exists()) {
+                    try {
+                        val doc = docBuilder.parse(dimensFile)
+                        val root = doc.documentElement
+                        if (root != null) {
+                            val requiredDimens = mapOf(
+                                "direct_composer_redesign_background_height" to "56.0dip",
+                                "action_bar_height" to "56.0dip",
+                                "action_bar_item_spacing_right" to "0.0dip"
+                            )
+
+                            val existingDimens = mutableSetOf<String>()
+                            val dimenNodes = doc.getElementsByTagName("dimen")
+                            for (i in 0 until dimenNodes.length) {
+                                val dEl = dimenNodes.item(i) as? Element ?: continue
+                                existingDimens.add(dEl.getAttribute("name"))
+                            }
+
+                            var dimensChanged = false
+                            for ((dName, dVal) in requiredDimens) {
+                                if (!existingDimens.contains(dName)) {
+                                    val newD = doc.createElement("dimen").apply {
+                                        setAttribute("name", dName)
+                                        textContent = dVal
+                                    }
+                                    root.appendChild(newD)
+                                    dimensChanged = true
+                                }
+                            }
+
+                            if (dimensChanged) {
+                                transformer.transform(DOMSource(doc), StreamResult(dimensFile))
+                                Log.info("Injected safe fallback dimensions into dimens.xml")
+                            }
+                        }
+                    } catch (t: Throwable) {
+                        Log.warning("Error hardening dimens.xml: ${t.message}")
+                    }
+                }
+
+                success("Theme attributes and dimens hardened ($stylesModified style item(s) injected).")
+            }
+        },
+
         @PInfos.TaskInfo("Audit and heal layout XML files across sources/res/layout*")
         object : InstafelTask() {
             override fun execute() {
@@ -78,36 +285,8 @@ class FixLayoutInflationPatch : InstafelPatch() {
                     return
                 }
 
-                // Diagnostic candidate scan for line 40 includes
-                try {
-                    for (layoutDir in layoutDirs) {
-                        val xmlFiles = layoutDir.listFiles { f -> f.isFile && f.name.endsWith(".xml") } ?: continue
-                        for (f in xmlFiles) {
-                            val lines = f.readLines()
-                            if (lines.size >= 40) {
-                                val l40 = lines[39].trim()
-                                if (l40.contains("<include") || (lines.size >= 41 && lines[40].trim().contains("<include"))) {
-                                    Log.info("DIAGNOSTIC CANDIDATE: ${layoutDir.name}/${f.name} line 40: $l40")
-                                }
-                            }
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.warning("Diagnostic scan error: ${e.message}")
-                }
-
-                val dbf = DocumentBuilderFactory.newInstance().apply {
-                    isNamespaceAware = false
-                    isValidating = false
-                    try {
-                        setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
-                    } catch (ignored: Throwable) {}
-                }
-                val docBuilder = dbf.newDocumentBuilder()
-                val transformer = TransformerFactory.newInstance().newTransformer().apply {
-                    setOutputProperty(OutputKeys.INDENT, "yes")
-                    setOutputProperty(OutputKeys.ENCODING, "utf-8")
-                }
+                val docBuilder = newDocBuilder()
+                val transformer = newTransformer()
 
                 var totalAuditedFiles = 0
                 var healedFiles = 0
@@ -134,6 +313,8 @@ class FixLayoutInflationPatch : InstafelPatch() {
                             val doc = docBuilder.parse(file)
                             val root = doc.documentElement ?: continue
                             var fileModified = false
+
+                            val isMainActivityLayout = file.name.startsWith("layout_activity_main")
 
                             // Ensure android namespace is declared on root
                             val androidNs = "http://schemas.android.com/apk/res/android"
@@ -172,39 +353,40 @@ class FixLayoutInflationPatch : InstafelPatch() {
                                 val isRoot = (node == root)
                                 val isMergeChild = (node.parentNode == root && root.tagName == "merge")
 
-                                // Audit and normalize layout_height
+                                // In main activity layouts, also sanitize any @dimen/ or ?attr/ reference that might fail on cold start
                                 val h = getEffectiveAttribute(node, "layout_height")
-                                if (h == null || !isValidDimension(h)) {
+                                val hInvalid = (h == null || !isValidDimension(h) || (isMainActivityLayout && h.startsWith("@dimen/")))
+                                if (hInvalid) {
                                     val fallbackHeight = if (isRoot && !isMergeChild) "match_parent" else "wrap_content"
                                     node.setAttribute("android:layout_height", fallbackHeight)
                                     fileModified = true
                                     healedElements++
                                     healedDetails.add(HealedDetail(file.name, tag, "Injected fallback layout_height=$fallbackHeight (was '${h ?: "missing"}')"))
-                                    Log.info("Healed tag <$tag> missing/invalid layout_height in ${file.name}")
+                                    Log.info("Healed tag <$tag> layout_height in ${file.name} to $fallbackHeight")
                                 } else if (!node.hasAttribute("android:layout_height")) {
                                     node.setAttribute("android:layout_height", h)
                                     if (node.hasAttribute("layout_height")) node.removeAttribute("layout_height")
                                     fileModified = true
                                     healedElements++
-                                    healedDetails.add(HealedDetail(file.name, tag, "Normalized layout_height attribute namespace"))
+                                    healedDetails.add(HealedDetail(file.name, tag, "Normalized layout_height namespace"))
                                     Log.info("Normalized tag <$tag> layout_height to android: namespace in ${file.name}")
                                 }
 
-                                // Audit and normalize layout_width
                                 val w = getEffectiveAttribute(node, "layout_width")
-                                if (w == null || !isValidDimension(w)) {
+                                val wInvalid = (w == null || !isValidDimension(w) || (isMainActivityLayout && w.startsWith("@dimen/")))
+                                if (wInvalid) {
                                     val fallbackWidth = if (isRoot && !isMergeChild) "match_parent" else "wrap_content"
                                     node.setAttribute("android:layout_width", fallbackWidth)
                                     fileModified = true
                                     healedElements++
                                     healedDetails.add(HealedDetail(file.name, tag, "Injected fallback layout_width=$fallbackWidth (was '${w ?: "missing"}')"))
-                                    Log.info("Healed tag <$tag> missing/invalid layout_width in ${file.name}")
+                                    Log.info("Healed tag <$tag> layout_width in ${file.name} to $fallbackWidth")
                                 } else if (!node.hasAttribute("android:layout_width")) {
                                     node.setAttribute("android:layout_width", w)
                                     if (node.hasAttribute("layout_width")) node.removeAttribute("layout_width")
                                     fileModified = true
                                     healedElements++
-                                    healedDetails.add(HealedDetail(file.name, tag, "Normalized layout_width attribute namespace"))
+                                    healedDetails.add(HealedDetail(file.name, tag, "Normalized layout_width namespace"))
                                     Log.info("Normalized tag <$tag> layout_width to android: namespace in ${file.name}")
                                 }
                             }

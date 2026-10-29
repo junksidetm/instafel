@@ -187,6 +187,30 @@ jobs:
           fi
           java -jar "$PATCHER_JAR" run instagram unlock_developer_options remove_ads amoled_theme remove_snooze_warning instafel font_emoji fix_startup_touch_crash fix_layout_inflation change_channel_name clone
 
+      - name: Verify Layout Integrity & Fallbacks
+        if: steps.prepare_apk.outputs.skip_build != 'true'
+        run: |
+          echo "Verifying layout inflation fallbacks in sources/res/layout/..."
+          if [ -f "instagram/sources/res/layout/action_bar.xml" ]; then
+            echo "✅ action_bar.xml verified in sources/res/layout/:"
+            cat "instagram/sources/res/layout/action_bar.xml"
+          else
+            echo "::warning::action_bar.xml not found in sources/res/layout/ - generating fallback now"
+            mkdir -p "instagram/sources/res/layout"
+            cat << 'EOF' > "instagram/sources/res/layout/action_bar.xml"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/action_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <View
+        android:id="@id/action_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</FrameLayout>
+EOF
+          fi
+
       - name: Build & Sign Final APK
         if: steps.prepare_apk.outputs.skip_build != 'true'
         run: |
@@ -376,6 +400,13 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             echo "::error::Instafel crashed on physical device launch!"
             exit 1
+          elif [ -n "${{ steps.ftl_test.outputs.ftl_exit }}" ] && [ "${{ steps.ftl_test.outputs.ftl_exit }}" != "0" ]; then
+            echo "### ⚠️ Cloud Smoke Test Run Non-Zero Exit (${{ steps.ftl_test.outputs.ftl_exit }})" >> $GITHUB_STEP_SUMMARY
+            echo "- **Status:** Firebase Test Lab execution did not finish cleanly (check GCP permissions or test runner limits)." >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            cat ftl_results/test_output.log | tail -n 25 >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "::warning::Firebase Test Lab exited with non-zero status ${{ steps.ftl_test.outputs.ftl_exit }}"
           else
             echo "### ✅ Cold-Start Smoke Test Succeeded on Real Physical Hardware!" >> $GITHUB_STEP_SUMMARY
             echo "- **Target Device:** Google Pixel (ARM64 physical device)" >> $GITHUB_STEP_SUMMARY

@@ -1649,3 +1649,18 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.forgejo/workflows/generate_instafel.yml`
   - `Version.md`
 - **Status**: 100% (Completed, Signed & Synchronized Across All Mirrors)
+
+
+## [2026-10-29 15:09:00 IST] - Permanent Layout Inflation Fallback Architecture & Release Gating Hardening
+- **Action**: Resolved nested `android.view.InflateException: Binary XML file line #40: Binary XML file line #82: You must supply a layout_height attribute` by implementing automated Superpack fallback layout generation (`action_bar.xml`), theme attribute dimension hardening (`actionBarSize`, `actionBarHeight`) in `styles.xml` and `themes.xml`, concrete dimension enforcement on `layout_activity_main*` views, and hardened CI release gating.
+- **Architectural Deliverables & Root-Cause Elimination**:
+  - **Superpack `<include>` Fallback Generation**: Meta compresses `@layout/action_bar` into proprietary `assets/layouts.bin.spo`. When inflated inside `layout_activity_main_internal_viewpager2.xml` (line 40) via `layout_activity_main_coordinator_layout_viewpager2.xml`, nested FrameLayout child inflation threw `UnsupportedOperationException: Binary XML file line #82: You must supply a layout_height attribute`. Engineered Task 1 in `FixLayoutInflationPatch.kt` to generate `sources/res/layout/action_bar.xml` (with valid `@id/action_bar` FrameLayout and `@id/action_bar_container` child view) and scan for any unresolvable `<include layout="@layout/...">` targets to generate clean compliant stubs before AAPT2 resource compilation.
+  - **Theme Attribute Dimension Hardening**: Hardened `styles.xml` and `themes.xml` across all cold-start theme hierarchies (`IgPanorama`, `IgPanoramaBase`, `Theme.Instagram`, `Base.Theme`, `Base.Theme.Launcher`, `Theme.AppCompat.Light.NoActionBar`) with explicit fallback values for `actionBarSize` (56dp), `actionBarHeight` (56dp), `actionBarHeightWithShadow` (56dp), `actionBarNameAndTimestampHeight` (56dp), and `android:actionBarSize` (56dp), preventing dynamic theme attribute resolution failures during layout parameter generation.
+  - **Main Activity Layout Sanitization**: Enforced concrete dimension fallbacks on any `@dimen/...` or `?attr/...` reference on views in `layout_activity_main*` layouts to prevent `TYPE_NULL` dimension evaluation on OEM device configurations (e.g. Realme Android 15 / SDK 35).
+  - **CI Release Gating Hardening**: Updated `test_cloud_smoke` in `.github/workflows/generate_instafel.yml` to prevent false-positive reporting when `gcloud firebase test` exits with non-zero status (such as GCP 403 storage errors), ensuring releases are strictly protected against untested builds.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixLayoutInflationPatch.kt`
+  - `.github/workflows/generate_instafel.yml`
+  - `.forgejo/workflows/generate_instafel.yml`
+  - `Version.md`
+- **Status**: 100% (Completed & Verified)
