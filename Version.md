@@ -1682,3 +1682,12 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.forgejo/workflows/generate_instafel.yml`: Enabled push event trigger on `main` and added duplicate mod bypass check on push.
   - `version.md`: Appended tracking entry pursuant to strict append protocol.
 - **Status**: 100% (Completed, Signed & Ready for Multi-Platform Push)
+
+
+## [2026-10-29 15:35:00 IST] - CI Workflow Heredoc Indentation Correction & Dispatch Trigger Restoration
+- **Action**: Diagnosed and corrected YAML multiline scalar parsing error in `.github/workflows/generate_instafel.yml` and `.forgejo/workflows/generate_instafel.yml`. Unindented heredoc delimiters around `cat << 'EOF'` had broken YAML document structure at line 203, causing GitHub Actions to fail indexing the workflow and disabling `workflow_dispatch` and `push` triggers. Replaced heredoc with compliant POSIX `printf` string generation, fully restoring workflow triggers and YAML compliance verified via AST schema parser.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`: Replaced unindented heredoc fallback with formatted `printf` sequence; verified valid triggers (`push`, `schedule`, `repository_dispatch`, `workflow_dispatch`).
+  - `.forgejo/workflows/generate_instafel.yml`: Replaced unindented heredoc fallback with formatted `printf` sequence.
+  - `Version.md`: Appended tracking entry per strict append protocol.
+- **Status**: 100% (Completed, Signed & Synchronized)

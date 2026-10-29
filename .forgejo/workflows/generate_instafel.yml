@@ -190,18 +190,17 @@ jobs:
           else
             echo "::warning::action_bar.xml not found in sources/res/layout/ - generating fallback now"
             mkdir -p "instagram/sources/res/layout"
-            cat << 'EOF' > "instagram/sources/res/layout/action_bar.xml"
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@id/action_bar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <View
-        android:id="@id/action_bar_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</FrameLayout>
-EOF
+            printf '%s\n' \
+              '<?xml version="1.0" encoding="utf-8"?>' \
+              '<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"' \
+              '    android:id="@id/action_bar"' \
+              '    android:layout_width="match_parent"' \
+              '    android:layout_height="wrap_content">' \
+              '    <View' \
+              '        android:id="@id/action_bar_container"' \
+              '        android:layout_width="match_parent"' \
+              '        android:layout_height="wrap_content" />' \
+              '</FrameLayout>' > "instagram/sources/res/layout/action_bar.xml"
           fi
 
       - name: Build & Sign Final APK
