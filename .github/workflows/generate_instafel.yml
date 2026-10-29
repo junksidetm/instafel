@@ -253,7 +253,7 @@ jobs:
     name: Cloud Smoke Test (Firebase Test Lab)
     needs: ifl_generator
     runs-on: ubuntu-latest
-    if: needs.ifl_generator.outputs.skip_build != 'true' && github.ref == 'refs/heads/main'
+    if: needs.ifl_generator.outputs.skip_build != 'true'
     steps:
       - name: Check for GCP Credentials
         id: check_gcp

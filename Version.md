@@ -1746,3 +1746,15 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `Version.md`: Appended tracking entry pursuant to strict append protocol.
   - `D:\code\GEMINI.md`: Codified Upstream Modding & Stability Gating Mandates.
 - **Status**: 100% (Completed & Dispatched to Staging CI)
+
+
+## [2026-10-29 19:25:00 IST] - Enable Cloud Physical Device Smoke Testing on Feature Branches
+- **Action**: Updated `.github/workflows/generate_instafel.yml` on experiment branch `feature/alpha-453-theme-fix` to enable the `test_cloud_smoke` job (Firebase Test Lab on real physical Google Pixel hardware) on feature branches.
+- **Root Cause & Architectural Alignment**:
+  - The `test_cloud_smoke` job previously had a branch condition restricting execution to `github.ref == 'refs/heads/main'`. This prevented automated cloud physical hardware validation on staging/experiment branches prior to merging into production.
+  - Relaxed the job gate to `needs.ifl_generator.outputs.skip_build != 'true'`, allowing physical device smoke testing to validate the Option A cold-start theme dimension fix across physical Google Pixel ARM64 hardware directly from feature branches.
+  - Public release deployment (`publish_release`) remains strictly gated to `main` (`github.ref == 'refs/heads/main'`).
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`: Enabled `test_cloud_smoke` on feature branches.
+  - `Version.md`: Appended tracking entry pursuant to strict append protocol.
+- **Status**: 100% (Completed & Pushed to Staging)
