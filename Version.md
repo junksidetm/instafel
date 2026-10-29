@@ -1664,3 +1664,11 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.forgejo/workflows/generate_instafel.yml`
   - `Version.md`
 - **Status**: 100% (Completed & Verified)
+
+
+## [2026-10-29 15:17:15 IST] - CI Trigger Optimization: Push Event Pipeline & Release Update Enforcement
+- **Action**: Added scoped `push` event triggers (monitoring `patcher-core/**`, `.github/workflows/**`, and `app/**`) to `.github/workflows/generate_instafel.yml` and adapted the duplicate mod gate check (`prepare_apk`) to ensure pushed engine and patch fixes trigger autonomous APK compilation and release asset updates without manual dispatch.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`: Configured `on.push` branch paths and updated duplicate mod gating condition.
+  - `Version.md`: Appended tracking entry per strict append protocol.
+- **Status**: 100% (Completed & Verified)
