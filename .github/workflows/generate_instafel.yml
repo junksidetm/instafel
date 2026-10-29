@@ -264,8 +264,10 @@ jobs:
     steps:
       - name: Check for GCP Credentials
         id: check_gcp
+        env:
+          GCP_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
-          if [ -n "${{ secrets.GCP_SA_KEY }}" ]; then
+          if [ -n "$GCP_KEY" ]; then
             echo "has_gcp=true" >> $GITHUB_OUTPUT
             echo "Google Cloud credentials detected. Proceeding with Firebase Test Lab on physical hardware..."
           else

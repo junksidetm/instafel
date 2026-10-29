@@ -1617,3 +1617,11 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/FixLayoutInflationPatch.kt`: Applied unconditional `layout_width="match_parent"` and `layout_height="wrap_content"` fallback enforcement across any `<include>` element lacking explicit dimensions.
   - `Version.md`: Appended tracking entry pursuant to strict append protocol.
 - **Status**: 100% (Completed & Dispatched to CI)
+
+
+## [2026-10-29 13:12:00 IST] - CI Workflow GCP Credentials Environment Mapping & Execution Verification
+- **Action**: Corrected credential detection in `test_cloud_smoke` job by safely projecting `${{ secrets.GCP_SA_KEY }}` into a scoped runner environment variable (`GCP_KEY`), preventing multiline JSON string truncation during bash conditional evaluation.
+- **Components Modified**:
+  - `.github/workflows/generate_instafel.yml`: Added `env: GCP_KEY: ${{ secrets.GCP_SA_KEY }}` to `check_gcp` step.
+  - `Version.md`: Appended tracking entry pursuant to strict append protocol.
+- **Status**: 100% (Completed & Verified)
