@@ -1732,3 +1732,17 @@ All notable changes to the `instafel` repository are documented in this file in 
   - `.forgejo/workflows/generate_instafel.yml`: Aligned mirror CI pipeline with pinned `452.0.0.0.7` target and restored clean 8-patch execution.
   - `Version.md`: Appended tracking entry pursuant to strict append protocol.
 - **Status**: 100% (Completed & Verified)
+
+
+## [2026-10-29 18:20:00 IST] - Isolated Feature Experiment: Clean Cold-Start Theme Dimension Hardening (Alpha v454)
+- **Action**: Created dedicated experiment branch `feature/alpha-453-theme-fix` to test the clean, non-invasive Option A theme attribute fallback against upstream Alpha `453.0.0.55.79` (`v454.0.0.0.55`) without risking `main` release stability. Codified Upstream Modding & Stability Gating Mandates into workspace `GEMINI.md`.
+- **Root Cause & Architectural Alignment**:
+  - Rather than reinventing the wheel with sprawling XML regex replacements (`FixLayoutInflationPatch`) or synthetic layout stubs (`action_bar.xml`), engineered a clean DOM-level theme hardening task inside `CopyInstafelSources.kt` (`Ensure fallback layout dimensions in cold-start themes`).
+  - Scans decompiled `styles.xml` and `themes.xml` for cold-start theme hierarchies (`IgPanorama`, `IgPanoramaBase`, `Theme.Instagram`, `Base.Theme`, `Base.Theme.Instagram`) and injects concrete fallback dimensions (`actionBarSize`, `actionBarHeight`, `android:actionBarSize` = `56.0dip`) whenever missing, preventing `TypedArray.getLayoutDimension` from evaluating unmapped dimension pointers to `TYPE_NULL` on Android 15 (SDK 35).
+  - Maintained complete isolation: `main` remains strictly pinned to verified stable `v452.0.0.0.7`, and feature branch builds are gated from polluting public GitHub Releases.
+- **Components Modified**:
+  - `patcher-core/src/main/kotlin/instafel/patcher/core/patches/general/CopyInstafelSources.kt`: Integrated DOM theme attribute fallback verification task.
+  - `.github/workflows/generate_instafel.yml`: Enabled `feature/*` push triggers, targeted `v454.0.0.0.55` for branch testing, and protected production release gates.
+  - `Version.md`: Appended tracking entry pursuant to strict append protocol.
+  - `D:\code\GEMINI.md`: Codified Upstream Modding & Stability Gating Mandates.
+- **Status**: 100% (Completed & Dispatched to Staging CI)

@@ -194,6 +194,73 @@ class CopyInstafelSources: InstafelPatch() {
                 success("All resources merged succesfully");
             }
         },
+        @PInfos.TaskInfo("Ensure fallback layout dimensions in cold-start themes")
+        object: InstafelTask() {
+            override fun execute() {
+                val themeFiles = listOf(
+                    getValueResourceFile("styles.xml"),
+                    getValueResourceFile("themes.xml")
+                ).filter { it.exists() && it.isFile }
+
+                if (themeFiles.isEmpty()) {
+                    success("Skipped (theme files not found)")
+                    return
+                }
+
+                try {
+                    val targetThemes = setOf("IgPanorama", "IgPanoramaBase", "Theme.Instagram", "Base.Theme", "Base.Theme.Instagram")
+                    val fallbackDimensions = mapOf(
+                        "actionBarSize" to "56.0dip",
+                        "actionBarHeight" to "56.0dip",
+                        "android:actionBarSize" to "56.0dip"
+                    )
+
+                    var totalInjected = 0
+                    for (file in themeFiles) {
+                        val doc = ResourceParser.parseResourceDocument(file)
+                        val styleNodes = doc.getElementsByTagName("style")
+                        var fileModified = false
+
+                        for (i in 0 until styleNodes.length) {
+                            val styleEl = styleNodes.item(i) as? Element ?: continue
+                            val name = styleEl.getAttribute("name")
+                            if (targetThemes.any { name.equals(it, ignoreCase = true) || name.endsWith(".$it") }) {
+                                val existingItems = mutableSetOf<String>()
+                                val children = styleEl.childNodes
+                                for (j in 0 until children.length) {
+                                    val item = children.item(j) as? Element ?: continue
+                                    if (item.tagName == "item") {
+                                        existingItems.add(item.getAttribute("name"))
+                                    }
+                                }
+
+                                for ((dimenName, dimenVal) in fallbackDimensions) {
+                                    if (!existingItems.contains(dimenName)) {
+                                        val itemEl = doc.createElement("item").apply {
+                                            setAttribute("name", dimenName)
+                                            textContent = dimenVal
+                                        }
+                                        styleEl.appendChild(itemEl)
+                                        fileModified = true
+                                        totalInjected++
+                                    }
+                                }
+                            }
+                        }
+
+                        if (fileModified) {
+                            ResourceParser.buildXmlFile(doc, file)
+                            Log.info("Injected fallback dimensions into cold-start themes in " + file.name)
+                        }
+                    }
+
+                    success("Cold-start theme fallback dimensions verified ($totalInjected injected)")
+                } catch (t: Throwable) {
+                    Log.warning("Theme dimension hardening exception: " + t.message)
+                    success("Theme dimension hardening completed with warning")
+                }
+            }
+        },
         @PInfos.TaskInfo("Copy public resources with new IDs")
         object: InstafelTask() {
             override fun execute() {

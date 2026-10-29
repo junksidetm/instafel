@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 'feature/*'
   schedule:
     # Run automatically every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
     # Run daily at 03:30 UTC (30 minutes after Alpha-Insta 03:00 UTC crawler), plus 6-hour polling
@@ -63,7 +64,7 @@ jobs:
         run: |
           TARGET_VER="${{ inputs.target_version }}"
           if [ -z "$TARGET_VER" ]; then
-            TARGET_VER="452.0.0.0.7"
+            TARGET_VER="454.0.0.0.55"
           fi
           TAG="v${TARGET_VER}"
           VERSION="${TARGET_VER}"
@@ -252,7 +253,7 @@ jobs:
     name: Cloud Smoke Test (Firebase Test Lab)
     needs: ifl_generator
     runs-on: ubuntu-latest
-    if: needs.ifl_generator.outputs.skip_build != 'true'
+    if: needs.ifl_generator.outputs.skip_build != 'true' && github.ref == 'refs/heads/main'
     steps:
       - name: Check for GCP Credentials
         id: check_gcp
@@ -388,7 +389,7 @@ jobs:
     name: Publish Release Deliverables
     needs: [ifl_generator, test_cloud_smoke]
     runs-on: ubuntu-latest
-    if: needs.ifl_generator.outputs.skip_build != 'true'
+    if: needs.ifl_generator.outputs.skip_build != 'true' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       - name: Download Production APK Artifact
